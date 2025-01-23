@@ -16,12 +16,11 @@ interface Props {
   control: Control<any, any>;
   maxLength?: number;
   styleInput?: TextStyle;
-  isRequieredError?: boolean;
   disabled?: boolean;
   onBlur?: () => void
 }
 
-export const InputControl: FC<Props> = ({ secureTextEntry = false, isRequieredError = true, disabled = false, ...props }) => {
+export const InputControl: FC<Props> = ({ secureTextEntry = false, disabled = false, ...props }) => {
   const [hidePass, setHidePass] = useState(secureTextEntry);
   return (
     <Controller
@@ -42,26 +41,12 @@ export const InputControl: FC<Props> = ({ secureTextEntry = false, isRequieredEr
             mode="outlined"
             style={{
               ...props.styleInput,
-              width: "100%",
-              marginBottom: !!errors[props.name] ? 0 : 16,
-              fontFamily: "PoppinsRegular",
+              marginBottom: !!errors[props.name] ? 2 : 16,
               fontSize: 14,
+              height: 45,
             }}
-            theme={{
-              fonts: {
-                bodyLarge: {
-                  fontFamily: "PoppinsRegular",
-                  fontWeight: "400",
-                },
-                bodyMedium: {
-                  fontFamily: "PoppinsRegular",
-                  fontWeight: "400",
-                },
-                bodySmall: {
-                  fontFamily: "PoppinsRegular",
-                  fontWeight: "400",
-                },
-              }
+            contentStyle={{
+              fontSize: 14,
             }}
             keyboardType={props.keyboardType}
             autoCapitalize={props.autoCapitalize}
@@ -69,10 +54,6 @@ export const InputControl: FC<Props> = ({ secureTextEntry = false, isRequieredEr
             multiline={props.multiline}
             numberOfLines={props.numberOfLines}
             secureTextEntry={hidePass}
-            contentStyle={{
-              fontFamily: "PoppinsRegular",
-              fontSize: 14,
-            }}
             disabled={disabled}
             defaultValue={props.defaultValue}
             maxLength={props.maxLength}
@@ -83,27 +64,24 @@ export const InputControl: FC<Props> = ({ secureTextEntry = false, isRequieredEr
               secureTextEntry && (
                 <TextInput.Icon
                   icon={hidePass ? "eye-off" : "eye"}
-                  onPress={() => { setHidePass(!hidePass); Keyboard.dismiss(); }}
+                  onPress={() => { setHidePass(!hidePass) }}
                 />
               )
             }
           />
-          {isRequieredError && (
-            <View style={{ width: "100%" }}>
-              {errors[props.name] && (
-                <HelperText
-                  type="error"
-                  style={{
-                    fontFamily: "PoppinsRegular",
-                    fontSize: 12,
-                    marginTop: 4,
-                  }}
-                >
-                  {`${errors[props.name]?.message}`}
-                </HelperText>
-              )}
-            </View>
-          )}
+          <View style={{ width: "100%" }}>
+            {errors[props.name] && (
+              <HelperText
+                type="error"
+                style={{
+                  marginTop: -3,
+                  fontSize: 11,
+                }}
+              >
+                {`${errors[props.name]?.message}`}
+              </HelperText>
+            )}
+          </View>
         </Fragment>
       )}
     />

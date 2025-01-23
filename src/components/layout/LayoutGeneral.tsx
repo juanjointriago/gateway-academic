@@ -3,7 +3,7 @@ import { Platform, ScrollView, TextStyle, View, ViewStyle } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Appbar, Menu, useTheme } from 'react-native-paper';
 import { useDisclosure } from '@/src/hook';
-import { MORE_ICON } from '@/src/constants/Contants';
+import { MORE_ICON } from '@/src/constants/Constants';
 import { stylesGlobal } from '@/theme/Styles';
 
 export interface OpcionsHeader {

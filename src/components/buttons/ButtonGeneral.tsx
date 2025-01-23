@@ -1,7 +1,8 @@
 import { FC } from 'react'
 import { ViewStyle } from 'react-native'
-import { Button } from 'react-native-paper'
+import { Button, useTheme } from 'react-native-paper'
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon'
+import { LabelGeneral } from '../labels'
 
 type mode = "text" | "contained-tonal" | "outlined" | "contained" | "elevated"
 interface Props {
@@ -15,6 +16,7 @@ interface Props {
 }
 
 export const ButtonGeneral: FC<Props> = ({ onPress, loading, disabled, styleBtn, text = 'Boton', icon, mode = 'elevated' }) => {
+    const {colors} = useTheme();
     return (
         <Button
             onPress={onPress}
@@ -25,9 +27,10 @@ export const ButtonGeneral: FC<Props> = ({ onPress, loading, disabled, styleBtn,
                 borderRadius: 6,
                 ...styleBtn,
             }}
+            contentStyle={{ height: 45 }}
             icon={icon}
         >
-            {text}
+            <LabelGeneral label={text} variant='titleSmall' styleProps={{ color: colors.onPrimary }} />
         </Button>
     )
 }

@@ -82,7 +82,7 @@ const fontConfig: MD3Typescale = {
         ...MD3LightTheme.fonts.titleSmall,
         fontFamily: "Montserrat_500Medium",
         fontWeight: "500",
-    }
+    },
 };
 
 

@@ -21,7 +21,7 @@ export const LayoutAuth: FC<Props> = ({ children, hasAppBar = true, onBackAction
                 hasAppBar && (
                     <Appbar.Header>
                         {onBackAction && <Appbar.BackAction onPress={onBackAction} />}
-                        {title && (<Appbar.Content title={title} titleStyle={{ ...titleStyle, fontSize: 18 }} />)}
+                        {title && (<Appbar.Content title={title} titleStyle={{ ...titleStyle, fontSize: 16 }} />)}
                     </Appbar.Header>
                 )
             }

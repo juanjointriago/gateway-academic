@@ -10,9 +10,8 @@ import { useEffect, useState } from 'react';
 import { DarkTheme, LigthTheme } from "@/theme/Theme";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar, StatusBarStyle, useColorScheme } from "react-native";
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+import { AppProvider } from "@/src/context/AppProvider";
+import FlashMessage from "react-native-flash-message";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -49,13 +48,14 @@ export default function RootLayout() {
     return null;
   }
 
-  SplashScreen.hideAsync();
-
   return (
     <SafeAreaProvider>
       <StatusBar barStyle={barStyle} backgroundColor={theme.colors?.background} />
       <PaperProvider theme={theme}>
-        <Slot />
+        <AppProvider>
+          <FlashMessage animated position="top" />
+          <Slot />
+        </AppProvider>
       </PaperProvider>
     </SafeAreaProvider>
   );
