@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "495465137356",
+    "project_id": "gateway-english-iba",
+    "storage_bucket": "gateway-english-iba.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:495465137356:android:93b2631fd3973585b6ee69",
+        "android_client_info": {
+          "package_name": "com.purplewidget.gatewayacademic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "495465137356-i3tse79nolj7iaai7l48m22jt2qkhft7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzTAMDMWy3sMZcwlpZ8jpbHBQyBpJRQoI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "495465137356-i3tse79nolj7iaai7l48m22jt2qkhft7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "495465137356-9b2u0u0ejkfqci9h43d3s6fdj8g7doe0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.gateway.academic"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
