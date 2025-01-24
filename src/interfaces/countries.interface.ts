@@ -9,10 +9,6 @@ export interface ICountryData {
 }
 
 
-export interface ICountry {
-
-}
-
 export interface IRespRegions {
     [key: string]: IRegionData;
 }
@@ -24,10 +20,6 @@ export interface IRegionData {
 }
 
 
-export interface IRegion {
-
-}
-
 export interface IRespCities {
     [key: string]: ICityData;
 }
@@ -36,9 +28,4 @@ export interface ICityData {
     id_city: number;
     name: string;
     id_region: number;
-}
-
-
-export interface ICity {
-
 }

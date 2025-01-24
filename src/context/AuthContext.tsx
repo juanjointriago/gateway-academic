@@ -14,15 +14,17 @@ export const AuthProvider = ({ children }: Props) => {
 
     useEffect(() => {
         const unsubscribe = auth().onAuthStateChanged(async (user) => {
-            console.log('Context Sesion User ==>',{ user });
-            if(!user) {
+            console.log('Context Sesion User ==>', { user });
+            if (!user) {
+                setUser(null);
                 await auth().signOut();
-                return setUser(null);
+                return;
             };
             const getInfoUser = await UserService.getUserByDocId(user.uid);
-            if(!getInfoUser) {
+            if (!getInfoUser) {
+                setUser(null);
                 await auth().signOut();
-                return setUser(null);
+                return;
             };
             setUser(getInfoUser);
         });
