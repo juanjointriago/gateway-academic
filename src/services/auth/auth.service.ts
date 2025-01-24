@@ -1,80 +1,101 @@
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import { IUser, LoginSchemaType } from "@/src/interfaces";
+import { IResLocalFirebase, IUser, LoginSchemaType, RegisterSchemaType } from "@/src/interfaces";
 import { firebaseErrorMessages } from '@/src/constants/ConstantsErrors';
 import { GoogleSignin, isSuccessResponse } from '@react-native-google-signin/google-signin';
+import { format } from 'date-fns';
+import { createDocumentId, getDocumentById } from '@/src/helpers/firestoreHelper';
 
 export class AuthService {
-    static login = async ({ email, password }: LoginSchemaType): Promise<IUser> => {
+    static login = async ({ email, password }: LoginSchemaType): Promise<IResLocalFirebase<IUser>> => {
         try {
             const user = await auth().signInWithEmailAndPassword(email, password);
-            const userFind = await firestore().collection('users').doc(user.user.uid).get();
-            if (!userFind.exists) {
+            const userFind = await getDocumentById<IUser>('users', user.user.uid);
+            if (!userFind) {
                 await auth().signOut();
                 throw new Error('El usuario no existe en la base de datos.');
             }
-            return userFind.data() as IUser;
+            return { data: userFind, error: null };
         } catch (error: any) {
-            console.debug('Login error:', error.message);
-            throw new Error(firebaseErrorMessages[error.code] ?? 'Ha ocurrido un error inesperado.');
+            console.debug('Login error:', error);
+            return { data: null, error: firebaseErrorMessages[error.code] ?? error.message ?? 'Ha ocurrido un error inesperado.' };
         }
     }
 
-    static loginWithGoogle = async () : Promise<IUser> => {
+    static loginWithGoogle = async (): Promise<IUser> => {
         try {
+            await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
             const response = await GoogleSignin.signIn();
-            if(!isSuccessResponse(response)) throw new Error('Ha ocurrido un error inesperado.');
+            if (!isSuccessResponse(response)) throw new Error('Ha ocurrido un error inesperado.');
             const googleCredential = auth.GoogleAuthProvider.credential(response.data.idToken);
             const userCredential = await auth().signInWithCredential(googleCredential);
-            const userFind = await firestore().collection('users').doc(userCredential.user.uid).get();
-            if (!userFind.exists) {
-                const newUser: IUser = {
+            const userFind = await getDocumentById<IUser>('users', userCredential.user.uid);
+            if (!userFind) {
+                const newUser = {
+                    uid: userCredential.user.uid,
+                    id: userCredential.user.uid,
+                    name: userCredential.user.displayName ?? '',
                     email: userCredential.user.email ?? '',
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                    isActive: true,
-                    role: 'student',
-                    level: '',
-                    subLevel: '',
-                    teacherLink: '',
-                    unitForBooks: [],
+                    role: 'student' as IUser["role"],
+                    photoUrl: userCredential.user.photoURL ?? '',
+                    phone: '',
                     address: '',
                     bornDate: '',
                     cc: '',
                     city: '',
                     country: '',
-                    id: userCredential.user.uid,
-                    name: userCredential.user.displayName ?? '',
-                    phone: '',
-                    uid: userCredential.user.uid,
-                    photoUrl: userCredential.user.photoURL ?? '',
+                    isActive: true,
+                    createdAt: Date.now(),
+                    updatedAt: Date.now(),
                 }
-                await firestore().collection('users').doc(userCredential.user.uid).set(newUser);
-                return newUser;
+                await createDocumentId('users', userCredential.user.uid, newUser);
+                return {
+                    ...newUser,
+                    teacherLink: '',
+                    subLevel: '',
+                    level: '',
+                    unitForBooks: [],
+                };
             }
-            return userFind.data() as IUser;
+            return userFind;
         } catch (error: any) {
             console.debug('Login with Google error:', error);
             throw new Error(firebaseErrorMessages[error.code] ?? 'Ha ocurrido un error inesperado.');
         }
     }
 
-    static registerWithEmail = async ({ email, password }: LoginSchemaType): Promise<FirebaseAuthTypes.User> => {
+    static registerWithEmail = async (user: RegisterSchemaType): Promise<IResLocalFirebase<FirebaseAuthTypes.User>> => {
         try {
-            const userCredential = await auth().createUserWithEmailAndPassword(email, password);
-            return userCredential.user;
+            const userCredential = await auth().createUserWithEmailAndPassword(user.email, user.password!);
+            if (!userCredential.user) {
+                throw new Error('No se pudo crear el usuario.');
+            }
+            const dataUser = {
+                uid: userCredential.user.uid,
+                id: userCredential.user.uid,
+                name: user.name,
+                email: user.email,
+                role: user.role ?? 'student',
+                photoUrl: userCredential.user.photoURL ?? '',
+                phone: user.phone,
+                address: user.address,
+                bornDate: format(user.bornDate, 'yyyy-MM-dd'),
+                cc: user.cc,
+                city: user.city.value,
+                country: user.country.value,
+                isActive: false,
+                createdAt: Date.now(),
+                updatedAt: Date.now(),
+            };
+            await createDocumentId('users', userCredential.user.uid, dataUser);
+            await auth().signOut();
+            return { data: userCredential.user, error: null };
         } catch (error: any) {
-            console.debug('Registration error:', error.message);
-            throw new Error(firebaseErrorMessages[error.code] ?? 'Ha ocurrido un error inesperado.');
+            console.debug('Registration error ===>:', error);
+            return { data: null, error: firebaseErrorMessages[error.code] ?? error.message ?? 'Ha ocurrido un error inesperado.' };
         }
     }
 
     static logout = async (): Promise<void> => {
-        try {
-            await auth().signOut();
-        } catch (error: any) {
-            console.debug('Logout error:', error.message);
-            throw new Error(firebaseErrorMessages[error.code] ?? 'Ha ocurrido un error inesperado.');
-        }
+        await auth().signOut();
     }
 }

@@ -1,15 +1,20 @@
 import { z } from "zod";
+import { validateDoc } from "../helpers/validateDoc";
 
 export type roles = 'admin' | 'student' | 'teacher';
+
+export interface IResLocalFirebase<T> {
+    data: T | null;
+    error: string | null;
+}
+
 export interface IUser {
     address: string;
     bornDate: string;
     cc: string;
     city: string;
     country: string;
-    createdAt: Date;
     email: string;
-    updatedAt: Date;
     id: string;
     isActive: boolean;
     level: string;
@@ -23,11 +28,17 @@ export interface IUser {
     unitForBooks: string[];
 }
 
+export interface IUserRegister extends IUser {
+    password: string;
+    createdAt: number;
+    updatedAt: number;
+}
+
 /* ZOD validate form for register */
 export const RegisterSchema = z.object({
     address: z.string().min(1, { message: "La direccion es requerida" }),
-    bornDate: z.string().min(1, { message: "La fecha de nacimiento es requerida" }),
-    cc: z.string().min(1, { message: "El número de identificación es requerido" }),
+    bornDate: z.date({ required_error: "La fecha de nacimiento es requerida" }).refine((date) => !isNaN(date.getTime()), { message: "La fecha de nacimiento es requerida" }),
+    cc: z.string().min(1, { message: "El número de identificación es requerido" }).refine((doc) => validateDoc(doc) === '', { message: "El número de identificación no es valido" }),
     country: z.object({
         _id: z.string().min(1, { message: "El pais es requerido" }),
         value: z.string().min(1, { message: "El pais es requerido" }),
