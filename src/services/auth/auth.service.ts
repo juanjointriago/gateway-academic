@@ -1,4 +1,4 @@
-import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import auth, { FirebaseAuthTypes, updateProfile } from '@react-native-firebase/auth';
 import { IResLocalFirebase, IUser, LoginSchemaType, RegisterSchemaType } from "@/src/interfaces";
 import { firebaseErrorMessages } from '@/src/constants/ConstantsErrors';
 import { GoogleSignin, isSuccessResponse } from '@react-native-google-signin/google-signin';
@@ -86,6 +86,9 @@ export class AuthService {
                 createdAt: Date.now(),
                 updatedAt: Date.now(),
             };
+            await updateProfile(userCredential.user, {
+                displayName: user.name
+            });
             await createDocumentId('users', userCredential.user.uid, dataUser);
             await auth().signOut();
             return { data: userCredential.user, error: null };
