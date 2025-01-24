@@ -9,11 +9,13 @@ import { useAuthStore } from '@/src/store/auth/auth.store'
 import { useRouter } from 'expo-router'
 import { toast } from '@/src/helpers/toast'
 import { environment } from '@/enviroment'
+import { GoogleSigninButton } from '@react-native-google-signin/google-signin'
 
 export const LoginScreen = () => {
     const colorScheme = useColorScheme();
     const router = useRouter();
     const login = useAuthStore((state) => state.loginUser);
+    const loginWithGoogle = useAuthStore((state) => state.loginWithGoogle);
     const errorMsg = useAuthStore((state) => state.errorMessage);
     const clearError = useAuthStore((state) => state.clearError);
 
@@ -31,22 +33,32 @@ export const LoginScreen = () => {
         setIsLoad(true);
         Keyboard.dismiss();
         const result = await login(data);
-        if(!result) return setIsLoad(false);
+        if (!result) return setIsLoad(false);
         reset();
         setIsLoad(false);
         router.replace('/home');
     };
 
+    const onLoginWithGoogle = async () => {
+        Keyboard.dismiss();
+        setIsLoad(true);
+        const result = await loginWithGoogle();
+        if (!result) return setIsLoad(false);
+        reset();
+        setIsLoad(false);
+        router.replace('/home');
+    }
+
     useEffect(() => {
         if (errorMsg) {
-          toast({
-            description: errorMsg,
-            type: "danger",
-            floating: false,
-          });
-          clearError();
+            toast({
+                description: errorMsg,
+                type: "danger",
+                floating: false,
+            });
+            clearError();
         }
-      }, [errorMsg]);
+    }, [errorMsg]);
 
     return (
         <LayoutAuth hasAppBar={false} containerStyle={{ justifyContent: 'center' }} >
@@ -55,6 +67,13 @@ export const LoginScreen = () => {
             <InputControl control={control} name="password" label="Contraseña" secureTextEntry autoCapitalize='none' />
             <ButtonGeneral text='Iniciar Sesión' mode='contained' onPress={handleSubmit(onSubmit)} loading={isLoad} disabled={isLoad} />
             <TitleWithLine title='O' />
+            <GoogleSigninButton
+                size={GoogleSigninButton.Size.Wide}
+                color={GoogleSigninButton.Color.Dark}
+                onPress={onLoginWithGoogle}
+                disabled={isLoad}
+                style={{ width: '100%', marginBottom: 18 }}
+            />
             <LabelGeneral label='¿No tienes cuenta? Regístrate' onPressText={() => router.replace('/register')} styleProps={{ textAlign: 'center', fontSize: 12 }} variant='titleSmall' />
         </LayoutAuth>
     )

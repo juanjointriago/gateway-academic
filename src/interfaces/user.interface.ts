@@ -7,8 +7,9 @@ export interface IUser {
     cc: string;
     city: string;
     country: string;
-    createdAt: string;
+    createdAt: Date;
     email: string;
+    updatedAt: Date;
     id: string;
     isActive: boolean;
     level: string;

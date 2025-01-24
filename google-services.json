@@ -31,10 +31,10 @@
               "client_type": 3
             },
             {
-              "client_id": "495465137356-9b2u0u0ejkfqci9h43d3s6fdj8g7doe0.apps.googleusercontent.com",
+              "client_id": "495465137356-39fv60r5fl41finsgaoi2tr982hoofaa.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.gateway.academic"
+                "bundle_id": "com.purplewidget.gatewayacademic"
               }
             }
           ]

@@ -2,6 +2,7 @@ import "expo-dev-client";
 import "react-native-reanimated";
 import 'react-native-gesture-handler';
 import * as Font from "expo-font";
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { useFonts, Montserrat_400Regular, Montserrat_500Medium, Montserrat_700Bold } from "@expo-google-fonts/montserrat";
 import { Slot } from "expo-router";
 import { PaperProvider } from 'react-native-paper';
@@ -12,6 +13,11 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar, StatusBarStyle, useColorScheme } from "react-native";
 import { AppProvider } from "@/src/context/AppProvider";
 import FlashMessage from "react-native-flash-message";
+
+GoogleSignin.configure({
+  webClientId: '495465137356-i3tse79nolj7iaai7l48m22jt2qkhft7.apps.googleusercontent.com'
+});
+
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();

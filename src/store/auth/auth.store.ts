@@ -13,6 +13,7 @@ interface IAuthState {
 
 interface IAuthActions {
     loginUser: ({ email, password }: LoginSchemaType) => Promise<boolean>;
+    loginWithGoogle: () => Promise<boolean>;
     logoutUser: () => void;
     setUser: (user: IUser | null) => void;
     clearError: () => void;
@@ -32,6 +33,18 @@ const storeApi: StateCreator<IAuthState & IAuthActions, [["zustand/immer", never
             return false;
         }
     },
+
+    loginWithGoogle: async () => {
+        try {
+            const user = await AuthService.loginWithGoogle();
+            set({ status: 'authorized', user: user, errorMessage: null });
+            return true;
+        } catch (error: any) {
+            set({ status: 'unauthorized', user: null, errorMessage: error.message });
+            return false;
+        }
+    },
+    
     logoutUser: async () => {
         try {
             await AuthService.logout();
