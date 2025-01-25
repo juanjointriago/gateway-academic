@@ -28,8 +28,8 @@ export const LottiesGeneral: FC<Props> = ({ animation, autoplay = true, loop = t
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', ...styleContainer }}>
             <LottieView
                 source={Lotties[animation]}
-                autoPlay={autoplay}
-                loop={loop}
+                autoPlay
+                loop
                 style={{ width, height }}
             />
             <LabelGeneral label={description} variant='titleSmall' />

@@ -19,36 +19,32 @@ export const LayoutAuth: FC<Props> = ({ children, hasAppBar = true, onBackAction
         <>
             {
                 hasAppBar && (
-                    <Appbar.Header>
+                    <Appbar.Header style={{ backgroundColor: colors.background }}>
                         {onBackAction && <Appbar.BackAction onPress={onBackAction} />}
                         {title && (<Appbar.Content title={title} titleStyle={{ ...titleStyle, fontSize: 16 }} />)}
                     </Appbar.Header>
                 )
             }
-            {/* <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}> */}
-                <KeyboardAvoidingView
-                    style={stylesGlobal.containerAppBar}
-                    behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
-                >
-                    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                        {/* <SafeAreaView style={stylesGlobal.innerSafeAreaAppBar}> */}
-                            {withScrollView ? (
-                                <ScrollView
-                                    contentContainerStyle={containerStyle}
-                                    keyboardShouldPersistTaps="always"
-                                    alwaysBounceVertical={false}
-                                    showsVerticalScrollIndicator={false}
-                                    style={[containerStyle, { ...stylesGlobal.container }]}
-                                >
-                                    {children}
-                                </ScrollView>
-                            ) : (
-                                <View style={[containerStyle, { ...stylesGlobal.container }]}>{children}</View>
-                            )}
-                        {/* </SafeAreaView> */}
-                    </TouchableWithoutFeedback>
-                </KeyboardAvoidingView>
-            {/* </SafeAreaView> */}
+            <KeyboardAvoidingView
+                style={stylesGlobal.containerAppBar}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
+            >
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    {withScrollView ? (
+                        <ScrollView
+                            contentContainerStyle={containerStyle}
+                            keyboardShouldPersistTaps="always"
+                            alwaysBounceVertical={false}
+                            showsVerticalScrollIndicator={false}
+                            style={[containerStyle, { ...stylesGlobal.container, backgroundColor: colors.background }]}
+                        >
+                            {children}
+                        </ScrollView>
+                    ) : (
+                        <View style={[containerStyle, { ...stylesGlobal.container, backgroundColor: colors.background }]}>{children}</View>
+                    )}
+                </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
         </>
     )
 }

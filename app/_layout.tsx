@@ -13,6 +13,7 @@ import { StatusBar, StatusBarStyle, useColorScheme } from "react-native";
 import { AppProvider } from "@/src/context/AppProvider";
 import FlashMessage from "react-native-flash-message";
 import { es, registerTranslation } from 'react-native-paper-dates'
+import { LottiesGeneral } from "@/src/components";
 
 GoogleSignin.configure({
   webClientId: '495465137356-i3tse79nolj7iaai7l48m22jt2qkhft7.apps.googleusercontent.com'
@@ -52,7 +53,7 @@ export default function RootLayout() {
   }
 
   if (!appIsReady || !fontsLoaded) {
-    return null;
+    return <LottiesGeneral animation="loading" description="Espere un momento..." height={200} width={200} />;
   }
 
   return (

@@ -29,7 +29,7 @@ export const LayoutGeneral: FC<Props> = ({ children, containerStyle, hasDrawer, 
     const { isOpen, onOpen, onClose } = useDisclosure();
     return (
         <>
-            <Appbar.Header style={{ height: Platform.OS === 'ios' ? 60 : undefined }}>
+            <Appbar.Header style={{ backgroundColor: colors.background }}>
                 {onBackAction && <Appbar.BackAction onPress={onBackAction} animated={false} />}
                 {title && (<Appbar.Content title={title} titleStyle={{ ...titleStyle, fontSize: 18 }} />)}
                 {hasDrawer && <Appbar.Action icon={() => <MaterialIcons name="menu" size={24} color={colors.primary} />} onPress={onPressDrawer} animated={false} />}
