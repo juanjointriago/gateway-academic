@@ -69,7 +69,7 @@ export const RegisterScreen = () => {
 
     return (
         <>
-            <LayoutAuth title="Registrarse" withScrollView={true} onBackAction={() => router.replace('/signIn')} containerStyle={{ marginBottom: 20 }}>
+            <LayoutAuth title="Registrarse" withScrollView={true} onBackAction={() => router.replace('/signIn')} >
                 <InputControl control={control} name="cc" label="Identificación" keyboardType="number-pad" maxLength={13} />
                 <InputControl control={control} name="name" label="Nombre" autoCapitalize='words' />
                 <InputControl control={control} name="country" label="Pais" defaultValue={watch('country').value} editable={false} />
@@ -96,8 +96,8 @@ export const RegisterScreen = () => {
                 <InputControl control={control} name="phone" label="Teléfono" keyboardType="phone-pad" maxLength={10} />
                 <InputControl control={control} name="password" label="Contraseña" secureTextEntry autoCapitalize='none' />
                 <InputControl control={control} name="confirmPassword" label="Confirmar contraseña" secureTextEntry autoCapitalize='none' />
+            <ButtonGeneral onPress={handleSubmit(onSubmit)} text="Registrarse" mode='contained' styleBtn={{ marginBottom: 20 }} loading={isLoading} disabled={isLoading} />
             </LayoutAuth>
-            <ButtonGeneral onPress={handleSubmit(onSubmit)} text="Registrarse" mode='contained' styleBtn={{ marginHorizontal: 15 }} loading={isLoading} disabled={isLoading} />
         </>
     )
 }

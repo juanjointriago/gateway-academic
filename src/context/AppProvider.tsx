@@ -1,5 +1,6 @@
 import { FC } from 'react'
 import { AuthProvider } from './AuthContext'
+import { AlertProvider } from './AlertContext'
 
 interface Props {
     children: JSX.Element | JSX.Element[]
@@ -8,7 +9,9 @@ interface Props {
 export const AppProvider: FC<Props> = ({ children }) => {
     return (
         <AuthProvider>
-            {children}
+            <AlertProvider>
+                {children}
+            </AlertProvider>
         </AuthProvider>
     )
 }

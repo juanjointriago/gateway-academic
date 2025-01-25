@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "gateway-academic",
-    "slug": "gateway-academic",
+    "name": "Gateway Academic",
+    "slug": "Gateway Academic",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -9,7 +9,7 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "googleServicesFile": "./GoogleService-Info.plist",
       "bundleIdentifier": "com.purplewidget.gatewayacademic"
     },
@@ -34,10 +34,9 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "image": "./assets/images/splash.png",
+          "imageWidth": 300,
+          "resizeMode": "contain"
         }
       ],
       [

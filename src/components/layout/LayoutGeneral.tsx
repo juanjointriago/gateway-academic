@@ -51,7 +51,7 @@ export const LayoutGeneral: FC<Props> = ({ children, containerStyle, hasDrawer, 
                                 }}
                                 title={label}
                                 leadingIcon={icon}
-                                titleStyle={{ fontFamily: "PoppinsMedium", fontSize: 16 }}
+                                titleStyle={{ fontSize: 14 }}
                             />
                         ))}
                     </Menu>

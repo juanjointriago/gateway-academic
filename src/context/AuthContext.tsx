@@ -3,7 +3,7 @@ import auth from '@react-native-firebase/auth';
 import { useAuthStore } from "../store/auth/auth.store";
 import { UserService } from "../services";
 
-export const AlertContext = createContext({});
+export const AuthContext = createContext({});
 
 interface Props {
     children: JSX.Element | JSX.Element[];
@@ -32,8 +32,8 @@ export const AuthProvider = ({ children }: Props) => {
     }, [setUser]);
 
     return (
-        <AlertContext.Provider value={{}}>
+        <AuthContext.Provider value={{}}>
             {children}
-        </AlertContext.Provider>
+        </AuthContext.Provider>
     )
 }

@@ -25,13 +25,13 @@ export const LayoutAuth: FC<Props> = ({ children, hasAppBar = true, onBackAction
                     </Appbar.Header>
                 )
             }
-            <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
+            {/* <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}> */}
                 <KeyboardAvoidingView
                     style={stylesGlobal.containerAppBar}
                     behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
                 >
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                        <SafeAreaView style={stylesGlobal.innerSafeAreaAppBar}>
+                        {/* <SafeAreaView style={stylesGlobal.innerSafeAreaAppBar}> */}
                             {withScrollView ? (
                                 <ScrollView
                                     contentContainerStyle={containerStyle}
@@ -45,10 +45,10 @@ export const LayoutAuth: FC<Props> = ({ children, hasAppBar = true, onBackAction
                             ) : (
                                 <View style={[containerStyle, { ...stylesGlobal.container }]}>{children}</View>
                             )}
-                        </SafeAreaView>
+                        {/* </SafeAreaView> */}
                     </TouchableWithoutFeedback>
                 </KeyboardAvoidingView>
-            </SafeAreaView>
+            {/* </SafeAreaView> */}
         </>
     )
 }
