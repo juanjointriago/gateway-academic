@@ -1,39 +1,77 @@
-import { } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'expo-router';
-import { ButtonGeneral, ImageControl, ImagePicker, InputControl, LayoutGeneral } from '@/src/components'
-import { pickImage } from '@/src/helpers/files';
+import { ButtonGeneral, ImageControl, InputControl, LayoutGeneral } from '@/src/components'
 import { useForm } from 'react-hook-form';
+import { IUser, ProfileSchema, ProfileSchemaType } from '@/src/interfaces';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useAuthStore } from '@/src/store/auth/auth.store';
+import { UserService } from '@/src/services';
+import { toast } from '@/src/helpers/toast';
 
 export const ProfileScreen = () => {
     const router = useRouter();
+    const user = useAuthStore((state) => state.user);
+    const updateUser = useAuthStore((state) => state.updateUser);
 
-    const { control, handleSubmit } = useForm({
+    const [isLoading, setIsLoading] = useState(false);
+
+    const { control, handleSubmit } = useForm<ProfileSchemaType>({
         defaultValues: {
-            imgProfile: { name: "", type: "", uri: "" },
-            name: "",
-            email: "",
-            phone: "",
-            cc: "",
-            address: "",
-            country: { _id: "", value: "" },
-            region: { _id: "", value: "" },
-            city: { _id: "", value: "" },
-        }
+            photo: { name: "", type: "", uri: user?.photoUrl },
+            name: user?.name,
+            email: user?.email,
+            phone: user?.phone,
+            cc: user?.cc,
+            address: user?.address,
+        },
+        resolver: zodResolver(ProfileSchema),
     });
 
-    const onSubmit = (data: any) => {
-        console.log(data);
+    const onSubmit = async (data: ProfileSchemaType) => {
+        setIsLoading(true);
+        try {
+            const resp = await UserService.updateFile(user?.uid || '', data.photo);
+            if (!resp) return;
+            const dataUser: IUser = {
+                ...user,
+                address: data.address,
+                cc: data.cc,
+                email: data.email,
+                name: data.name,
+                phone: data.phone,
+                photoUrl: resp,
+                bornDate: user?.bornDate || '',
+                unitForBooks: user?.unitForBooks || [],
+                city: user?.city || '',
+                country: user?.country || '',
+                uid: user?.uid || '',
+                isActive: user?.isActive || false,
+                id: user?.id || '',
+                level: user?.level || '',
+                role: user?.role || 'student',
+                subLevel: user?.subLevel || '',
+                teacherLink: user?.teacherLink || '',
+            }
+            const respUser = await updateUser(dataUser);
+            if (!respUser) throw new Error('Ha ocurrido un error al actualizar el usuario');
+            toast({ description: 'El usuario se ha actualizado correctamente', type: 'success' });
+        } catch (error: any) {
+            console.log('error', error);
+            toast({ description: error.message || 'Ha ocurrido un error al actualizar el usuario', type: 'danger' });
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
         <LayoutGeneral title='Perfil' onBackAction={() => router.replace('/(tabs)/settings')}>
-            <ImageControl control={control} name={'imgProfile'} />
-            <InputControl control={control} name={'cc'} label={'Cedula/RUC'} />
-            <InputControl control={control} name={'name'} label={'Nombre'} />
-            <InputControl control={control} name={'email'} label={'Correo'} />
+            <ImageControl control={control} name={'photo'} />
+            <InputControl control={control} name={'cc'} label={'Cedula/RUC'} keyboardType='numeric' />
+            <InputControl control={control} name={'name'} label={'Nombre'} autoCapitalize='words' />
+            <InputControl control={control} name={'email'} label={'Correo'} keyboardType='email-address' />
             <InputControl control={control} name={'address'} label={'Direccion'} />
-            <InputControl control={control} name={'phone'} label={'Telefono'} />
-            <ButtonGeneral text='Actualizar' onPress={handleSubmit(onSubmit)} mode='contained' />
+            <InputControl control={control} name={'phone'} label={'Telefono'} keyboardType='phone-pad' />
+            <ButtonGeneral text='Actualizar' onPress={handleSubmit(onSubmit)} mode='contained' loading={isLoading} disabled={isLoading} />
         </LayoutGeneral>
     )
 }

@@ -21,4 +21,15 @@ export const stylesGlobal = StyleSheet.create({
         height: 1, // Grosor de la línea
         backgroundColor: "#c4c4c4", // Color de la línea
     },
+    spinnerView: {
+        position: "absolute",
+        zIndex: 999,
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "rgba(255, 255, 255, 0.83)",
+    },
 })

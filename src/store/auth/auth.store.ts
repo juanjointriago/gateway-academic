@@ -2,7 +2,7 @@ import { create, StateCreator } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { IResLocalFirebase, IUser, LoginSchemaType, RegisterSchemaType } from "@/src/interfaces";
-import { AuthService } from "@/src/services";
+import { AuthService, UserService } from "@/src/services";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FirebaseAuthTypes } from "@react-native-firebase/auth";
 
@@ -16,6 +16,7 @@ interface IAuthActions {
     loginWithGoogle: () => Promise<boolean>;
     logoutUser: () => void;
     registerUser: (user: RegisterSchemaType) => Promise<IResLocalFirebase<FirebaseAuthTypes.User>>;
+    updateUser: (user: IUser) => Promise<IUser | null>;
     setUser: (user: IUser | null) => void;
 }
 
@@ -48,6 +49,11 @@ const storeApi: StateCreator<IAuthState & IAuthActions, [["zustand/immer", never
         return response;
     },
 
+    updateUser: async (user) => {
+        const response = await UserService.updateUser(user);
+        set({ user: { ...get().user, ...user } });
+        return response;
+    },
     logoutUser: async () => {
         await AuthService.logout();
         set({ status: 'unauthorized', user: null });

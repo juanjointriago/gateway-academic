@@ -66,3 +66,20 @@ export const RegisterSchema = z.object({
 });
 
 export type RegisterSchemaType = z.infer<typeof RegisterSchema>;
+
+/* ZOD validate form for update user */
+export const ProfileSchema = z.object({
+    address: z.string().min(1, { message: "La direccion es requerida" }),
+    // cc: z.string().min(1, { message: "El número de identificación es requerido" }).refine((doc) => validateDoc(doc) === '', { message: "El número de identificación no es valido" }),
+    cc: z.string().min(1, { message: "El número de identificación es requerido" }),
+    email: z.string().min(1, { message: "Email es requerido" }).email({ message: "Email inválido" }),
+    name: z.string().min(1, { message: "El nombre es requerido" }),
+    phone: z.string().min(1, { message: "El telefono es requerido" }),
+    photo: z.object({
+        name: z.string().min(1, { message: "La foto de perfil es requerida" }),
+        type: z.string().min(1, { message: "La foto de perfil es requerida" }),
+        uri: z.string().min(1, { message: "La foto de perfil es requerida" })
+    })
+});
+
+export type ProfileSchemaType = z.infer<typeof ProfileSchema>;

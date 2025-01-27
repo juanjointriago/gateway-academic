@@ -17,3 +17,10 @@ export const firebaseErrorMessages: { [key: string]: string } = {
     'firestore/failed-precondition': 'Precondición fallida.',
     'firestore/out-of-range': 'Fuera de rango.',
 };
+
+export const typeUser : { [key: string]: string } = {
+    'admin': 'Administrador',
+    'user': 'Usuario',
+    'teacher': 'Profesor',
+    'student': 'Estudiante'
+}

@@ -7,3 +7,4 @@ export * from './select';
 export * from './picker';
 export * from './lotties';
 export * from './list';
+export * from './shared';

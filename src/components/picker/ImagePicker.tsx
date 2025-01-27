@@ -5,12 +5,12 @@ import {
   Image,
   ViewStyle,
 } from "react-native";
-import { Feather, Octicons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { PropsFiles } from "@/src/interfaces";
 import { toast } from "@/src/helpers/toast";
 import { useTheme } from "react-native-paper";
 
-interface IFiles {
+export interface IFiles {
   name: string,
   type: string,
   uri: string
@@ -58,12 +58,12 @@ export const ImagePicker = ({ pickImage, uri, styleImg, imageUrl, isValidate }: 
       style={[
         styles.button,
         styleImg,
-        { borderColor: !isValidate ? colors.primary : "red" },
+        { borderColor: !isValidate ? colors.primary : colors.error },
       ]}
       onPress={selectImage}
     >
       {file.uri === "" && !imageUrl ? (
-        <Feather name="camera" size={40} color={colors.primary} />
+        <Feather name="camera" size={40} color={!isValidate ? colors.primary : colors.error} />
       ) : (
         <Image
           source={{ uri: file.uri === "" ? imageUrl : file.uri }}

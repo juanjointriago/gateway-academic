@@ -4,12 +4,13 @@ import { firebaseErrorMessages } from '@/src/constants/ConstantsErrors';
 import { GoogleSignin, isSuccessResponse } from '@react-native-google-signin/google-signin';
 import { format } from 'date-fns';
 import { createDocumentId, getDocumentById } from '@/src/helpers/firestoreHelper';
+import { USER_COLLECTION } from '@/src/constants/ContantsFirebase';
 
 export class AuthService {
     static login = async ({ email, password }: LoginSchemaType): Promise<IResLocalFirebase<IUser>> => {
         try {
             const user = await auth().signInWithEmailAndPassword(email, password);
-            const userFind = await getDocumentById<IUser>('users', user.user.uid);
+            const userFind = await getDocumentById<IUser>(USER_COLLECTION, user.user.uid);
             if (!userFind) {
                 await auth().signOut();
                 throw new Error('El usuario no existe en la base de datos.');
@@ -47,7 +48,7 @@ export class AuthService {
                     createdAt: Date.now(),
                     updatedAt: Date.now(),
                 }
-                await createDocumentId('users', userCredential.user.uid, newUser);
+                await createDocumentId(USER_COLLECTION, userCredential.user.uid, newUser);
                 return {
                     ...newUser,
                     teacherLink: '',
@@ -89,7 +90,7 @@ export class AuthService {
             await updateProfile(userCredential.user, {
                 displayName: user.name
             });
-            await createDocumentId('users', userCredential.user.uid, dataUser);
+            await createDocumentId(USER_COLLECTION, userCredential.user.uid, dataUser);
             await auth().signOut();
             return { data: userCredential.user, error: null };
         } catch (error: any) {

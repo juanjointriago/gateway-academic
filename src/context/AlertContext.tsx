@@ -1,10 +1,9 @@
 import { createContext, useContext, useState } from "react";
-// import { ButtonAlert, IAlertContext, IAlertProps } from "@/src/interfaces";
 import { NAME_APP } from "@/src/constants/Constants";
 import { Button, Dialog, Portal } from "react-native-paper";
 import { useDisclosure } from "../hook";
 import { ButtonAlert, IAlertContext, IAlertProps } from "../interfaces";
-import { LabelGeneral } from "../components";
+import { LabelGeneral } from "../components/labels/LabelGeneral";
 
 export const AlertContext = createContext({} as IAlertContext);
 
@@ -39,7 +38,7 @@ export const AlertProvider = ({ children }: Props) => {
             ...action,
             onPress: () => {
                 action.onPress();
-                onCloseModal(); // Ensure modal closes after any action
+                onCloseModal();
             },
         }));
         setListButtons(mappedActions);
