@@ -38,7 +38,7 @@ export const LoginScreen = () => {
         }
         reset();
         setIsLoad(false);
-        router.replace('/home');
+        router.replace('/(tabs)/home');
     };
 
     // const onLoginWithGoogle = async () => {

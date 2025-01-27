@@ -11,7 +11,7 @@ export default function Index() {
 
     if (statusAuth === 'authorized') {
         return (
-            <Redirect href="/home" />
+            <Redirect href="/(tabs)/home" />
         )
     }
 

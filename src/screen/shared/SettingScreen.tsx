@@ -1,0 +1,67 @@
+import { } from 'react'
+import { ButtonSelectable, LayoutGeneral } from '@/src/components'
+import { useAlert } from '@/src/context/AlertContext';
+import { useRouter } from 'expo-router';
+import { useAuthStore } from '@/src/store/auth/auth.store';
+import Constants from 'expo-constants';
+
+export const SettingScreen = () => {
+    const router = useRouter();
+    const { customAlert, onToggle } = useAlert();
+
+    const logout = useAuthStore((state) => state.logoutUser);
+
+    const appVersion = Constants.expoConfig?.version || '1.0.0';
+
+    const handleLogout = () => {
+        customAlert({
+            message: '¿Desea cerrar sesión?',
+            accions: [
+                {
+                    text: 'Cancelar',
+                    onPress: () => onToggle,
+                },
+                {
+                    text: 'Aceptar',
+                    onPress: () => {
+                        logout();
+                        router.replace('/signIn');
+                    }
+                }
+            ]
+        })
+    }
+
+    const handleProfile = () => {
+        router.replace('/profile');
+    }
+
+
+    return (
+        <LayoutGeneral title='Ajustes'>
+            <ButtonSelectable
+                avatarIcon='account'
+                title='Mi perfil'
+                onPress={handleProfile}
+                size={35}
+                color='#3e6eb7'
+            />
+
+            <ButtonSelectable
+                avatarIcon='logout'
+                title='Cerrar Sesión'
+                onPress={handleLogout}
+                size={35}
+                color='#b73e66'
+            />
+
+            <ButtonSelectable
+                avatarIcon='information'
+                title='Versión de la app'
+                description={'v ' + appVersion}
+                size={35}
+                color='#3eb798'
+            />
+        </LayoutGeneral>
+    )
+}

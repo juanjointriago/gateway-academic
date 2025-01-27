@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Gateway Academic",
-    "slug": "Gateway Academic",
+    "slug": "Gateway_Academic",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -10,10 +10,20 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": false,
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "This app needs to access your gallery so you can select photos from the app. Please grant permission to use the camera and enjoy all the features of the app",
+        "NSCameraUsageDescription": "This app needs to access your camera so that you can take photos from the app. Please grant permission to use the camera and enjoy all the features of the app",
+        "NSMicrophoneUsageDescription": "This app needs to access your microphone so that you can record audio from the app. Please grant permission to use the microphone and enjoy all the features of the app"
+      },
       "googleServicesFile": "./GoogleService-Info.plist",
       "bundleIdentifier": "com.purplewidget.gatewayacademic"
     },
     "android": {
+      "permissions": [
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.CAMERA"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -53,7 +63,16 @@
           }
         }
       ],
-      ["@react-native-google-signin/google-signin"]
+      ["@react-native-google-signin/google-signin"],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends.",
+          "cameraPermission": "Allow $(PRODUCT_NAME) to open the camera",
+          "//": "Disables the microphone permission",
+          "microphonePermission": false
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

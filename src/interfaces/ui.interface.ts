@@ -13,3 +13,16 @@ export interface IAlertProps {
     message: string,
     accions?: ButtonAlert[],
 }
+
+export interface ISection {
+    title: string;
+    description?: string;
+    nameIcon: string;
+}
+
+export interface PropsFiles {
+    error: string | null,
+    path: string | null,
+    fileName: string | null,
+    type: string | null
+}  

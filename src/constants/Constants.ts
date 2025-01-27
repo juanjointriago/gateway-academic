@@ -17,3 +17,6 @@ export const PASSTEST = 'Yelyn2016';
 export const URL_API = 'https://api.wasi.co/v1/location';
 export const WASI_TOKEN = 'g2GG_dXgE_2meC_FSju';
 export const WASI_ID_COMPANY = '25852702';
+
+export const SIZEFILEIMG = 10485760;
+export const SIZEFILEDOC = 10485760;
