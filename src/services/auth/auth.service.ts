@@ -54,7 +54,7 @@ export class AuthService {
                     teacherLink: '',
                     subLevel: '',
                     level: '',
-                    unitForBooks: [],
+                    unitsForBooks: [],
                 };
             }
             return userFind;

@@ -72,7 +72,6 @@ export const RegisterScreen = () => {
             <LayoutAuth title="Registrarse" withScrollView={true} onBackAction={() => router.replace('/signIn')} >
                 <InputControl control={control} name="cc" label="Identificación" keyboardType="number-pad" maxLength={13} />
                 <InputControl control={control} name="name" label="Nombre" autoCapitalize='words' />
-                <InputControl control={control} name="country" label="Pais" defaultValue={watch('country').value} editable={false} />
                 {watch('country')._id && (
                     <SelectControl
                         control={control}

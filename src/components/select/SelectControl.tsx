@@ -32,7 +32,6 @@ export const SelectControl: FC<Props> = ({ control, name, arrayList = [], label 
                         multiEnable={false}
                         textInputMode="outlined"
                         searchText={`Buscar ${label}`}
-                        searchStyle={{ fontSize: 12 }}
                         dialogTitleStyle={{ fontSize: 18 }}
                         selectAllText='Seleccionar todo'
                         dialogCloseButtonText='Cerrar'
@@ -47,6 +46,13 @@ export const SelectControl: FC<Props> = ({ control, name, arrayList = [], label 
                         }}
                         textInputStyle={{
                             fontSize: 14,
+                        }}
+                        theme={{
+                            fonts: {
+                                bodyLarge: {
+                                    fontSize: 14,
+                                }
+                            }
                         }}
                     />
                     {errors[name] && (
