@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { ButtonGeneral, FadeInImage, InputControl, LabelGeneral, LayoutAuth, TitleWithLine } from '@/src/components'
+import { ButtonGeneral, FadeInImage, InputControl, LabelGeneral, LayoutAuth, SocialButton, TitleWithLine } from '@/src/components'
 import { LOGO_URL, LOGO_URL2, PASSTEST, USERTEST } from '@/src/constants/Constants'
 import { LoginSchema, LoginSchemaType } from '@/src/interfaces'
 import { Keyboard, useColorScheme } from 'react-native'
@@ -9,7 +9,6 @@ import { useAuthStore } from '@/src/store/auth/auth.store'
 import { useRouter } from 'expo-router'
 import { toast } from '@/src/helpers/toast'
 import { environment } from '@/enviroment'
-// import { GoogleSigninButton } from '@react-native-google-signin/google-signin'
 
 export const LoginScreen = () => {
     const colorScheme = useColorScheme();
@@ -58,13 +57,7 @@ export const LoginScreen = () => {
             <InputControl control={control} name="password" label="Contraseña" secureTextEntry autoCapitalize='none' />
             <ButtonGeneral text='Iniciar Sesión' mode='contained' onPress={handleSubmit(onSubmit)} loading={isLoad} disabled={isLoad} />
             <TitleWithLine title='O' />
-            {/* <GoogleSigninButton
-                size={GoogleSigninButton.Size.Wide}
-                color={GoogleSigninButton.Color.Dark}
-                onPress={onLoginWithGoogle}
-                disabled={isLoad}
-                style={{ width: '100%', marginBottom: 18 }}
-            /> */}
+            <SocialButton />
             <LabelGeneral label='¿No tienes cuenta? Regístrate' onPressText={() => router.replace('/register')} styleProps={{ textAlign: 'center', fontSize: 12 }} variant='titleSmall' />
         </LayoutAuth>
     )

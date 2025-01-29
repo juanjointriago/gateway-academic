@@ -7,3 +7,17 @@ export const LoginSchema = z.object({
 });
 
 export type LoginSchemaType = z.infer<typeof LoginSchema>;
+
+
+export interface LoginDataGoogle {
+    idToken: string;
+    first_name: string;
+    last_name: string;
+    photo_url: string;
+}
+
+export interface LoginDataApple {
+    access_token: string;
+    first_name: string;
+    last_name: string;
+}

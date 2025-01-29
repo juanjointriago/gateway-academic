@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
-import { LabelGeneral, LabelWithImg, LayoutGeneral, LoadScreen, Section } from '../components'
-import { ISection } from '../interfaces'
-import { useAuthStore } from '../store/auth/auth.store'
-import { typeUser } from '../constants/ConstantsErrors'
+import { LabelWithImg, LayoutGeneral, Section } from '../../components'
+import { useAuthStore } from '../../store/auth/auth.store'
+import { typeUser } from '../../constants/ConstantsErrors'
 import { Divider } from 'react-native-paper'
-import { useLevelStore } from '../store/level/level.store'
-import { useEventStore } from '../store/event/event.store'
-import { useSubLevelStore } from '../store/level/sublevel.store'
-import { useUnitStore } from '../store/unit/unit.store'
+import { useLevelStore } from '../../store/level/level.store'
+import { useEventStore } from '../../store/event/event.store'
+import { useSubLevelStore } from '../../store/level/sublevel.store'
+import { useUnitStore } from '../../store/unit/unit.store'
+import { BannerSimple } from '@/src/components/banner/BannerSimple'
+import { useDisclosure } from '@/src/hook'
 
 export const HomeScreen = () => {
   const user = useAuthStore((state) => state.user);
@@ -25,7 +26,7 @@ export const HomeScreen = () => {
   const getUnitsStudent = useUnitStore((state) => state.getUnitsStudent);
 
 
-
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [isLoading, setIsLoading] = useState(false);
 
   const listInfo = useMemo(() => ([
@@ -52,11 +53,13 @@ export const HomeScreen = () => {
   ]), [isLoading]);
 
   const loadInit = async () => {
+    onOpen();
     setIsLoading(true);
     await getAlllevels();
     await getAllEvents();
     await getAllSubLevels();
     await getUnitsStudent(user?.unitsForBooks as string[]);
+    onClose();
     setIsLoading(false);
   }
 
@@ -64,10 +67,9 @@ export const HomeScreen = () => {
     loadInit();
   }, []);
 
-  // if (isLoading) return <LoadScreen message='Cargando información, por favor espere un momento' textStyle={{ textAlign: 'center', marginTop: 100 }} />
-
   return (
     <LayoutGeneral title='Bienvenido'>
+      <BannerSimple isOpen={isOpen} description='Bienvenido a Gateway, estamos cargando la información y los recursos necesarios para tu aprendizaje, por favor espere...' />
       <LabelWithImg
         title={user?.name}
         url={user?.photoUrl}

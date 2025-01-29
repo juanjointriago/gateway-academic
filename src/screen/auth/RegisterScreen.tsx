@@ -2,10 +2,9 @@ import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'expo-router';
 import { ButtonGeneral, DateControl, InputControl, LayoutAuth, SelectControl } from '@/src/components'
 import { useForm } from 'react-hook-form';
-import { IUser, RegisterSchema, RegisterSchemaType } from '@/src/interfaces';
+import { RegisterSchema, RegisterSchemaType } from '@/src/interfaces';
 import { useCountryStore } from '@/src/store/country/country.store';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { View } from 'react-native';
 import { useAuthStore } from '@/src/store/auth/auth.store';
 import { toast } from '@/src/helpers/toast';
 

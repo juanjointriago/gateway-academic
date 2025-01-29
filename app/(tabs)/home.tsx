@@ -1,4 +1,4 @@
-import { HomeScreen } from "@/src/screen/HomeScreen";
+import { HomeScreen } from "@/src/screen/student/HomeScreen";
 
 export default function Home() {
     return (
