@@ -7,18 +7,24 @@ import { Divider } from 'react-native-paper'
 import { useLevelStore } from '../store/level/level.store'
 import { useEventStore } from '../store/event/event.store'
 import { useSubLevelStore } from '../store/level/sublevel.store'
+import { useUnitStore } from '../store/unit/unit.store'
 
 export const HomeScreen = () => {
   const user = useAuthStore((state) => state.user);
 
-  const levels = useLevelStore((state) => state.getAllLevels);
+  const getAlllevels = useLevelStore((state) => state.getAllLevels);
   const getLevelByDocId = useLevelStore((state) => state.getLevelByDocId);
 
-  const events = useEventStore((state) => state.getAllEvents);
+  const getAllEvents = useEventStore((state) => state.getAllEvents);
   const getEventStudent = useEventStore((state) => state.getEventStudent);
 
-  const subLevels = useSubLevelStore((state) => state.getAllSubLevels);
+  const getAllSubLevels = useSubLevelStore((state) => state.getAllSubLevels);
   const getSubLevelByDocId = useSubLevelStore((state) => state.getSubLevelByDocId);
+
+  const units = useUnitStore((state) => state.unitsAvailable);
+  const getUnitsStudent = useUnitStore((state) => state.getUnitsStudent);
+
+
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -38,36 +44,19 @@ export const HomeScreen = () => {
       nameIcon: 'chart-bar',
       description: `${getSubLevelByDocId(`${user?.subLevel}`)?.name || ''}`
     },
+    {
+      title: 'Libros Disponibles',
+      nameIcon: 'notebook',
+      description: `${units}`
+    }
   ]), [isLoading]);
-
-  // const listInfo: ISection[] = [
-  //   {
-  //     title: 'Modalida',
-  //     nameIcon: 'school',
-  //     description: 'Modalidad online'
-  //   },
-  //   {
-  //     title: 'Clases Reservadas',
-  //     nameIcon: 'calendar-month',
-  //     description: '0'
-  //   },
-  //   {
-  //     title: 'Unidad Actual',
-  //     nameIcon: 'chart-bar',
-  //     description: 'Unidad 1'
-  //   },
-  //   {
-  //     title: 'Libros Disponibles',
-  //     nameIcon: 'notebook',
-  //     description: '25'
-  //   }
-  // ];
 
   const loadInit = async () => {
     setIsLoading(true);
-    await levels();
-    await events();
-    await subLevels();
+    await getAlllevels();
+    await getAllEvents();
+    await getAllSubLevels();
+    await getUnitsStudent(user?.unitsForBooks as string[]);
     setIsLoading(false);
   }
 
@@ -75,7 +64,7 @@ export const HomeScreen = () => {
     loadInit();
   }, []);
 
-  if (isLoading) return <LoadScreen message='Cargando información, por favor espere un momento' textStyle={{ textAlign: 'center', marginTop: 100 }} />
+  // if (isLoading) return <LoadScreen message='Cargando información, por favor espere un momento' textStyle={{ textAlign: 'center', marginTop: 100 }} />
 
   return (
     <LayoutGeneral title='Bienvenido'>

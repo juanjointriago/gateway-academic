@@ -16,6 +16,8 @@ interface ICountryActions {
     fetchCountries: () => Promise<void>
     fetchRegions: (idCountry: number) => Promise<void>
     fetchCities: (idRegion: number) => Promise<void>
+
+    clearStoreCountries: () => void
 }
 
 const storeApi: StateCreator<ICountryState & ICountryActions, [["zustand/immer", never]]> = (set, get) => ({
@@ -37,6 +39,10 @@ const storeApi: StateCreator<ICountryState & ICountryActions, [["zustand/immer",
         if (!getCities.data) return;
         set({ cities: Object.values(getCities.data).filter((data) => data.id_city !== undefined) });
     },
+
+    clearStoreCountries: () => {
+        set({ countries: [], cities: [], regions: [] });
+    }
 });
 
 export const useCountryStore = create<ICountryState & ICountryActions>()(

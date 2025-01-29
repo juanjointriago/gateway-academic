@@ -20,7 +20,7 @@ export interface IStudents { [key: string]: { status: StatusEvent } }
 export interface IEvent {
     id?: string;
     isActive: boolean;
-    levels: [ILevelSubLevel];
+    levels: ILevelSubLevel[];
     maxAssistantsNumber: number;
     minAssistantsNumber: number;
     name: string;

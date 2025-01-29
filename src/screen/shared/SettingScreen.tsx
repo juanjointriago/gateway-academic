@@ -4,12 +4,20 @@ import { useAlert } from '@/src/context/AlertContext';
 import { useRouter } from 'expo-router';
 import { useAuthStore } from '@/src/store/auth/auth.store';
 import Constants from 'expo-constants';
+import { useEventStore } from '@/src/store/event/event.store';
+import { useLevelStore } from '@/src/store/level/level.store';
+import { useSubLevelStore } from '@/src/store/level/sublevel.store';
+import { useUnitStore } from '@/src/store/unit/unit.store';
 
 export const SettingScreen = () => {
     const router = useRouter();
     const { customAlert, onToggle } = useAlert();
 
     const logout = useAuthStore((state) => state.logoutUser);
+    const clearStoreEvents = useEventStore((state) => state.clearStoreEvents);
+    const clearStoreLevels = useLevelStore((state) => state.clearStoreLevels);
+    const clearStoreSubLevels = useSubLevelStore((state) => state.clearStoreSubLevels);
+    const clearStoreUnits = useUnitStore((state) => state.clearStoreUnits);
 
     const appVersion = Constants.expoConfig?.version || '1.0.0';
 
@@ -25,6 +33,10 @@ export const SettingScreen = () => {
                     text: 'Aceptar',
                     onPress: () => {
                         logout();
+                        clearStoreEvents();
+                        clearStoreLevels();
+                        clearStoreSubLevels();
+                        clearStoreUnits();
                         router.replace('/signIn');
                     }
                 }

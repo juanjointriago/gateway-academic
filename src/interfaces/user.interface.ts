@@ -25,7 +25,7 @@ export interface IUser {
     subLevel: string;
     teacherLink?: string;
     uid: string;
-    unitForBooks: string[];
+    unitsForBooks: string[];
 }
 
 export interface IUserRegister extends IUser {

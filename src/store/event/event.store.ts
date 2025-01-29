@@ -12,6 +12,8 @@ interface IEventState {
 interface IEventActions {
     getAllEvents: () => Promise<IEvent[]>
     getEventStudent: (userId: string) => IEvent[]
+
+    clearStoreEvents: () => void
 }
 
 const storeApi: StateCreator<IEventState & IEventActions, [["zustand/immer", never]]> = (set, get) => ({
@@ -26,6 +28,10 @@ const storeApi: StateCreator<IEventState & IEventActions, [["zustand/immer", nev
         const events = get().evnts.filter((event) => event.students[userId] && event.isActive);
         return events;
     },
+
+    clearStoreEvents: () => {
+        set({ evnts: [] });
+    }
 });
 
 export const useEventStore = create<IEventState & IEventActions>()(

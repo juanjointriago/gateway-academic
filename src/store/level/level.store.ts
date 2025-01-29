@@ -12,6 +12,8 @@ interface ILevelState {
 interface ILevelActions {
     getAllLevels: () => Promise<ILevel[]>
     getLevelByDocId: (docId: string) => ILevel | null
+
+    clearStoreLevels: () => void
 }
 
 const storeApi: StateCreator<ILevelState & ILevelActions, [["zustand/immer", never]]> = (set, get) => ({
@@ -26,6 +28,10 @@ const storeApi: StateCreator<ILevelState & ILevelActions, [["zustand/immer", nev
         if (!findLevel) return null;
         return findLevel;
     },
+
+    clearStoreLevels: () => {
+        set({ levels: [] });
+    }
 });
 
 export const useLevelStore = create<ILevelState & ILevelActions>()(

@@ -12,6 +12,8 @@ interface ISubLevelState {
 interface ISubLevelActions {
     getAllSubLevels: () => Promise<ISubLevel[]>
     getSubLevelByDocId: (docId: string) => ISubLevel | null
+
+    clearStoreSubLevels: () => void
 }
 
 const storeApi: StateCreator<ISubLevelState & ISubLevelActions, [["zustand/immer", never]]> = (set, get) => ({
@@ -25,6 +27,10 @@ const storeApi: StateCreator<ISubLevelState & ISubLevelActions, [["zustand/immer
         const findSubLevel = get().subLevels.find((subLevel) => subLevel.id === docId);
         if (!findSubLevel) return null;
         return findSubLevel;
+    },
+
+    clearStoreSubLevels: () => {
+        set({ subLevels: [] });
     }
 });
 

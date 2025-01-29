@@ -42,7 +42,7 @@ export class UserService {
             }
             const url = await this.uploadFile(file);
             if (!url) throw new Error('Ha ocurrido un error al subir la imagen');
-            await updateDocument(USER_COLLECTION, uid, { photoUrl: url });
+            // await updateDocument(USER_COLLECTION, uid, { photoUrl: url });
             return url;
         } catch (error) {
             console.error('Error updating file:', error);

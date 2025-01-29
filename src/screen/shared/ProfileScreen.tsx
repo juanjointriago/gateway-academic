@@ -33,7 +33,6 @@ export const ProfileScreen = () => {
             const resp = await UserService.updateFile(user?.uid || '', data.photo);
             if (!resp) return;
             const dataUser: IUser = {
-                ...user,
                 address: data.address,
                 cc: data.cc,
                 email: data.email,
@@ -41,7 +40,7 @@ export const ProfileScreen = () => {
                 phone: data.phone,
                 photoUrl: resp,
                 bornDate: user?.bornDate || '',
-                unitForBooks: user?.unitForBooks || [],
+                unitsForBooks: user?.unitsForBooks || [],
                 city: user?.city || '',
                 country: user?.country || '',
                 uid: user?.uid || '',

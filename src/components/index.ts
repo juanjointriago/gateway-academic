@@ -8,3 +8,6 @@ export * from './picker';
 export * from './lotties';
 export * from './list';
 export * from './shared';
+export * from './modal';
+
+export * from './table/TableGeneric'

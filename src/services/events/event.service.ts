@@ -1,5 +1,5 @@
 import { EVENT_COLLECTION } from "@/src/constants/ContantsFirebase";
-import { getAllDocuments } from "@/src/helpers/firestoreHelper";
+import { getAllDocuments, getQueryDocuments } from "@/src/helpers/firestoreHelper";
 import { IEvent } from "@/src/interfaces";
 
 export class EventService {

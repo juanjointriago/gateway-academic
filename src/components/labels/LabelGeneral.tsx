@@ -8,11 +8,12 @@ interface Props {
     styleProps?: TextStyle;
     onPressText?: () => void;
     variant?: VariantProp<MD3TypescaleKey>;
+    numberOfLines?: number
 }
 
-export const LabelGeneral: FC<Props> = ({ label, styleProps, onPressText, variant = 'labelMedium' }) => {
+export const LabelGeneral: FC<Props> = ({ label, styleProps, onPressText, variant = 'labelMedium', numberOfLines = 2 }) => {
     return (
-        <Text variant={variant} style={[styleProps]} onPress={onPressText}>
+        <Text variant={variant} style={[styleProps]} onPress={onPressText} numberOfLines={numberOfLines}>
             {label}
         </Text>
     )
