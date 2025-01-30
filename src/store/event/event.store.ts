@@ -1,7 +1,6 @@
 import { fileStorage } from "@/src/helpers/fileSystemZustand"
 import { IEvent, IEventDetail } from "@/src/interfaces"
 import { EventService } from "@/src/services"
-import AsyncStorage from "@react-native-async-storage/async-storage"
 import { create, StateCreator } from "zustand"
 import { createJSONStorage, devtools, persist } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"

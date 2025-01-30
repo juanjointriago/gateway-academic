@@ -23,7 +23,10 @@ export const IconViewEvent: FC<Props> = ({ ...rest }) => {
     const getEvent = useEventStore((state) => state.getEventsDetailById);
     const eventSelected = useEventStore((state) => state.eventSelected);
 
-    const toogleOpenModal = () => {
+    const toogleOpenModal = async () => {
+        setIsLoading(true);
+        await getEvent(rest.id as string);
+        setIsLoading(false);
         onOpen();
     }
 
@@ -40,21 +43,11 @@ export const IconViewEvent: FC<Props> = ({ ...rest }) => {
         }
     }
 
-    const getData = async () => {
-        setIsLoading(true);
-        await getEvent(rest.id as string);
-        setIsLoading(false);
-    }
-
     const columns = useMemo(() => [
         { title: 'Perfil', key: 'photoUrl' as keyof IUserData, render: (_: any, row: IUserData) => <Avatar.Image size={40} source={{ uri: !row.photoUrl ? URL_PROFILE_DEFAULT : row.photoUrl }} /> },
         { title: 'Nombre', key: 'name' as keyof IUserData },
         { title: 'Estado', key: 'status' as keyof IUserData, render: (_: any, row: IUserData) => <LabelGeneral label={textStatusEvent[row.status as string]} variant='bodySmall' styleProps={{ fontSize: 12 }} /> },
     ], []);
-
-    useEffect(() => {
-        getData();
-    }, []);
 
     return (
         <>
