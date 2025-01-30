@@ -1,3 +1,4 @@
+import { fileStorage } from "@/src/helpers/fileSystemZustand"
 import { ILevel } from "@/src/interfaces"
 import { LevelService } from "@/src/services"
 import AsyncStorage from "@react-native-async-storage/async-storage"
@@ -39,7 +40,7 @@ export const useLevelStore = create<ILevelState & ILevelActions>()(
         immer(
             persist(storeApi, {
                 name: "level-store",
-                storage: createJSONStorage(() => AsyncStorage),
+                storage: createJSONStorage(() => fileStorage),
             })
         )
     )

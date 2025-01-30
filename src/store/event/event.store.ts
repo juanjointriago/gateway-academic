@@ -1,3 +1,4 @@
+import { fileStorage } from "@/src/helpers/fileSystemZustand"
 import { IEvent, IEventDetail } from "@/src/interfaces"
 import { EventService } from "@/src/services"
 import AsyncStorage from "@react-native-async-storage/async-storage"
@@ -47,7 +48,7 @@ export const useEventStore = create<IEventState & IEventActions>()(
         immer(
             persist(storeApi, {
                 name: "event-store",
-                storage: createJSONStorage(() => AsyncStorage),
+                storage: createJSONStorage(() => fileStorage),
             })
         )
     )
