@@ -45,7 +45,7 @@ export const SettingScreen = () => {
     }
 
     const handleProfile = () => {
-        router.replace('/profile');
+        router.push('/profile');
     }
 
 

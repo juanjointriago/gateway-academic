@@ -1,4 +1,4 @@
-import { IEvent } from "@/src/interfaces"
+import { IEvent, IEventDetail } from "@/src/interfaces"
 import { EventService } from "@/src/services"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { create, StateCreator } from "zustand"
@@ -6,31 +6,39 @@ import { createJSONStorage, devtools, persist } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 
 interface IEventState {
-    evnts: IEvent[]
+    events: IEvent[]
+    eventSelected: IEventDetail | null
+    eventsAvailable: number
 }
 
 interface IEventActions {
-    getAllEvents: () => Promise<IEvent[]>
-    getEventStudent: (userId: string) => IEvent[]
-
+    getAllEvents: ({ isTeacher, userId }: { isTeacher: boolean, userId: string }) => Promise<IEvent[]>
+    getEventsDetailById: (uuid: string) => Promise<void>
     clearStoreEvents: () => void
 }
 
 const storeApi: StateCreator<IEventState & IEventActions, [["zustand/immer", never]]> = (set, get) => ({
-    evnts: [],
-    getAllEvents: async () => {
+    events: [],
+    eventSelected: null,
+    eventsAvailable: 0,
+    getAllEvents: async ({ isTeacher, userId }) => {
         const events = await EventService.getAllEvents();
-        set({ evnts: events });
+        if (isTeacher) {
+            const eventsTeacher = events.filter((event) => event.teacher === userId && event.isActive);
+            set({ events: eventsTeacher, eventsAvailable: eventsTeacher.length });
+            return eventsTeacher;
+        }
+        const eventsStudent = events.filter((event) => event.students[userId] && event.isActive);
+        set({ events: eventsStudent, eventsAvailable: eventsStudent.length });
         return events;
     },
 
-    getEventStudent: (userId) => {
-        const events = get().evnts.filter((event) => event.students[userId] && event.isActive);
-        return events;
+    getEventsDetailById: async (uuid) => {
+        const event = await EventService.getEventWithDetailById(uuid);
+        set({ eventSelected: event });
     },
-
     clearStoreEvents: () => {
-        set({ evnts: [] });
+        set({ events: [], eventSelected: null, eventsAvailable: 0 });
     }
 });
 

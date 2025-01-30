@@ -16,14 +16,14 @@ export const HomeScreen = () => {
   const getAlllevels = useLevelStore((state) => state.getAllLevels);
   const getLevelByDocId = useLevelStore((state) => state.getLevelByDocId);
 
+  const events = useEventStore((state) => state.eventsAvailable);
   const getAllEvents = useEventStore((state) => state.getAllEvents);
-  const getEventStudent = useEventStore((state) => state.getEventStudent);
 
   const getAllSubLevels = useSubLevelStore((state) => state.getAllSubLevels);
   const getSubLevelByDocId = useSubLevelStore((state) => state.getSubLevelByDocId);
 
   const units = useUnitStore((state) => state.unitsAvailable);
-  const getUnitsStudent = useUnitStore((state) => state.getUnitsStudent);
+  const getUnitsStudent = useUnitStore((state) => state.getUnitsUser);
 
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -33,17 +33,17 @@ export const HomeScreen = () => {
     {
       title: 'Modalida',
       nameIcon: 'school',
-      description: getLevelByDocId(user?.level as string)?.name || ''
+      description: getLevelByDocId(user?.level as string)?.name || 'Sin Modalidad Asignada'
     },
     {
       title: 'Clases Reservadas',
       nameIcon: 'calendar-month',
-      description: `${getEventStudent(`${user?.id}`).length}`
+      description: `${events}`
     },
     {
       title: 'Unidad Actual',
       nameIcon: 'chart-bar',
-      description: `${getSubLevelByDocId(`${user?.subLevel}`)?.name || ''}`
+      description: `${getSubLevelByDocId(`${user?.subLevel}`)?.name || ' Sin Unidad Asignada'}`
     },
     {
       title: 'Libros Disponibles',
@@ -56,7 +56,7 @@ export const HomeScreen = () => {
     onOpen();
     setIsLoading(true);
     await getAlllevels();
-    await getAllEvents();
+    await getAllEvents({ isTeacher: false, userId: user?.id as string });
     await getAllSubLevels();
     await getUnitsStudent(user?.unitsForBooks as string[]);
     onClose();

@@ -63,13 +63,13 @@ export const ProfileScreen = () => {
     };
 
     return (
-        <LayoutGeneral title='Perfil' onBackAction={() => router.replace('/(tabs)/settings')}>
+        <LayoutGeneral title='Perfil' onBackAction={() => router.back()}>
             <ImageControl control={control} name={'photo'} />
             <InputControl control={control} name={'cc'} label={'Cedula/RUC'} keyboardType='numeric' />
             <InputControl control={control} name={'name'} label={'Nombre'} autoCapitalize='words' />
             <InputControl control={control} name={'email'} label={'Correo'} keyboardType='email-address' />
             <InputControl control={control} name={'address'} label={'Direccion'} />
-            <InputControl control={control} name={'phone'} label={'Telefono'} keyboardType='phone-pad' />
+            <InputControl control={control} name={'phone'} label={'Telefono'} keyboardType='phone-pad' maxLength={10} />
             <ButtonGeneral text='Actualizar' onPress={handleSubmit(onSubmit)} mode='contained' loading={isLoading} disabled={isLoading} />
         </LayoutGeneral>
     )

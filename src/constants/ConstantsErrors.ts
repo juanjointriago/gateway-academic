@@ -24,3 +24,24 @@ export const typeUser : { [key: string]: string } = {
     'teacher': 'Profesor',
     'student': 'Estudiante'
 }
+
+export const textStatusEvent : { [key: string]: string } = {
+    'COMMING': 'Pendiente',
+    'MAYBE': 'Aceptado',
+    'CONFIRMED': 'Confirmado',
+    'DECLINED': 'Rechazado',
+}
+
+export const typeStatusEvent : { [key: string]: string } = {
+    'COMMING': 'clock-outline',
+    'MAYBE': 'check-circle-outline',
+    'CONFIRMED': 'check-decagram',
+    'DECLINED': 'close-circle-outline',
+}
+
+export const colorForTypeEvent : { [key: string]: string } = {
+    'COMMING': '#e5c92e',
+    'MAYBE': '#4a8eae',
+    'CONFIRMED': '#4aae50',
+    'DECLINED': '#ae4a4a',
+}

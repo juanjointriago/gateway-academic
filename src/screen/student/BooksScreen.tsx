@@ -3,14 +3,13 @@ import { useUnitStore } from '@/src/store/unit/unit.store';
 import { IUnit, IUnitMutation } from '@/src/interfaces';
 import { View } from 'react-native';
 import { useAuthStore } from '@/src/store/auth/auth.store';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Searchbar } from 'react-native-paper';
 
 export const BooksScreen = () => {
     const user = useAuthStore((state) => state.user);
 
     const units = useUnitStore((state) => state.units);
-    const getUnitsStudent = useUnitStore((state) => state.getUnitsStudent);
 
     const [searchQuery, setSearchQuery] = useState('');
 

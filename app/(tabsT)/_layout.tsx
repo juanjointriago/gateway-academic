@@ -3,9 +3,9 @@ import { Tabs } from "expo-router";
 import { Platform } from "react-native";
 import { BottomNavigation, Icon } from "react-native-paper";
 
-export default function TabLayout() {
+export default function TabTLayout() {
     const user = useAuthStore((state) => state.user);
-    
+
     return (
         <Tabs
             screenOptions={{
@@ -42,21 +42,21 @@ export default function TabLayout() {
             )}
         >
             <Tabs.Screen
-                name="home"
+                name="homeTeacher"
                 options={{
                     title: 'Inicio',
                     tabBarIcon: ({ color, size }) => <Icon size={size} source="home" color={color} />,
                 }}
             />
             <Tabs.Screen
-                name="classes"
+                name="reservationsTeacher"
                 options={{
-                    title: 'Clases',
+                    title: 'Reservas',
                     tabBarIcon: ({ color, size }) => <Icon size={size} source="human-male-board-poll" color={color} />,
                 }}
             />
             <Tabs.Screen
-                name="books"
+                name="booksTeacher"
                 options={{
                     title: 'Libros',
                     tabBarIcon: ({ color, size }) => <Icon size={size} source="book-open" color={color} />,

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { ButtonGeneral, FadeInImage, InputControl, LabelGeneral, LayoutAuth, SocialButton, TitleWithLine } from '@/src/components'
-import { LOGO_URL, LOGO_URL2, PASSTEST, USERTEST } from '@/src/constants/Constants'
+import { LOGO_URL, LOGO_URL2, USERSTUDENTTEST, USERTEACHERTEST, PASSSTUDENTTEST, PASSTEACHERTEST } from '@/src/constants/Constants'
 import { LoginSchema, LoginSchemaType } from '@/src/interfaces'
 import { Keyboard, useColorScheme } from 'react-native'
 import { useAuthStore } from '@/src/store/auth/auth.store'
@@ -20,8 +20,8 @@ export const LoginScreen = () => {
 
     const { control, reset, handleSubmit } = useForm<LoginSchemaType>({
         defaultValues: {
-            email: environment.production ? '' : USERTEST,
-            password: environment.production ? '' : PASSTEST,
+            email: environment.production ? '' : environment.teacher ? USERTEACHERTEST : USERSTUDENTTEST,
+            password: environment.production ? '' : environment.teacher ? PASSTEACHERTEST : PASSSTUDENTTEST,
         },
         resolver: zodResolver(LoginSchema),
     });
@@ -37,7 +37,8 @@ export const LoginScreen = () => {
         }
         reset();
         setIsLoad(false);
-        router.replace('/(tabs)/home');
+        if(result.data?.role === 'teacher') return router.replace('/(tabsT)/homeTeacher');
+        if(result.data?.role === 'student') return router.replace('/(tabs)/home');
     };
 
     // const onLoginWithGoogle = async () => {

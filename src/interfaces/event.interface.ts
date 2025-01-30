@@ -1,3 +1,6 @@
+import { ILevel, ISubLevel } from "./levels.interface";
+import { IUser } from "./user.interface";
+
 export type StatusEvent = 'COMMING' | 'MAYBE' | 'CONFIRMED' | 'DECLINED';
 
 interface IInfoUserEvent {
@@ -30,7 +33,7 @@ export interface IEvent {
     updatedAt: number;
     createdAt: number;
     limitDate?: number;
-    meetLink?:string | null;
+    meetLink?: string | null;
     date: number;
 }
 
@@ -47,4 +50,20 @@ export interface IEventPrev {
     date: number;
     createdAt: number;
     updatedAt: number;
+}
+
+/* Interface Evnet With Deatil */
+
+export interface IEventDetail extends IEvent {
+    levelsData: ILevelData[];
+    teacherData: IUserData | null;
+    studentsData: IUserData[];
+}
+
+export interface ILevelData extends ILevel {
+    subLevels: ISubLevel[];
+}
+
+export interface IUserData extends IUser {
+    status?: string;
 }

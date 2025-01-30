@@ -12,7 +12,7 @@ interface IUnitState {
 
 interface IUnitActions {
     getAllUnits: () => Promise<IUnitMutation[]>
-    getUnitsStudent: (unitsStudent: string[]) => Promise<IUnitMutation[]>
+    getUnitsUser: (unitsUser: string[]) => Promise<IUnitMutation[]>
     clearStoreUnits: () => void
 }
 
@@ -26,8 +26,8 @@ const storeApi: StateCreator<IUnitState & IUnitActions, [["zustand/immer", never
         return units;
     },
 
-    getUnitsStudent: async (unitsStudent: string[]) => {
-        const units = await UnitService.getUnitStudent(unitsStudent);
+    getUnitsUser: async (unitsUser) => {
+        const units = await UnitService.getUnitByUser(unitsUser);
         set({ units: units, unitsAvailable: units.length });
         return units;
     },

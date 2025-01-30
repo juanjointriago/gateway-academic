@@ -3,6 +3,7 @@ import { useAuthStore } from "@/src/store/auth/auth.store";
 import { Redirect } from "expo-router";
 
 export default function Index() {
+    const user = useAuthStore((state) => state.user);
     const statusAuth = useAuthStore((state) => state.status);
 
     if (statusAuth === 'pending') {
@@ -10,9 +11,8 @@ export default function Index() {
     }
 
     if (statusAuth === 'authorized') {
-        return (
-            <Redirect href="/(tabs)/home" />
-        )
+        if(user?.role === 'student') return <Redirect href="/(tabs)/home" />
+        if(user?.role === 'teacher') return <Redirect href="/(tabsT)/homeTeacher" />
     }
 
     return (
