@@ -58,7 +58,7 @@ export const LoginScreen = () => {
             <InputControl control={control} name="password" label="Contraseña" secureTextEntry autoCapitalize='none' />
             <ButtonGeneral text='Iniciar Sesión' mode='contained' onPress={handleSubmit(onSubmit)} loading={isLoad} disabled={isLoad} />
             <TitleWithLine title='O' />
-            <SocialButton />
+            {/* <SocialButton /> */}
             <LabelGeneral label='¿No tienes cuenta? Regístrate' onPressText={() => router.replace('/register')} styleProps={{ textAlign: 'center', fontSize: 12 }} variant='titleSmall' />
         </LayoutAuth>
     )

@@ -55,7 +55,7 @@ export const IconViewEvent: FC<Props> = ({ typeUser = 'teacher', ...rest }) => {
         if (limitDate < today) {
             return toast({ description: '¡Lo sentimos! Esta clase ya se encuentra cerrada', type: 'danger' });
         }
-        toast({ description: 'Falta logica para cancelar la clase', type: 'warning' });
+        toast({ description: 'En desarrollo, pronto estaremos disponibles', type: 'warning' });
     }
 
     const columns = useMemo(() => [
