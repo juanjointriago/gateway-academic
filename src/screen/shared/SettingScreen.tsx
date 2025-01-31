@@ -1,4 +1,3 @@
-import { } from 'react'
 import { ButtonSelectable, LayoutGeneral } from '@/src/components'
 import { useAlert } from '@/src/context/AlertContext';
 import { useRouter } from 'expo-router';
@@ -8,9 +7,19 @@ import { useEventStore } from '@/src/store/event/event.store';
 import { useLevelStore } from '@/src/store/level/level.store';
 import { useSubLevelStore } from '@/src/store/level/sublevel.store';
 import { useUnitStore } from '@/src/store/unit/unit.store';
+import { useEventContext } from '@/src/context/Firebase/EventContext';
+import { useUnitContext } from '@/src/context/Firebase/UnitsContext';
+import { useUserContext } from '@/src/context/Firebase/UserContext';
+import { useLevelContext } from '@/src/context/Firebase/LevelContext';
+import { useSubLevelContext } from '@/src/context/Firebase/SublevelContext';
 
 export const SettingScreen = () => {
     const router = useRouter();
+    const { stopListeningEvents } = useEventContext();
+    const { stopListeningUnits } = useUnitContext();
+    const { stopListeningUser } = useUserContext();
+    const { stopListeningLevel } = useLevelContext();
+    const { stopListeningSubLevel } = useSubLevelContext();
     const { customAlert, onToggle } = useAlert();
 
     const logout = useAuthStore((state) => state.logoutUser);
@@ -37,6 +46,12 @@ export const SettingScreen = () => {
                         clearStoreLevels();
                         clearStoreSubLevels();
                         clearStoreUnits();
+                        /* Stop listening events */
+                        stopListeningUser();
+                        stopListeningEvents();
+                        stopListeningUnits();
+                        stopListeningLevel();
+                        stopListeningSubLevel();
                         router.replace('/signIn');
                     }
                 }

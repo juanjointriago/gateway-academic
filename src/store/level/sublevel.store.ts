@@ -7,31 +7,31 @@ import { createJSONStorage, devtools, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
 interface ISubLevelState {
-    subLevels: ISubLevel[]
+    subLevel: ISubLevel | null
 }
 
 interface ISubLevelActions {
-    getAllSubLevels: () => Promise<ISubLevel[]>
-    getSubLevelByDocId: (docId: string) => ISubLevel | null
-
+    getSubLevelByDocId: (docId: string) => Promise<void>
+    setSubLevel: (subLevel: ISubLevel) => void
     clearStoreSubLevels: () => void
 }
 
 const storeApi: StateCreator<ISubLevelState & ISubLevelActions, [["zustand/immer", never]]> = (set, get) => ({
-    subLevels: [],
-    getAllSubLevels: async () => {
-        const subLevels = await SubLevelService.getAllSubLevels();
-        set({ subLevels: subLevels });
-        return subLevels;
+    subLevel: null,
+    getSubLevelByDocId: async (docId) => {
+        try {
+            const resp = await SubLevelService.getSubLevelByDocId(docId);
+            set({ subLevel: resp });
+        } catch (error) {
+            console.log(error);
+            set({ subLevel: null });
+        }
     },
-    getSubLevelByDocId: (docId) => {
-        const findSubLevel = get().subLevels.find((subLevel) => subLevel.id === docId);
-        if (!findSubLevel) return null;
-        return findSubLevel;
+    setSubLevel: (subLevel) => {
+        set({ subLevel: subLevel });
     },
-
     clearStoreSubLevels: () => {
-        set({ subLevels: [] });
+        set({ subLevel: null });
     }
 });
 

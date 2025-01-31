@@ -1,16 +1,16 @@
-import { GenericTable, IconViewEvent, LabelGeneral, LayoutGeneral } from '@/src/components'
+import { GenericTable, IconViewEvent, LabelGeneral, LayoutGeneral, SearchBarGeneral } from '@/src/components'
 import { colorForTypeEvent, textStatusEvent, typeStatusEvent } from '@/src/constants/ConstantsErrors';
 import { IEvent } from '@/src/interfaces';
-import { useAuthStore } from '@/src/store/auth/auth.store';
 import { useEventStore } from '@/src/store/event/event.store';
 import { format } from 'date-fns';
-import React, { useEffect, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { View } from 'react-native';
-import { Avatar, Icon, IconButton, Tooltip } from 'react-native-paper';
+import { IconButton, Tooltip } from 'react-native-paper';
 
 export const ReservationsTeacherScreen = () => {
-  const user = useAuthStore((state) => state.user);
   const events = useEventStore((state) => state.events);
+
+  const [searchQuery, setSearchQuery] = useState('');
 
   const columns = useMemo(() => [
     { title: 'Fecha', key: 'date' as keyof IEvent, render: (_: any, row: IEvent) => <LabelGeneral label={format(new Date(row.date), 'dd/MM/yyyy HH:mm')} variant='bodySmall' styleProps={{ fontSize: 12, padding: 5 }} /> },
@@ -35,11 +35,32 @@ export const ReservationsTeacherScreen = () => {
     }
   ], []);
 
+  const filteredEvents = useMemo(() =>
+    events
+      .filter(event =>
+        event.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        event.status.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        event.date.toString().includes(searchQuery)
+      )
+      .sort((a, b) => a.date - b.date),
+    [searchQuery, events],
+  );
+
+  const handleSearch = useCallback((text: string) => {
+    setSearchQuery(text);
+  }, []);
+
   return (
     <LayoutGeneral title='Reservaciones' withScrollView>
+      <SearchBarGeneral
+        onChange={handleSearch}
+        value={searchQuery}
+        debounceTime={500}
+        placeholder='Buscar...'
+      />
       <GenericTable
         columns={columns}
-        data={events}
+        data={filteredEvents}
         pageSize={9}
       />
     </LayoutGeneral>

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import { LabelWithImg, LayoutGeneral, Section } from '../../components'
 import { useAuthStore } from '../../store/auth/auth.store'
 import { typeUser } from '../../constants/ConstantsErrors'
@@ -8,32 +8,34 @@ import { useEventStore } from '../../store/event/event.store'
 import { useSubLevelStore } from '../../store/level/sublevel.store'
 import { useUnitStore } from '../../store/unit/unit.store'
 import { BannerSimple } from '@/src/components/banner/BannerSimple'
-import { useDisclosure } from '@/src/hook'
+import { useEventContext } from '@/src/context/Firebase/EventContext'
+import { useUnitContext } from '@/src/context/Firebase/UnitsContext'
+import { useUserContext } from '@/src/context/Firebase/UserContext'
+import { useLevelContext } from '@/src/context/Firebase/LevelContext'
+import { useSubLevelContext } from '@/src/context/Firebase/SublevelContext'
 
 export const HomeScreen = () => {
+  const { startListeningEvents, stopListeningEvents } = useEventContext();
+  const { startListeningUnits, stopListeningUnits } = useUnitContext();
+  const { startListeningUser, stopListeningUser } = useUserContext();
+  const { startListeningLevel, stopListeningLevel } = useLevelContext();
+  const { startListeningSubLevel, stopListeningSubLevel } = useSubLevelContext();
+
   const user = useAuthStore((state) => state.user);
 
-  const getAlllevels = useLevelStore((state) => state.getAllLevels);
-  const getLevelByDocId = useLevelStore((state) => state.getLevelByDocId);
+  const level = useLevelStore((state) => state.level);
 
   const events = useEventStore((state) => state.eventsAvailable);
-  const getAllEvents = useEventStore((state) => state.getAllEvents);
 
-  const getAllSubLevels = useSubLevelStore((state) => state.getAllSubLevels);
-  const getSubLevelByDocId = useSubLevelStore((state) => state.getSubLevelByDocId);
+  const sublevel = useSubLevelStore((state) => state.subLevel);
 
   const units = useUnitStore((state) => state.unitsAvailable);
-  const getUnitsStudent = useUnitStore((state) => state.getUnitsUser);
-
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [isLoading, setIsLoading] = useState(false);
 
   const listInfo = useMemo(() => ([
     {
       title: 'Modalida',
       nameIcon: 'school',
-      description: getLevelByDocId(user?.level as string)?.name || 'Sin Modalidad Asignada'
+      description: level?.name || 'Sin Modalidad Asignada'
     },
     {
       title: 'Clases Reservadas',
@@ -43,33 +45,41 @@ export const HomeScreen = () => {
     {
       title: 'Unidad Actual',
       nameIcon: 'chart-bar',
-      description: `${getSubLevelByDocId(`${user?.subLevel}`)?.name || ' Sin Unidad Asignada'}`
+      description: sublevel?.name || ' Sin Unidad Asignada'
     },
     {
       title: 'Libros Disponibles',
       nameIcon: 'notebook',
       description: `${units}`
     }
-  ]), [isLoading]);
-
-  const loadInit = async () => {
-    onOpen();
-    setIsLoading(true);
-    await getAlllevels();
-    await getAllEvents({ isTeacher: false, userId: user?.id as string });
-    await getAllSubLevels();
-    await getUnitsStudent(user?.unitsForBooks as string[]);
-    onClose();
-    setIsLoading(false);
-  }
+  ]), [level, events, sublevel, units]);
 
   useEffect(() => {
-    loadInit();
+    if (!user) return;
+    startListeningUser(user.id);
+
+    return () => {
+      stopListeningUser();
+    }
   }, []);
+
+  useEffect(() => {
+    if (!user) return;
+    startListeningUnits();
+    startListeningLevel();
+    startListeningSubLevel();
+    startListeningEvents({ isTeacher: false });
+
+    return () => {
+      stopListeningEvents();
+      stopListeningUnits();
+      stopListeningLevel();
+      stopListeningSubLevel();
+    }
+  }, [user]);
 
   return (
     <LayoutGeneral title='Bienvenido'>
-      <BannerSimple isOpen={isOpen} description='Bienvenido a Gateway, estamos cargando la información y los recursos necesarios para tu aprendizaje, por favor espere...' />
       <LabelWithImg
         title={user?.name}
         url={user?.photoUrl}

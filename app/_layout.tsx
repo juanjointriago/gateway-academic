@@ -1,6 +1,6 @@
-import "expo-dev-client";
 import "react-native-reanimated";
 import 'react-native-gesture-handler';
+import "expo-dev-client";
 import * as Font from "expo-font";
 import { useFonts, Montserrat_400Regular, Montserrat_500Medium, Montserrat_700Bold } from "@expo-google-fonts/montserrat";
 import { Slot } from "expo-router";

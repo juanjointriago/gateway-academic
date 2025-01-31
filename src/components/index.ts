@@ -10,4 +10,5 @@ export * from './list';
 export * from './shared';
 export * from './modal';
 
+export * from './searchbar/SearchBarGeneral'
 export * from './table/TableGeneric'

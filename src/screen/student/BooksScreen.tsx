@@ -1,13 +1,11 @@
-import { GenericTable, IconRenderPDF, IconRenderWeb, LabelGeneral, LayoutGeneral } from '@/src/components'
+import { GenericTable, IconRenderPDF, IconRenderWeb, LabelGeneral, LayoutGeneral, SearchBarGeneral } from '@/src/components'
 import { useUnitStore } from '@/src/store/unit/unit.store';
 import { IUnit, IUnitMutation } from '@/src/interfaces';
 import { View } from 'react-native';
-import { useAuthStore } from '@/src/store/auth/auth.store';
 import { useCallback, useMemo, useState } from 'react';
 import { Searchbar } from 'react-native-paper';
 
 export const BooksScreen = () => {
-    const user = useAuthStore((state) => state.user);
 
     const units = useUnitStore((state) => state.units);
 
@@ -47,13 +45,12 @@ export const BooksScreen = () => {
     }, []);
 
     return (
-        <LayoutGeneral title='Libros' withScrollView>
-            <Searchbar
-                placeholder='Buscar...'
+        <LayoutGeneral title='Libros'>
+            <SearchBarGeneral
+                onChange={handleSearch}
                 value={searchQuery}
-                onChangeText={handleSearch}
-                inputStyle={{ fontSize: 14 }}
-                style={{ marginBottom: 30 }}
+                debounceTime={500}
+                placeholder='Buscar...'
             />
             <GenericTable
                 columns={columns}

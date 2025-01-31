@@ -1,10 +1,24 @@
 import { EVENT_COLLECTION, LEVEL_COLLECTION, SUB_LEVEL_COLLECTION, USER_COLLECTION } from "@/src/constants/ContantsFirebase";
-import { getAllDocuments, getDocumentById } from "@/src/helpers/firestoreHelper";
+import { getAllDocuments, getDocumentById, getQueryDocuments } from "@/src/helpers/firestoreHelper";
 import { IEvent, IEventDetail, ILevel, ISubLevel, IUser } from "@/src/interfaces";
 
 export class EventService {
     static getAllEvents = async (): Promise<IEvent[]> => {
         const events = await getAllDocuments<IEvent>(EVENT_COLLECTION);
+        return events;
+    }
+
+    static getEvents = async (): Promise<IEvent[]> => {
+        const events = await getQueryDocuments<IEvent>({
+            collection: EVENT_COLLECTION,
+            condition: [
+                {
+                    field: "isActive",
+                    operator: "==",
+                    value: true
+                }
+            ]
+        });
         return events;
     }
 

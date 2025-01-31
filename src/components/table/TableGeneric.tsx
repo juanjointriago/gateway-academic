@@ -1,7 +1,8 @@
-import { ScrollView, View } from "react-native";
+import { ScrollView } from "react-native";
 import { DataTable, useTheme } from "react-native-paper";
 import { LabelGeneral } from "../labels";
 import { useState } from "react";
+import { RefreshControl } from "react-native-gesture-handler";
 
 type Column<T> = {
     title: string;
@@ -14,9 +15,11 @@ type GenericTableProps<T> = {
     data: T[];
     keyExtractor?: (item: T, index: number) => string | number;
     pageSize?: number;
+    onRefresh?: () => Promise<void>;
+    isRefreshing?: boolean
 };
 
-export const GenericTable = <T,>({ columns, data, keyExtractor = (_, index) => index.toString(), pageSize = 5 }: GenericTableProps<T>) => {
+export const GenericTable = <T,>({ columns, data, keyExtractor = (_, index) => index.toString(), pageSize = 5, onRefresh, isRefreshing = false }: GenericTableProps<T>) => {
     const { colors } = useTheme();
 
     const [page, setPage] = useState(1);
@@ -26,7 +29,6 @@ export const GenericTable = <T,>({ columns, data, keyExtractor = (_, index) => i
 
     return (
         <DataTable>
-            {/* Encabezados de la tabla */}
             <DataTable.Header>
                 {columns.map((column, index) => (
                     <DataTable.Title key={index.toString()}>
@@ -48,7 +50,6 @@ export const GenericTable = <T,>({ columns, data, keyExtractor = (_, index) => i
                     ))}
                 </DataTable.Row>
             ))}
-
             {numberOfPages > 1 && (
                 <DataTable.Pagination
                     page={page - 1}

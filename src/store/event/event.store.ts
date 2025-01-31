@@ -12,8 +12,9 @@ interface IEventState {
 }
 
 interface IEventActions {
-    getAllEvents: ({ isTeacher, userId }: { isTeacher: boolean, userId: string }) => Promise<IEvent[]>
+    getEventsByUser: ({ isTeacher, userId }: { isTeacher: boolean, userId: string }) => Promise<void>
     getEventsDetailById: (uuid: string) => Promise<void>
+    setEvent: (event: IEvent[]) => void
     clearStoreEvents: () => void
 }
 
@@ -21,21 +22,27 @@ const storeApi: StateCreator<IEventState & IEventActions, [["zustand/immer", nev
     events: [],
     eventSelected: null,
     eventsAvailable: 0,
-    getAllEvents: async ({ isTeacher, userId }) => {
-        const events = await EventService.getAllEvents();
+    getEventsByUser: async ({ isTeacher, userId }) => {
+        const events = await EventService.getEvents();
         if (isTeacher) {
             const eventsTeacher = events.filter((event) => event.teacher === userId && event.isActive);
             set({ events: eventsTeacher, eventsAvailable: eventsTeacher.length });
-            return eventsTeacher;
         }
         const eventsStudent = events.filter((event) => event.students[userId] && event.isActive);
         set({ events: eventsStudent, eventsAvailable: eventsStudent.length });
-        return events;
     },
-
     getEventsDetailById: async (uuid) => {
         const event = await EventService.getEventWithDetailById(uuid);
         set({ eventSelected: event });
+    },
+
+    setEvent: (newEvents) => {
+        set((state) => {
+            if (JSON.stringify(state.events) !== JSON.stringify(newEvents)) {
+                return { events: newEvents, eventsAvailable: newEvents.length };
+            }
+            return state;
+        });
     },
     clearStoreEvents: () => {
         set({ events: [], eventSelected: null, eventsAvailable: 0 });
