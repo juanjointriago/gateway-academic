@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'expo-router';
 import { ButtonGeneral, DateControl, InputControl, LayoutAuth, SelectControl } from '@/src/components'
 import { useForm } from 'react-hook-form';
@@ -20,7 +20,7 @@ export const RegisterScreen = () => {
 
     const [isLoading, setIsLoading] = useState(false);
 
-    const { control, reset, handleSubmit, watch, formState: { errors } } = useForm<RegisterSchemaType>({
+    const { control, reset, handleSubmit, watch, setValue } = useForm<RegisterSchemaType>({
         defaultValues: {
             address: '',
             bornDate: new Date(),
@@ -56,15 +56,14 @@ export const RegisterScreen = () => {
     };
 
     useEffect(() => {
-        if (!watch('country')._id) return;
-        getRegions(Number(watch('country')._id));
-    }, [watch('country')]);
-
+        getRegions();
+    }, []);  
+    
     useEffect(() => {
         if (!watch('region')._id) return;
-        getCities(Number(watch('region')._id));
+        setValue('city', { _id: '', value: '' });
+        getCities(watch('region').value);
     }, [watch('region')]);
-
 
     return (
         <>
@@ -75,8 +74,8 @@ export const RegisterScreen = () => {
                     <SelectControl
                         control={control}
                         name="region"
-                        arrayList={regions.map((region) => ({ value: region.name, _id: `${region.id_region}` }))}
-                        label="Región"
+                        arrayList={regions.map((region) => ({ value: region.name, _id: `${region.state_code}` }))}
+                        label="Provincia"
                     />
                 )}
 
@@ -84,7 +83,7 @@ export const RegisterScreen = () => {
                     <SelectControl
                         control={control}
                         name="city"
-                        arrayList={cities.map((city) => ({ value: city.name, _id: `${city.id_city}` }))}
+                        arrayList={cities.map((city, index) => ({ value: city, _id: `${index}` }))}
                         label="Ciudad"
                     />
                 )}
@@ -94,7 +93,7 @@ export const RegisterScreen = () => {
                 <InputControl control={control} name="phone" label="Teléfono" keyboardType="phone-pad" maxLength={10} />
                 <InputControl control={control} name="password" label="Contraseña" secureTextEntry autoCapitalize='none' />
                 <InputControl control={control} name="confirmPassword" label="Confirmar contraseña" secureTextEntry autoCapitalize='none' />
-            <ButtonGeneral onPress={handleSubmit(onSubmit)} text="Registrarse" mode='contained' styleBtn={{ marginBottom: 20 }} loading={isLoading} disabled={isLoading} />
+                <ButtonGeneral onPress={handleSubmit(onSubmit)} text="Registrarse" mode='contained' styleBtn={{ marginBottom: 20 }} loading={isLoading} disabled={isLoading} />
             </LayoutAuth>
         </>
     )

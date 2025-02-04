@@ -1,47 +1,39 @@
-import { ICityData, ICountryData, IRegionData, IRespCities, IRespCountries, IRespRegions } from "@/src/interfaces";
+import { IResData, IResProvince, IState } from "@/src/interfaces";
 import { create, StateCreator } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import API from "@/src/api/api";
-import { WASI_ID_COMPANY, WASI_TOKEN } from "@/src/constants/Constants";
+import { COUNTRY } from "@/src/constants/Constants";
 
 interface ICountryState {
-    countries: ICountryData[]
-    regions: IRegionData[]
-    cities: ICityData[]
+    regions: IState[]
+    cities: string[]
 }
 
 interface ICountryActions {
-    fetchCountries: () => Promise<void>
-    fetchRegions: (idCountry: number) => Promise<void>
-    fetchCities: (idRegion: number) => Promise<void>
+    fetchRegions: () => Promise<void>
+    fetchCities: (state: string) => Promise<void>
 
     clearStoreCountries: () => void
 }
 
 const storeApi: StateCreator<ICountryState & ICountryActions, [["zustand/immer", never]]> = (set, get) => ({
-    countries: [],
     regions: [],
     cities: [],
-    fetchCountries: async () => {
-        const getCountries = await API.get<IRespCountries>('/all-countries');
-        if (!getCountries.data) return;
-        set({ countries: Object.values(getCountries.data).filter((data) => data.id_country !== undefined) });
-    },
-    fetchRegions: async (idCountry) => {
-        const getRegions = await API.get<IRespRegions>(`/regions-from-country/${idCountry}`);
+    fetchRegions: async () => {
+        const getRegions = await API.post<IResData<IResProvince>>(`/countries/states`, { country: COUNTRY });
         if (!getRegions.data) return;
-        set({ regions: Object.values(getRegions.data).filter((data) => data.id_region !== undefined) });
+        set({ regions: getRegions.data.data.states });
     },
-    fetchCities: async (idRegion) => {
-        const getCities = await API.get<IRespCities>(`/cities-from-region/${idRegion}`);
+    fetchCities: async (state) => {
+        const getCities = await API.post<IResData<string[]>>(`/countries/state/cities`, { country: COUNTRY, state });
         if (!getCities.data) return;
-        set({ cities: Object.values(getCities.data).filter((data) => data.id_city !== undefined) });
+        set({ cities: getCities.data.data });
     },
 
     clearStoreCountries: () => {
-        set({ countries: [], cities: [], regions: [] });
+        set({ cities: [], regions: [] });
     }
 });
 

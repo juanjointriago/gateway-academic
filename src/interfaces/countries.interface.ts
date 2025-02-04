@@ -1,31 +1,19 @@
-export interface IRespCountries {
-    [key: string]: ICountryData;
+export interface IResData<T> {
+    error: boolean;
+    msg: string;
+    data: T;
 }
 
-export interface ICountryData {
-    id_country: number;
+
+
+export interface IResProvince {
     name: string;
-    iso: string;
+    iso3: string;
+    iso2: string;
+    states: IState[];
 }
 
-
-export interface IRespRegions {
-    [key: string]: IRegionData;
-}
-
-export interface IRegionData {
-    id_region: number;
+export interface IState {
     name: string;
-    id_country: number;
-}
-
-
-export interface IRespCities {
-    [key: string]: ICityData;
-}
-
-export interface ICityData {
-    id_city: number;
-    name: string;
-    id_region: number;
+    state_code: string;
 }

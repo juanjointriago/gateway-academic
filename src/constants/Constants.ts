@@ -18,9 +18,8 @@ export const PASSTEACHERTEST = '123456789';
 export const USERSTUDENTTEST = 'estudianteprueba@yopmail.com';
 export const PASSSTUDENTTEST = '123456789';
 
-export const URL_API = 'https://api.wasi.co/v1/location';
-export const WASI_TOKEN = 'g2GG_dXgE_2meC_FSju';
-export const WASI_ID_COMPANY = '25852702';
+export const URL_API = 'https://countriesnow.space/api/v0.1/';
+export const COUNTRY = 'Ecuador';
 
 export const SIZEFILEIMG = 10485760;
 export const SIZEFILEDOC = 10485760;
