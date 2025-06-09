@@ -2,6 +2,7 @@ import { INew } from '@/src/interfaces/news.interface';
 import { useState, useRef, FC } from 'react';
 import { View, ScrollView, Dimensions, StyleSheet } from 'react-native';
 import { Card, Text, Button } from 'react-native-paper';
+import MemoImage from './MemoImage';
 
 interface Props {
   data: INew[];
@@ -35,7 +36,10 @@ export const Carousel: FC<Props> = ({ data, onPress }) => {
             style={[styles.card, { width: screenWidth - 32 }]}
             onPress={() => onPress?.(item)}
           >
-            <Card.Cover source={{ uri: item.imageUrl }} style={styles.image} />
+            <MemoImage
+              imageUrl={item.imageUrl}
+              style={styles.image}
+            />
             <Card.Content style={styles.content}>
               <Text variant="titleMedium" style={styles.title}>
                 {item.title}
