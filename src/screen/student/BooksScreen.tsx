@@ -4,6 +4,7 @@ import { IUnit, IUnitMutation } from '@/src/interfaces';
 import { View } from 'react-native';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuthStore } from '@/src/store/auth/auth.store';
+import { useSubLevelStore } from '@/src/store/level/sublevel.store';
 
 export const BooksScreen = () => {
 
@@ -12,9 +13,12 @@ export const BooksScreen = () => {
     const userUnits = user && user.unitsForBooks && user.unitsForBooks
     const myUnits = units.filter((unit) => user!.unitsForBooks.includes(unit.sublevel));
     const getAllUnits = useUnitStore((state) => state.getAllUnits);
-    console.log('user.unitsForBooks', userUnits);
-    console.log('user.unitsForBooks', user?.unitsForBooks);
+    const getSubLevelById = useSubLevelStore((state) => state.getSubLevelById);
+    const getAllSublevels = useSubLevelStore((state) => state.getAllSubLevels);
+    // console.debug('user.unitsForBooks', userUnits);
+    // console.debug('user.unitsForBooks', user?.unitsForBooks);
     useEffect(() => {
+        getAllSublevels();
         if(userUnits ) {
             getAllUnits();
         }
@@ -28,7 +32,7 @@ export const BooksScreen = () => {
         {
             title: 'Unidad',
             key: 'sublevelInfo' as keyof IUnit,
-            render: (_: any, row: IUnit) => <LabelGeneral label={row.sublevel || ''} styleProps={{ marginLeft: 10 }} />
+            render: (_: any, row: IUnit) => <LabelGeneral label={getSubLevelById(row.sublevel)?.name || ''} styleProps={{ marginLeft: 10 }} />
         },
         {
             title: 'Acciones',

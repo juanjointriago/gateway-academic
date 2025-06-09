@@ -8,20 +8,42 @@ import { immer } from "zustand/middleware/immer";
 
 interface ISubLevelState {
     subLevel: ISubLevel | null
+    subLevels: ISubLevel[] 
 }
 
 interface ISubLevelActions {
-    getSubLevelByDocId: (docId: string) => Promise<void>
-    setSubLevel: (subLevel: ISubLevel) => void
-    clearStoreSubLevels: () => void
+    getSubLevelByDocId: (docId: string) => Promise<void>;
+    getAllSubLevels: () => Promise<void>;
+    getSubLevelById: (docId: string) => ISubLevel | undefined;
+    setSubLevel: (subLevel: ISubLevel) => void;
+    clearStoreSubLevels: () => void;
 }
 
 const storeApi: StateCreator<ISubLevelState & ISubLevelActions, [["zustand/immer", never]]> = (set, get) => ({
     subLevel: null,
+    subLevels: [],
     getSubLevelByDocId: async (docId) => {
         try {
             const resp = await SubLevelService.getSubLevelByDocId(docId);
             set({ subLevel: resp });
+        } catch (error) {
+            console.debug(error);
+            set({ subLevel: null });
+        }
+    },
+    getAllSubLevels: async () => {
+        try {
+            const resp = await SubLevelService.getAllSubLevels();
+            set({ subLevels: resp });
+        } catch (error) {
+            console.debug(error);
+            set({ subLevel: null });
+        }
+    },
+    getSubLevelById: (docId) => {
+        try {
+            const foundSublevel = get().subLevels.find((subLevel) => subLevel.id === docId);
+            return foundSublevel
         } catch (error) {
             console.debug(error);
             set({ subLevel: null });

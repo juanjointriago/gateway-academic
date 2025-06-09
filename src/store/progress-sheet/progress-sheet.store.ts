@@ -11,7 +11,7 @@ interface ProgressSheetStore {
   getProgressSheetById: (id: string) => progressSheetInterface | undefined;
   getProgressSheetByStudentId: (
     id: string
-  ) => progressSheetInterface | undefined;
+  ) => progressSheetInterface[] | undefined;
 }
 
 const storeAPI: StateCreator<
@@ -35,7 +35,7 @@ const storeAPI: StateCreator<
   getProgressSheetById: (id: string) =>
     get().progressSheets.find((progressSheet) => progressSheet.id === id),
   getProgressSheetByStudentId: (id: string) =>
-    get().progressSheets.find(
+    get().progressSheets.filter(
       (progressSheet) => progressSheet.studentId === id
     ),
   
