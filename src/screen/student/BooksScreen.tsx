@@ -2,12 +2,24 @@ import { GenericTable, IconRenderPDF, IconRenderWeb, LabelGeneral, LayoutGeneral
 import { useUnitStore } from '@/src/store/unit/unit.store';
 import { IUnit, IUnitMutation } from '@/src/interfaces';
 import { View } from 'react-native';
-import { useCallback, useMemo, useState } from 'react';
-import { Searchbar } from 'react-native-paper';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useAuthStore } from '@/src/store/auth/auth.store';
 
 export const BooksScreen = () => {
 
     const units = useUnitStore((state) => state.units);
+    const user = useAuthStore((state) => state.user);
+    const userUnits = user && user.unitsForBooks && user.unitsForBooks
+    const myUnits = units.filter((unit) => user!.unitsForBooks.includes(unit.sublevel));
+    const getAllUnits = useUnitStore((state) => state.getAllUnits);
+    console.log('user.unitsForBooks', userUnits);
+    console.log('user.unitsForBooks', user?.unitsForBooks);
+    useEffect(() => {
+        if(userUnits ) {
+            getAllUnits();
+        }
+    }, [getAllUnits])
+    
 
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -15,8 +27,8 @@ export const BooksScreen = () => {
         { title: 'Nombre', key: 'name' as keyof IUnit },
         {
             title: 'Unidad',
-            key: 'sublevelInfo' as keyof IUnitMutation,
-            render: (_: any, row: IUnitMutation) => <LabelGeneral label={row.sublevelInfo?.name || ''} styleProps={{ marginLeft: 10 }} />
+            key: 'sublevelInfo' as keyof IUnit,
+            render: (_: any, row: IUnit) => <LabelGeneral label={row.sublevel || ''} styleProps={{ marginLeft: 10 }} />
         },
         {
             title: 'Acciones',
@@ -31,10 +43,10 @@ export const BooksScreen = () => {
     ], []);
 
     const filteredUnits = useMemo(() =>
-        units
+        myUnits
             .filter(unit =>
                 unit.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                unit.sublevelInfo?.name?.toLowerCase().includes(searchQuery.toLowerCase())
+                unit.sublevel?.toLowerCase().includes(searchQuery.toLowerCase())
             )
             .sort((a, b) => a.orderNumber - b.orderNumber),
         [searchQuery, units]

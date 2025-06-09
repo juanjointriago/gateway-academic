@@ -1,18 +1,18 @@
 import { fileStorage } from "@/src/helpers/fileSystemZustand"
-import { IUnitMutation } from "@/src/interfaces"
+import { IUnit, IUnitMutation } from "@/src/interfaces"
 import {  UnitService } from "@/src/services/units/unit.service"
 import { create, StateCreator } from "zustand"
 import { createJSONStorage, devtools, persist } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 
 interface IUnitState {
-    units: IUnitMutation[]
+    units: IUnit[]
     unitsAvailable: number
 }
 
 interface IUnitActions {
-    getUnitsUser: (unitsUser: string[]) => Promise<IUnitMutation[]>
-    setUnits: (units: IUnitMutation[]) => void
+    getAllUnits: () => Promise<IUnit[]>
+    setUnits: (units: IUnit[]) => void
     clearStoreUnits: () => void
 }
 
@@ -20,8 +20,8 @@ const storeApi: StateCreator<IUnitState & IUnitActions, [["zustand/immer", never
     units: [],
     unitsAvailable: 0,
 
-    getUnitsUser: async (unitsUser) => {
-        const units = await UnitService.getUnitByUser(unitsUser);
+    getAllUnits: async () => {
+        const units = await UnitService.getAllUnits();
         set({ units: units, unitsAvailable: units.length });
         return units;
     },
