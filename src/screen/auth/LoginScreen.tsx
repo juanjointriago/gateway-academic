@@ -46,20 +46,34 @@ export const LoginScreen = () => {
     //     setIsLoad(true);
     //     const result = await loginWithGoogle();
     //     if (!result) return setIsLoad(false);
-    //     reset();
+    //     reset();xa
     //     setIsLoad(false);
     //     router.replace('/home');
     // }
 
+    // Añadir verificación de URL
+    useEffect(() => {
+        console.log('URL del logo:', colorScheme === 'dark' ? LOGO_URL : LOGO_URL2);
+    }, [colorScheme]);
+
     return (
         <LayoutAuth hasAppBar={false} containerStyle={{ justifyContent: 'center' }} >
-            <FadeInImage uri={colorScheme === 'dark' ? LOGO_URL : LOGO_URL2} styleImg={{ width: 250, height: 250 }} />
+            <FadeInImage 
+                uri={colorScheme === 'dark' ? LOGO_URL : LOGO_URL2} 
+                styleImg={{ 
+                    width: 250, 
+                    height: 250,
+                }} 
+                styleContainer={{
+                    marginBottom: 20,
+                }}
+            />
             <InputControl control={control} name="email" label="Email" keyboardType='email-address' autoCapitalize='none' />
             <InputControl control={control} name="password" label="Contraseña" secureTextEntry autoCapitalize='none' />
             <ButtonGeneral text='Iniciar Sesión' mode='contained' onPress={handleSubmit(onSubmit)} loading={isLoad} disabled={isLoad} />
-            <TitleWithLine title='O' />
+            <TitleWithLine title='👨🏼‍💻' />
             {/* <SocialButton /> */}
-            <LabelGeneral label='¿No tienes cuenta? Regístrate' onPressText={() => router.replace('/register')} styleProps={{ textAlign: 'center', fontSize: 12 }} variant='titleSmall' />
+            <LabelGeneral label='Aprende inglés 😎 desde cualquier lugar 📍' onPressText={() => {}} styleProps={{ textAlign: 'center', fontSize: 12 }} variant='titleSmall' />
         </LayoutAuth>
     )
 }

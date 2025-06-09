@@ -35,14 +35,23 @@ export const subscribeToCollection = <T>(
  */
 export const subscribeToDocument = <T>(
     collectionName: string,
-    docId: string,
-    callback?: (data: T | null) => void
+    documentId: string,
+    callback: (data: T | null) => void
 ) => {
-    const ref = firestore().collection(collectionName).doc(docId);
-
-    const unsubscribe = ref.onSnapshot((doc) => {
-        if (callback) callback(doc.exists ? ({ id: doc.id, ...doc.data() } as T) : null);
-    });
-
-    return unsubscribe;
+    return firestore()
+        .collection(collectionName)
+        .doc(documentId)
+        .onSnapshot((snapshot) => {
+            if (!snapshot.exists) {
+                callback(null);
+                return;
+            }
+            
+            const data = {
+                id: snapshot.id,
+                ...snapshot.data()
+            } as T;
+            
+            callback(data);
+        });
 };

@@ -12,7 +12,7 @@ import { useUserContext } from '@/src/context/Firebase/UserContext'
 
 export const HomeTeacherScreen = () => {
     const { startListeningEvents, stopListeningEvents } = useEventContext();
-    const { startListeningUnits, stopListeningUnits } = useUnitContext();
+    // const { startListeningUnits, stopListeningUnits } = useUnitContext();
     const { startListeningUser, stopListeningUser } = useUserContext();
 
     const user = useAuthStore((state) => state.user);
@@ -44,11 +44,11 @@ export const HomeTeacherScreen = () => {
 
     useEffect(() => {
         if (!user) return;
-        startListeningUnits();
+        // startListeningUnits();
         startListeningEvents({ isTeacher: true });
         return () => {
             stopListeningEvents();
-            stopListeningUnits();
+            // stopListeningUnits();
         }
     }, [user]);
 

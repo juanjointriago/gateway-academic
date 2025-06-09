@@ -1,5 +1,5 @@
 import { FC, ReactNode } from 'react';
-import { Platform, ScrollView, TextStyle, View, ViewStyle } from 'react-native';
+import { ScrollView, TextStyle, View, ViewStyle } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Appbar, Menu, useTheme } from 'react-native-paper';
 import { useDisclosure } from '@/src/hook';

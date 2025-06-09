@@ -32,7 +32,7 @@ export const LevelProvider: FC<Props> = ({ children }) => {
             user.level,
             async (updateLevel) => {
                 if (!updateLevel) return;
-                console.log('Updated level info', updateLevel?.id);
+                console.debug('Updated level info', updateLevel?.id);
                 setLevel(updateLevel);
             }
         );

@@ -30,7 +30,7 @@ export const UserProvider: FC<Props> = ({ children }) => {
             docId,
             async (updateUser) => {
                 if (!updateUser) return;
-                console.log('Updated user info', updateUser?.id);
+                console.debug('Updated user info', updateUser?.id);
                 setUser(updateUser);
             }
         );

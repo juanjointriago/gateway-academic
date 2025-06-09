@@ -55,7 +55,7 @@ export const ProfileScreen = () => {
             if (!respUser) throw new Error('Ha ocurrido un error al actualizar el usuario');
             toast({ description: 'El usuario se ha actualizado correctamente', type: 'success' });
         } catch (error: any) {
-            console.log('error', error);
+            console.debug('error', error);
             toast({ description: error.message || 'Ha ocurrido un error al actualizar el usuario', type: 'danger' });
         } finally {
             setIsLoading(false);

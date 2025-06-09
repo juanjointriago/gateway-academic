@@ -31,7 +31,7 @@ export const EventProvider: FC<Props> = ({ children }) => {
             EVENT_COLLECTION,
             (ref) => ref.where("isActive", "==", true),
             (updatedEvents) => {
-                console.log('updatedEvents Context', updatedEvents.length);
+                console.debug('updatedEvents Context', updatedEvents.length);
                 if (!updatedEvents.length || !user) return;
                 if (isTeacher) {
                     const eventsTeacher = updatedEvents.filter((event) => event.teacher === user.id);

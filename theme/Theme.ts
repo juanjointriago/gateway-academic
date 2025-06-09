@@ -86,7 +86,7 @@ const fontConfig: MD3Typescale = {
 };
 
 
-const ligthThemeColor = {
+const lightThemeColor = {
     ...MD3LightTheme.colors,
     primary: "rgb(64, 90, 169)",
     onPrimary: "rgb(255, 255, 255)",
@@ -174,8 +174,8 @@ const darkThemeColor = {
     backdrop: "rgba(47, 48, 56, 0.4)"
 }
 
-export const LigthTheme: ThemeProp = {
-    colors: ligthThemeColor,
+export const LightTheme: ThemeProp = {
+    colors: lightThemeColor,
     fonts: configureFonts({ config: fontConfig }),
 }
 
@@ -183,3 +183,10 @@ export const DarkTheme: ThemeProp = {
     colors: darkThemeColor,
     fonts: configureFonts({ config: fontConfig }),
 }
+
+const DefaultTheme = {
+    ...LightTheme,
+    version: 3,
+};
+
+export default DefaultTheme;

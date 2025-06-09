@@ -1,77 +1,95 @@
 import { SUB_LEVEL_COLLECTION, UNIT_COLLECTION } from "@/src/constants/ContantsFirebase";
-import { subscribeToCollection } from "@/src/helpers/firesoteRealTime";
-import { getDocumentById } from "@/src/helpers/firestoreHelper";
+import { getDocumentById, getCollection } from "@/src/helpers/firestoreHelper";
 import { ISubLevel, IUnit, IUnitMutation } from "@/src/interfaces";
 import { useAuthStore } from "@/src/store/auth/auth.store";
 import { useUnitStore } from "@/src/store/unit/unit.store";
-import { createContext, FC, ReactNode, useContext, useEffect } from "react";
+import { createContext, FC, ReactNode, useContext, useState } from "react";
+// import { QueryConstraint, where } from '@react-native-firebase/firestore';
 
 interface UnitContextType {
-    startListeningUnits: () => void;
-    stopListeningUnits: () => void;
+    isLoading: boolean;
+    error: string | null;
+    refreshUnits: () => Promise<void>;
 }
 
-const UnitContext = createContext<UnitContextType | null>(null);
+const UnitContext = createContext<UnitContextType | undefined>(undefined);
 
-interface Props {
-    children: ReactNode
-}
-
-export const UnitProvider: FC<Props> = ({ children }) => {
+export const UnitProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const user = useAuthStore((state) => state.user);
     const setUnits = useUnitStore((state) => state.setUnits);
-    let unsubscribe: (() => void) | null = null;
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    const startListeningUnits = () => {
-        if (!user) return;
-        if (unsubscribe) {
-            unsubscribe();
+    const refreshUnits = async () => {
+        if (!user?.unitsForBooks?.length) {
+            setUnits([]);
+            return;
         }
-        unsubscribe = subscribeToCollection<IUnit>(
-            UNIT_COLLECTION,
-            (ref) =>
-                ref
-                    .where("sublevel", "in", user.unitsForBooks)
-                    .where("isActive", "==", true),
-            async (updatedUnits) => {
-                console.log('updatedUnits Context', updatedUnits.length);
-                if (!updatedUnits.length) return;
-                const uniqueSublevelIds = [...new Set(updatedUnits.map((unit) => unit.sublevel))];
-                const sublevels = await Promise.all(uniqueSublevelIds.map((id) => getDocumentById<ISubLevel>(SUB_LEVEL_COLLECTION, id)));
-                const sublevelMap = new Map(uniqueSublevelIds.map((id, index) => [id, sublevels[index]]));
 
-                const mappedUnits: IUnitMutation[] = updatedUnits.map((unit) => ({
-                    ...unit,
-                    sublevelInfo: sublevelMap.get(unit.sublevel) as ISubLevel,
-                })).sort((a, b) => a.orderNumber - b.orderNumber); // Ordenar por número de orden
+        setIsLoading(true);
+        setError(null);
 
-                setUnits(mappedUnits);
+        try {
+            const queryConstraints = [
+                { field: "sublevel", operator: 'in' as const, value: user.unitsForBooks },
+                { field: "isActive", operator: '==' as const, value: true }
+            ];
+
+            const units = await getCollection<IUnit>(UNIT_COLLECTION, queryConstraints);
+
+            if (!units?.length) {
+                setUnits([]);
+                return;
             }
-        );
-    }
 
-    const stopListeningUnits = () => {
-        if (unsubscribe) {
-            unsubscribe();
-            unsubscribe = null;
+            const uniqueSublevelIds = [...new Set(units.map(unit => unit.sublevel))];
+            const sublevelsPromises = uniqueSublevelIds.map((id) => 
+                getDocumentById<ISubLevel>(SUB_LEVEL_COLLECTION, id)
+            );
+
+            const sublevels = await Promise.all(sublevelsPromises);
+            const sublevelMap = new Map<string, ISubLevel | null>(
+                uniqueSublevelIds.map((id, index) => [id, sublevels[index]])
+            );
+
+            const mappedUnits = units
+                .map(unit => {
+                    const sublevelInfo = sublevelMap.get(unit.sublevel);
+                    return sublevelInfo ? {
+                        ...unit,
+                        sublevelInfo,
+                    } : null;
+                })
+                .filter((unit): unit is IUnitMutation => unit !== null)
+                .sort((a, b) => a.orderNumber - b.orderNumber);
+
+            setUnits(mappedUnits);
+        } catch (error) {
+            console.error('Error al cargar unidades:', error);
+            setError('Error al cargar las unidades');
+            setUnits([]);
+        } finally {
+            setIsLoading(false);
         }
-    }
-
-    useEffect(() => {
-        return () => {
-            stopListeningUnits();
-        };
-    }, []);
+    };
 
     return (
-        <UnitContext.Provider value={{ startListeningUnits, stopListeningUnits }}>
+        <UnitContext.Provider 
+            value={{ 
+                isLoading,
+                error,
+                refreshUnits
+            }}
+        >
             {children}
         </UnitContext.Provider>
-    )
-}
+    );
+};
 
-export const useUnitContext = () => {
+export const useUnitContext = (): UnitContextType => {
     const context = useContext(UnitContext);
-    if (!context) throw new Error("useUnitContext debe usarse dentro de un UnitProvider");
+    if (!context) {
+        throw new Error("useUnitContext debe usarse dentro de un UnitProvider");
+    }
     return context;
 };

@@ -34,7 +34,7 @@ export const SubLevelProvider: FC<Props> = ({ children }) => {
             user.subLevel,
             async (updateLevel) => {
                 if (!updateLevel) return;
-                console.log('Updated sublevel info', updateLevel?.id);
+                console.debug('Updated sublevel info', updateLevel?.id);
                 setSubLevel(updateLevel);
             }
         );

@@ -16,7 +16,7 @@ import { useSubLevelContext } from '@/src/context/Firebase/SublevelContext';
 export const SettingScreen = () => {
     const router = useRouter();
     const { stopListeningEvents } = useEventContext();
-    const { stopListeningUnits } = useUnitContext();
+    // const { stopListeningUnits } = useUnitContext();
     const { stopListeningUser } = useUserContext();
     const { stopListeningLevel } = useLevelContext();
     const { stopListeningSubLevel } = useSubLevelContext();
@@ -49,7 +49,7 @@ export const SettingScreen = () => {
                         /* Stop listening events */
                         stopListeningUser();
                         stopListeningEvents();
-                        stopListeningUnits();
+                        // stopListeningUnits();
                         stopListeningLevel();
                         stopListeningSubLevel();
                         router.replace('/signIn');

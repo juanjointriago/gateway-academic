@@ -16,7 +16,6 @@ import { useSubLevelContext } from '@/src/context/Firebase/SublevelContext'
 
 export const HomeScreen = () => {
   const { startListeningEvents, stopListeningEvents } = useEventContext();
-  const { startListeningUnits, stopListeningUnits } = useUnitContext();
   const { startListeningUser, stopListeningUser } = useUserContext();
   const { startListeningLevel, stopListeningLevel } = useLevelContext();
   const { startListeningSubLevel, stopListeningSubLevel } = useSubLevelContext();
@@ -65,14 +64,12 @@ export const HomeScreen = () => {
 
   useEffect(() => {
     if (!user) return;
-    startListeningUnits();
     startListeningLevel();
     startListeningSubLevel();
     startListeningEvents({ isTeacher: false });
 
     return () => {
       stopListeningEvents();
-      stopListeningUnits();
       stopListeningLevel();
       stopListeningSubLevel();
     }

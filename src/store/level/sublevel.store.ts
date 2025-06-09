@@ -23,7 +23,7 @@ const storeApi: StateCreator<ISubLevelState & ISubLevelActions, [["zustand/immer
             const resp = await SubLevelService.getSubLevelByDocId(docId);
             set({ subLevel: resp });
         } catch (error) {
-            console.log(error);
+            console.debug(error);
             set({ subLevel: null });
         }
     },

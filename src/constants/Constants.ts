@@ -15,7 +15,8 @@ export const MORE_ICON = Platform.OS === "ios" ? "dots-horizontal" : "dots-verti
 export const USERTEACHERTEST = 'docenteprueba@yopmail.com';
 export const PASSTEACHERTEST = '123456789';
 
-export const USERSTUDENTTEST = 'estudianteprueba@yopmail.com';
+// export const USERSTUDENTTEST = 'estudianteprueba@yopmail.com';
+export const USERSTUDENTTEST = 'juanintriagovillarrealdev@gmail.com';
 export const PASSSTUDENTTEST = '123456789';
 
 export const URL_API = 'https://countriesnow.space/api/v0.1/';

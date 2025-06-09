@@ -1,4 +1,4 @@
 export const environment = {
-    production: true,
-    teacher: true
+    production: false,
+    teacher: false
 }

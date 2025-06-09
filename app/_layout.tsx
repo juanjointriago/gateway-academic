@@ -6,7 +6,7 @@ import { useFonts, Montserrat_400Regular, Montserrat_500Medium, Montserrat_700Bo
 import { Slot } from "expo-router";
 import { PaperProvider } from 'react-native-paper';
 import { useEffect, useState } from 'react';
-import { DarkTheme, LigthTheme } from "@/theme/Theme";
+import { DarkTheme, LightTheme } from "@/theme/Theme";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar, StatusBarStyle, useColorScheme } from "react-native";
 import { AppProvider } from "@/src/context/AppProvider";
@@ -20,7 +20,7 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [appIsReady, setAppIsReady] = useState(false);
 
-  const theme = colorScheme === "dark" ? DarkTheme : LigthTheme;
+  const theme = colorScheme === "dark" ? DarkTheme : LightTheme;
   const barStyle: StatusBarStyle = colorScheme === "dark" ? "light-content" : "dark-content";
 
   let [fontsLoaded] = useFonts({

@@ -41,7 +41,7 @@ export const IconRenderPDF: FC<Props> = ({ color = '#3eb798', iconName = 'folder
     const toogleCloseModal = async () => {
         onClose();
         setFileUri(null);
-        if(fileUri) await FileSystem.deleteAsync(fileUri).then(() => console.log('PDF deleted')).catch((error) => console.error("Error deleting the PDF: ", error));
+        if(fileUri) await FileSystem.deleteAsync(fileUri).then(() => console.debug('PDF deleted')).catch((error) => console.error("Error deleting the PDF: ", error));
     }
 
 
@@ -55,13 +55,13 @@ export const IconRenderPDF: FC<Props> = ({ color = '#3eb798', iconName = 'folder
                         <Pdf
                             source={{ uri: fileUri, cache: true }}
                             onLoadComplete={(numberOfPages, filePath) => {
-                                console.log(`number of pages: ${numberOfPages}`);
+                                console.debug(`number of pages: ${numberOfPages}`);
                             }}
                             onPageChanged={(page, numberOfPages) => {
-                                console.log(`current page: ${page}`);
+                                console.debug(`current page: ${page}`);
                             }}
                             onError={(error) => {
-                                console.log(error);
+                                console.debug(error);
                             }}
                             style={{ flex: 1 }}
                         />
