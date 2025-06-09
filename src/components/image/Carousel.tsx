@@ -3,6 +3,7 @@ import { useState, useRef, FC } from 'react';
 import { View, ScrollView, Dimensions, StyleSheet } from 'react-native';
 import { Card, Text, Button } from 'react-native-paper';
 import MemoImage from './MemoImage';
+import { NewsModal } from '../modal';
 
 interface Props {
   data: INew[];
@@ -11,6 +12,8 @@ interface Props {
 
 export const Carousel: FC<Props> = ({ data, onPress }) => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [selectedNews, setSelectedNews] = useState<INew | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
   const screenWidth = Dimensions.get('window').width;
 
@@ -18,6 +21,12 @@ export const Carousel: FC<Props> = ({ data, onPress }) => {
     const scrollPosition = event.nativeEvent.contentOffset.x;
     const index = Math.round(scrollPosition / screenWidth);
     setActiveIndex(index);
+  };
+
+  const handleNewsPress = (news: INew) => {
+    setSelectedNews(news);
+    setModalVisible(true);
+    onPress?.(news);
   };
 
   return (
@@ -34,7 +43,7 @@ export const Carousel: FC<Props> = ({ data, onPress }) => {
           <Card
             key={item.id}
             style={[styles.card, { width: screenWidth - 32 }]}
-            onPress={() => onPress?.(item)}
+            onPress={() => handleNewsPress(item)}
           >
             <MemoImage
               imageUrl={item.imageUrl}
@@ -49,7 +58,10 @@ export const Carousel: FC<Props> = ({ data, onPress }) => {
               </Text>
             </Card.Content>
             <Card.Actions>
-              <Button mode="contained" onPress={() => onPress?.(item)}>
+              <Button 
+                mode="contained" 
+                onPress={() => handleNewsPress(item)}
+              >
                 Leer más
               </Button>
             </Card.Actions>
@@ -57,17 +69,13 @@ export const Carousel: FC<Props> = ({ data, onPress }) => {
         ))}
       </ScrollView>
 
-      <View style={styles.pagination}>
-        {data.map((_, index) => (
-          <View
-            key={index}
-            style={[
-              styles.dot,
-              { backgroundColor: index === activeIndex ? '#6200ee' : '#e0e0e0' }
-            ]}
-          />
-        ))}
-      </View>
+      {selectedNews && (
+        <NewsModal
+          visible={modalVisible}
+          onDismiss={() => setModalVisible(false)}
+          news={selectedNews}
+        />
+      )}
     </View>
   );
 };
@@ -94,17 +102,5 @@ const styles = StyleSheet.create({
   },
   description: {
     color: '#666',
-  },
-  pagination: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 16,
-  },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginHorizontal: 4,
   },
 });
