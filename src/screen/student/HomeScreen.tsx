@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { LabelWithImg, LayoutGeneral, Section } from '../../components'
 import { useAuthStore } from '../../store/auth/auth.store'
 import { typeUser } from '../../constants/ConstantsErrors'
-import { Divider } from 'react-native-paper'
+import { Divider, Text } from 'react-native-paper'
 import { useLevelStore } from '../../store/level/level.store'
 import { useEventStore } from '../../store/event/event.store'
 import { useSubLevelStore } from '../../store/level/sublevel.store'
@@ -77,6 +77,7 @@ export const HomeScreen = () => {
 
   return (
     <LayoutGeneral title='Bienvenido'>
+      <Text>Aqui debe ir el carousel de news </Text>
       <LabelWithImg
         title={user?.name}
         url={user?.photoUrl}

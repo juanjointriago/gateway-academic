@@ -49,6 +49,13 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
+                name="progress_sheet"
+                options={{
+                    title: 'Progress Sheet',
+                    tabBarIcon: ({ color, size }) => <Icon size={size} source="book" color={color} />,
+                }}
+            />
+            <Tabs.Screen
                 name="classes"
                 options={{
                     title: 'Clases',
@@ -60,6 +67,13 @@ export default function TabLayout() {
                 options={{
                     title: 'Libros',
                     tabBarIcon: ({ color, size }) => <Icon size={size} source="book-open" color={color} />,
+                }}
+            />
+            <Tabs.Screen
+                name="fees"
+                options={{
+                    title: 'Mis pagos',
+                    tabBarIcon: ({ color, size }) => <Icon size={size} source="cash" color={color} />,
                 }}
             />
             <Tabs.Screen

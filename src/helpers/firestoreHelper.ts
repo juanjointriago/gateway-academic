@@ -85,6 +85,8 @@ export const getQueryDocuments = async <T>({ collection, condition = [], orderBy
     });
 };
 
+
+
 // Obtener un documento por su ID
 export const getDocumentById = async <T>(
     collection: string,
@@ -147,5 +149,36 @@ export const getCollection = async <T>(
     } catch (error) {
         console.error('Error en getCollection:', error);
         return [];
+    }
+};
+
+/**
+ * Crea un documento en una colección con un ID generado localmente
+ * @param collection Nombre de la colección
+ * @param data Datos a guardar
+ * @returns Promise con la referencia del documento creado
+ */
+export const createDocumentWithLocalId = async <T extends { id?: string }>(
+    collection: string,
+    data: Omit<T, 'id'>
+): Promise<T> => {
+    try {
+        // Genera un ID único usando Firestore
+        const newDocRef = firestore().collection(collection).doc();
+        const newId = newDocRef.id;
+
+        // Crea el objeto con el ID generado
+        const dataWithId = {
+            id: newId,
+            ...data,
+        } as T;
+
+        // Guarda el documento con el ID generado
+        await newDocRef.set(dataWithId);
+
+        return dataWithId;
+    } catch (error) {
+        console.error('Error en createDocumentWithLocalId:', error);
+        throw new Error('Error al crear el documento con ID local');
     }
 };

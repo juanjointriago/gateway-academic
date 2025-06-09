@@ -1,7 +1,6 @@
 import { SUB_LEVEL_COLLECTION, UNIT_COLLECTION } from "@/src/constants/ContantsFirebase";
 import { getDocumentById, getQueryDocuments } from "@/src/helpers/firestoreHelper";
 import { ISubLevel, IUnit, IUnitMutation } from "@/src/interfaces";
-import firestore from '@react-native-firebase/firestore';
 
 export class UnitService {
     static getUnitByUser = async (unitsUser: string[]): Promise<IUnitMutation[]> => {
