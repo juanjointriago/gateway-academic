@@ -1,8 +1,16 @@
+import { LOGO_URL } from "@/src/constants/Constants";
 import { IUser } from "@/src/interfaces";
 import { progressSheetInterface } from "@/src/interfaces/progress-sheet.interface";
 import { useAuthStore } from "@/src/store/auth/auth.store";
 import { FC } from "react";
-import { StyleSheet, View, Text, StyleProp, ViewStyle, SafeAreaView } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  StyleProp,
+  ViewStyle,
+  SafeAreaView,
+} from "react-native";
 import { Card, Paragraph, Title, FAB } from "react-native-paper";
 import Animated, {
   interpolate,
@@ -21,24 +29,101 @@ const RegularContent = ({
   user,
 }: {
   student: progressSheetInterface;
-  user: any;
+  user: IUser;
 }) => {
   return (
     <View style={regularContentStyles.card}>
-      <Card.Content>
-        <Card.Cover source={{ uri: user?.photoUrl }} />
-        <Title>HeadeLine: {user?.name}</Title>
-        <Paragraph>Phone: {user?.phone}</Paragraph>
-        <Paragraph>Registrado el: {student.createdAt}</Paragraph>
+      <Card.Content style={{ gap: 0 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-evenly",
+          }}
+        >
+          <Card.Cover
+            source={{ uri: LOGO_URL }}
+            style={{
+              top: 30,
+              right: 30,
+              width: 100,
+              height: 50,
+              objectFit: "cover",
+              alignSelf: "flex-start",
+            }}
+          />
+          <Card.Cover
+            source={{ uri: user?.photoUrl }}
+            style={{
+              height: 120,
+              width: 100,
+              borderRadius: 100,
+              alignSelf: "flex-end",
+            }}
+          />
+        </View>
+        <View style={cardStudentStyles.titleContainer}>
+          <Title>HeadeLine: </Title>
+          <Paragraph> {user?.name}</Paragraph>
+        </View>
+        <View style={cardStudentStyles.titleContainer}>
+          <Paragraph>Id: </Paragraph>
+          <Paragraph> {user?.cc}</Paragraph>
+        </View>
+        <View style={cardStudentStyles.titleContainer}>
+          <Paragraph>Inscription Date: </Paragraph>
+          <Paragraph> {student?.createdAt}</Paragraph>
+        </View>
+        <View style={cardStudentStyles.titleContainer}>
+          <Paragraph>Expiration Date: </Paragraph>
+          <Paragraph> {student.updatedAt ?? "--/--/--"}</Paragraph>
+        </View>
+        <View style={cardStudentStyles.titleContainer}>
+          <Paragraph>My BornDate is: </Paragraph>
+          <Paragraph> {user?.bornDate}</Paragraph>
+        </View>
+        <View style={cardStudentStyles.titleContainer}>
+          <Paragraph>My Age is: </Paragraph>
+          <Paragraph> {user?.bornDate}</Paragraph>
+        </View>
+        <View style={cardStudentStyles.titleContainer}>
+          <Paragraph>Reg Number: </Paragraph>
+          <Paragraph> {user?.cc}</Paragraph>
+        </View>
+        <View style={cardStudentStyles.titleContainer}>
+          <Paragraph>Other Contacts: </Paragraph>
+          <Paragraph> {user?.phone}</Paragraph>
+        </View>
+        <View style={cardStudentStyles.titleContainer}>
+          <Paragraph>Observations: </Paragraph>
+          <Paragraph> {"-----------"}</Paragraph>
+        </View>
       </Card.Content>
     </View>
   );
 };
+const cardStudentStyles = StyleSheet.create({
+  titleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+});
 
-const FlippedContent = ({ student, user }: { student: progressSheetInterface, user: IUser }) => {
+const FlippedContent = ({
+  student,
+  user,
+}: {
+  student: progressSheetInterface;
+  user: IUser;
+}) => {
   return (
     <View style={flippedContentStyles.card}>
       <Card.Content>
+        <Card.Cover
+          source={{ uri: LOGO_URL }}
+          style={{ bottom: 50, width: 150, height: 75, alignSelf: "center" }}
+        />
         <Title>Preferred Information</Title>
         <Paragraph>Preferred Name: {student.myPreferredName}</Paragraph>
         <Paragraph>Ocupation: {student.studentId}</Paragraph>
@@ -121,24 +206,20 @@ export const StudentCard: FC<Props> = ({ student }) => {
 
   return (
     <>
-    <View style={styles.container}>
-      <View style={styles.cardWrapper}>
-        {user && <FlipCard
-          isFlipped={isFlipped}
-          cardStyle={styles.flipCard}
-          FlippedContent={<FlippedContent student={student} user={user} />}
-          RegularContent={<RegularContent student={student} user={user} />}
-        />}
+      <View style={styles.container}>
+        <View style={styles.cardWrapper}>
+          {user && (
+            <FlipCard
+              isFlipped={isFlipped}
+              cardStyle={styles.flipCard}
+              FlippedContent={<FlippedContent student={student} user={user} />}
+              RegularContent={<RegularContent student={student} user={user} />}
+            />
+          )}
+        </View>
+        <FAB style={styles.fab} icon="swap-horizontal" onPress={handleFlip} />
       </View>
-    </View>
-      <FAB
-        style={styles.fab}
-        icon="swap-horizontal"
-        onPress={handleFlip}
-        label={isFlipped.value ? "Preferred" : "Student"}
-      />
     </>
-
   );
 };
 
@@ -146,7 +227,7 @@ const regularContentStyles = StyleSheet.create({
   card: {
     flex: 1,
     backgroundColor: "#b6cff7",
-    borderRadius: 16,
+    borderRadius: 15,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -183,12 +264,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center", // Centra el wrapper de la tarjeta
     justifyContent: "center",
-    paddingVertical: 24,
+    paddingVertical: 10,
   },
   cardWrapper: {
-    paddingTop: 20,
-    width: '90%', // o usa '90%' para responsivo
-    height: 380,
+    width: "90%", // o usa '90%' para responsivo
+    height: "100%",
     alignItems: "center",
     justifyContent: "center",
     position: "relative", // Para posicionar el FAB dentro del wrapper
@@ -202,7 +282,7 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: "absolute",
-    right: 16,
-    top: 0,
+    left: 5,
+    top: 5,
   },
 });

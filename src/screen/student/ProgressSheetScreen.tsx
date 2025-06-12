@@ -20,15 +20,11 @@ export const ProgressSheetScreen = () => {
 
   const columns = useMemo(
     () => [
-      { title: "Nombre", key: "name" as keyof ProgressEntry },
       { title: "Fecha", key: "date" as keyof ProgressEntry },
       { title: "Hora", key: "hour" as keyof ProgressEntry },
       { title: "Libro", key: "book" as keyof ProgressEntry },
       { title: "Progreso", key: "progress" as keyof ProgressEntry },
-      { title: "Parte", key: "part" as keyof ProgressEntry },
-      { title: "Examen", key: "test" as keyof ProgressEntry },
       { title: "Docente", key: "teacher" as keyof ProgressEntry },
-      { title: "Observación", key: "observation" as keyof ProgressEntry }
     ],
     []
   );
@@ -106,8 +102,8 @@ export const ProgressSheetScreen = () => {
   console.debug('✅ Progress data:', studentProgressSheet);
 
   return (
-    <LayoutGeneral title="Progreso">
-      <View style={styles.container}>
+    <LayoutGeneral title="Progreso" withScrollView containerStyle={styles.container}>
+
         {
           //aqui debe ir la tarjeta del estudiante basado en el progress sheet con su studentID
             studentProgressSheet && (
@@ -118,7 +114,6 @@ export const ProgressSheetScreen = () => {
           data={progressEntries}
           columns={columns }
         />
-      </View>
     </LayoutGeneral>
   );
 };
@@ -136,7 +131,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   card: {
-    marginBottom: 16,
+    marginBottom: 10,
     backgroundColor: "#f8f9fa",
   },
 });
