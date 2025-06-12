@@ -10,6 +10,7 @@ import { useUnitStore } from "../../store/unit/unit.store";
 import { useNewsStore } from "@/src/store/news/news.store";
 import { Carousel } from "@/src/components/image/Carousel";
 import { useProgressSheetStore } from "@/src/store/progress-sheet/progress-sheet.store";
+import { useFeesStore } from "@/src/store/fees/fees.store";
 
 export const HomeScreen = () => {
 
@@ -21,11 +22,13 @@ export const HomeScreen = () => {
   const getNews = useNewsStore((state) => state.getAndSetNews);
   const getProgressSheets = useProgressSheetStore((state) => state.getAndSetProgressSheets);
   const news = useNewsStore((state) => state.news);
+  const getAllFees = useFeesStore((state) => state.getAndSetFees);
 
   useEffect(() => {
     getNews();
     getProgressSheets();
-  }, [getNews, getProgressSheets]);
+    getAllFees();
+  }, [getNews, getProgressSheets, getAllFees]);
 
   const listInfo = useMemo(
     () => [
