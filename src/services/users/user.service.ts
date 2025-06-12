@@ -1,12 +1,14 @@
 import { getFirestore, collection, doc, getDoc, updateDoc } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
-import { IUser } from '@/src/interfaces';
+import { FirestoreUser, IUser } from '@/src/interfaces';
 import { IFiles } from '@/src/components';
 import { USER_COLLECTION } from '@/src/constants/ContantsFirebase';
 import firestore from '@react-native-firebase/firestore';
+import { getAllDocuments } from '@/src/helpers/firestoreHelper';
 
 
 export class UserService {
+    static getUsers = async () => await getAllDocuments<FirestoreUser>(USER_COLLECTION);
     static getUserByDocId = async (docId: string): Promise<IUser | null> => {
         try {
             const userDoc = await firestore()

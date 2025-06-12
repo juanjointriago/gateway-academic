@@ -1,8 +1,10 @@
 import { fileStorage } from "@/src/helpers/fileSystemZustand"
-import { IUnit, IUnitMutation } from "@/src/interfaces"
+import { IUnit } from "@/src/interfaces"
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import {  UnitService } from "@/src/services/units/unit.service"
 import { create, StateCreator } from "zustand"
-import { createJSONStorage, devtools, persist } from "zustand/middleware"
+import { createJSONStorage, persist } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 
 interface IUnitState {
@@ -35,12 +37,10 @@ const storeApi: StateCreator<IUnitState & IUnitActions, [["zustand/immer", never
 });
 
 export const useUnitStore = create<IUnitState & IUnitActions>()(
-    devtools(
         immer(
             persist(storeApi, {
                 name: "unit-store",
-                storage: createJSONStorage(() => fileStorage),
+                storage: createJSONStorage(() => AsyncStorage),
             })
         )
-    )
 );

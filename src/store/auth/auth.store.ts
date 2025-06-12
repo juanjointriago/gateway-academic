@@ -1,5 +1,5 @@
 import { create, StateCreator } from "zustand";
-import { createJSONStorage, devtools, persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { IResLocalFirebase, IUser, LoginSchemaType, RegisterSchemaType } from "@/src/interfaces";
 import { AuthService, UserService } from "@/src/services";
@@ -65,12 +65,10 @@ const storeApi: StateCreator<IAuthState & IAuthActions, [["zustand/immer", never
 });
 
 export const useAuthStore = create<IAuthState & IAuthActions>()(
-    devtools(
         immer(
             persist(storeApi, {
                 name: "auth-store",
                 storage: createJSONStorage(() => AsyncStorage),
             })
         )
-    )
 );

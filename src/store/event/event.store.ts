@@ -1,4 +1,5 @@
 import { fileStorage } from "@/src/helpers/fileSystemZustand"
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { IEvent, IEventDetail } from "@/src/interfaces"
 import { EventService } from "@/src/services"
 import { create, StateCreator } from "zustand"
@@ -14,6 +15,7 @@ interface IEventState {
 interface IEventActions {
     getEventsByUser: ({ isTeacher, userId }: { isTeacher: boolean, userId: string }) => Promise<void>
     getEventsDetailById: (uuid: string) => Promise<void>
+   getEventById: (id: string) => IEvent | undefined;
     setEvent: (event: IEvent[]) => void
     clearStoreEvents: () => void
 }
@@ -35,6 +37,7 @@ const storeApi: StateCreator<IEventState & IEventActions, [["zustand/immer", nev
         const event = await EventService.getEventWithDetailById(uuid);
         set({ eventSelected: event });
     },
+    getEventById: (id: string) => get().events.find(event => event.id === id),
 
     setEvent: (newEvents) => {
         set((state) => {
@@ -54,7 +57,7 @@ export const useEventStore = create<IEventState & IEventActions>()(
         immer(
             persist(storeApi, {
                 name: "event-store",
-                storage: createJSONStorage(() => fileStorage),
+                storage: createJSONStorage(() => AsyncStorage),
             })
         )
     )

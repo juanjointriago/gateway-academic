@@ -1,7 +1,8 @@
 import { progressSheetInterface } from "@/src/interfaces/progress-sheet.interface";
 import { ProgressSheetService } from "@/src/services/progress-sheet/progress-sheet.service";
 import { create, StateCreator } from "zustand";
-import { devtools, persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { immer } from "zustand/middleware/immer";
 
 interface ProgressSheetStore {
@@ -11,12 +12,12 @@ interface ProgressSheetStore {
   getProgressSheetById: (id: string) => progressSheetInterface | undefined;
   getProgressSheetByStudentId: (
     id: string
-  ) => progressSheetInterface[] | undefined;
+  ) => progressSheetInterface | undefined;
 }
 
 const storeAPI: StateCreator<
   ProgressSheetStore,
-  [["zustand/devtools", never], ["zustand/immer", never]],
+  [["zustand/immer", never]],
   [],
   ProgressSheetStore
 > = (set, get) => ({
@@ -24,8 +25,8 @@ const storeAPI: StateCreator<
   getAndSetProgressSheets: async () => {
     try {
       const progressSheets = await ProgressSheetService.getProgressSheet();
-      // console.debug('------- :) =>',{progressSheets})
-      set({ progressSheets: [...progressSheets] });
+      console.debug("------- :) =>", { progressSheets });
+      set({ progressSheets: progressSheets });
     } catch (error) {
       console.warn(error);
     }
@@ -35,12 +36,14 @@ const storeAPI: StateCreator<
   getProgressSheetById: (id: string) =>
     get().progressSheets.find((progressSheet) => progressSheet.id === id),
   getProgressSheetByStudentId: (id: string) =>
-    get().progressSheets.filter(
+    get().progressSheets.find(
       (progressSheet) => progressSheet.studentId === id
     ),
-  
 });
 
 export const useProgressSheetStore = create<ProgressSheetStore>()(
-  immer(devtools(persist(storeAPI, { name: "progresssheet-store" })))
+  persist(immer(storeAPI), {
+    name: "progresssheet-store",
+    storage: createJSONStorage(() => AsyncStorage),
+  })
 );

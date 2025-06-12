@@ -48,7 +48,8 @@ export class AuthService {
                     createdAt: Date.now(),
                     updatedAt: Date.now(),
                 }
-                await createDocumentId(USER_COLLECTION, userCredential.user.uid, newUser);
+                // await createDocumentId(USER_COLLECTION, userCredential.user.uid, newUser);
+                await createDocumentId(USER_COLLECTION, newUser);
                 return {
                     ...newUser,
                     teacherLink: '',
@@ -90,7 +91,8 @@ export class AuthService {
             await updateProfile(userCredential.user, {
                 displayName: user.name
             });
-            await createDocumentId(USER_COLLECTION, userCredential.user.uid, dataUser);
+            // await createDocumentId(USER_COLLECTION, userCredential.user.uid, dataUser);
+            await createDocumentId(USER_COLLECTION, dataUser);
             await auth().signOut();
             return { data: userCredential.user, error: null };
         } catch (error: any) {

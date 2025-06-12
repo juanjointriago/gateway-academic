@@ -7,21 +7,10 @@ import { useLevelStore } from "../../store/level/level.store";
 import { useEventStore } from "../../store/event/event.store";
 import { useSubLevelStore } from "../../store/level/sublevel.store";
 import { useUnitStore } from "../../store/unit/unit.store";
-import { BannerSimple } from "@/src/components/banner/BannerSimple";
-import { useEventContext } from "@/src/context/Firebase/EventContext";
-import { useUnitContext } from "@/src/context/Firebase/UnitsContext";
-import { useUserContext } from "@/src/context/Firebase/UserContext";
-import { useLevelContext } from "@/src/context/Firebase/LevelContext";
-import { useSubLevelContext } from "@/src/context/Firebase/SublevelContext";
 import { useNewsStore } from "@/src/store/news/news.store";
 import { Carousel } from "@/src/components/image/Carousel";
 
 export const HomeScreen = () => {
-  const { startListeningEvents, stopListeningEvents } = useEventContext();
-  const { startListeningUser, stopListeningUser } = useUserContext();
-  const { startListeningLevel, stopListeningLevel } = useLevelContext();
-  const { startListeningSubLevel, stopListeningSubLevel } =
-    useSubLevelContext();
 
   const user = useAuthStore((state) => state.user);
 
@@ -66,27 +55,27 @@ export const HomeScreen = () => {
     [level, events, sublevel, units]
   );
 
-  useEffect(() => {
-    if (!user) return;
-    startListeningUser(user.id);
+  // useEffect(() => {
+  //   if (!user) return;
+  //   startListeningUser(user.id);
 
-    return () => {
-      stopListeningUser();
-    };
-  }, []);
+  //   return () => {
+  //     stopListeningUser();
+  //   };
+  // }, []);
 
-  useEffect(() => {
-    if (!user) return;
-    startListeningLevel();
-    startListeningSubLevel();
-    startListeningEvents({ isTeacher: false });
+  // useEffect(() => {
+  //   if (!user) return;
+  //   startListeningLevel();
+  //   startListeningSubLevel();
+  //   startListeningEvents({ isTeacher: false });
 
-    return () => {
-      stopListeningEvents();
-      stopListeningLevel();
-      stopListeningSubLevel();
-    };
-  }, [user]);
+  //   return () => {
+  //     stopListeningEvents();
+  //     stopListeningLevel();
+  //     stopListeningSubLevel();
+  //   };
+  // }, [user]);
 
   return (
     <LayoutGeneral title="Bienvenido" withScrollView>

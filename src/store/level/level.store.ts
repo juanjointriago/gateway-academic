@@ -30,12 +30,10 @@ const storeApi: StateCreator<ILevelState & ILevelActions, [["zustand/immer", nev
 });
 
 export const useLevelStore = create<ILevelState & ILevelActions>()(
-    devtools(
         immer(
             persist(storeApi, {
                 name: "level-store",
                 storage: createJSONStorage(() => AsyncStorage),
             })
         )
-    )
 );

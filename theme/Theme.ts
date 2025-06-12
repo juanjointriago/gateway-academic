@@ -184,9 +184,9 @@ export const DarkTheme: ThemeProp = {
     fonts: configureFonts({ config: fontConfig }),
 }
 
-const DefaultTheme = {
+const theme = {
     ...LightTheme,
     version: 3,
-};
+} as const;
 
-export default DefaultTheme;
+export default theme;

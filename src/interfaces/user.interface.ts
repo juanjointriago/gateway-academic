@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { validateDoc } from "../helpers/validateDoc";
+import { User } from "firebase/auth";
+
 
 export type roles = 'admin' | 'student' | 'teacher';
 
@@ -27,6 +29,31 @@ export interface IUser {
     uid: string;
     unitsForBooks: string[];
 }
+
+export interface FirestoreUser extends User {
+    id?: string;
+    password?:string;
+    uid: string;
+    cc: string;
+    name: string;
+    email: string;
+    bornDate: string;
+    address: string;
+    city: string;
+    country: string;
+    level?: string;
+    unitsForBooks: string[];
+    teacherLink?: string;
+    subLevel?: string;
+    phone: string;
+    photoUrl: string;
+    role: role
+    isActive: boolean;
+    createdAt: number;
+    updatedAt: number;
+}
+
+export type role = 'admin' | 'student' | 'teacher';
 
 export interface IUserRegister extends IUser {
     password: string;

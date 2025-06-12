@@ -34,16 +34,27 @@ export interface progressSheetInterface {
 
 // types/progress-sheet.ts
 export interface ProgressEntry {
-    date: string;
-    hour: string;
-    book: string;
-    progress: string;
-    part: string;
-    test: string;
-    teacher: string;
-    observation: string;
-  }
-  
+  id?: string;
+  name: string;
+  date: string;
+  hour: string;
+  book: string;
+  progress: string;
+  part: string;
+  test: string;
+  teacher: string;
+  observation: string;
+  eventInfo?: {
+    label: string;
+    value: string;
+  };
+  createdAt?: number;
+}
+  export interface IProgressSheet {
+  id: string;
+  studentId: string;
+  progressClasses: Array<ProgressEntry>;
+}
   export interface StudentInfo {
     headline?: string;
     preferredName: string;

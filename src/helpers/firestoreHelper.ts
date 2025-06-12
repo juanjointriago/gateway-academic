@@ -1,5 +1,6 @@
-import firestore from "@react-native-firebase/firestore";
+import firestore, { addDoc, collection, getDocs, getFirestore, query } from "@react-native-firebase/firestore";
 import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
+
 
 interface ICollectionQuery {
     collection: string;
@@ -9,36 +10,63 @@ interface ICollectionQuery {
     limit?: number;
     startAfterDoc?: FirebaseFirestoreTypes.DocumentData | null;
 }
-
+const db = getFirestore();
 // Crear un nuevo documento
 export const createDocument = async (collection: string, data: any) => {
     return await firestore().collection(collection).add(data);
 };
 
 // Crear un nuevo documento con id presonalizada
-export const createDocumentId = async (
-    collection: string,
-    id: string,
-    data: any
-) => {
-    return await firestore().collection(collection).doc(id).set(data);
-};
+// export const createDocumentId = async (
+//     collection: string,
+//     id: string,
+//     data: any
+// ) => {
+//     return await firestore().collection(collection).doc(id).set(data);
+// };
+
+
+export const createDocumentId = async (collectionName: string, data: FirebaseFirestoreTypes.DocumentData) => {
+    try {
+        const docRef = await addDoc(collection(db, collectionName), { data })
+        console.debug('Document written with ID: ', docRef.id);
+    } catch (error) {
+        console.warn("Error adding document: ", error)
+
+    }
+}
 
 // Obtener todos los documentos de una colección
-export const getAllDocuments = async <T>(collection: string): Promise<T[]> => {
-    return await firestore()
-        .collection(collection)
-        .get()
-        .then((querySnapshot) => {
-            const documents: T[] = [];
-            querySnapshot.forEach((documentSnapshot) => {
-                documents.push({
-                    id: documentSnapshot.id,
-                    ...documentSnapshot.data(),
-                } as T);
-            });
-            return documents;
-        });
+// export const getAllDocuments = async <T>(collection: string): Promise<T[]> => {
+//     console.debug( '--------------',{collection});
+//     return await firestore()
+//         .collection(collection)
+//         .get()
+//         .then((querySnapshot) => {
+//             const documents: T[] = [];
+//             querySnapshot.forEach((documentSnapshot) => {
+//                 documents.push({
+//                     id: documentSnapshot.id,
+//                     ...documentSnapshot.data(),
+//                 } as T);
+//             });
+//             return documents;
+//         });
+// };
+export const getAllDocuments = async <T>(collectionName: string): Promise<T[]> => {
+  try {
+    const q = query(collection(db, collectionName));
+    const querySnapshot = await getDocs(q);
+    const documents: T[] = [];
+    querySnapshot.forEach((doc) => {
+      documents.push(doc.data() as T);
+    });
+    return documents;
+
+  } catch (error) {
+    console.error('Error getting documents:', error);
+    throw error;
+  }
 };
 
 interface QueryCondition {

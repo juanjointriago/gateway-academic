@@ -1,8 +1,10 @@
 import { INew } from "@/src/interfaces/news.interface";
 import { NewsService } from "@/src/services/news/news.service";
 import { create, StateCreator } from "zustand";
-import { devtools, persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 interface NewsStore {
   news: INew[];
@@ -13,7 +15,7 @@ interface NewsStore {
 
 const storeAPI: StateCreator<
   NewsStore,
-  [["zustand/devtools", never], ["zustand/immer", never]],
+  [ ["zustand/immer", never]],
   [],
   NewsStore
 > = (set, get) => ({
@@ -31,5 +33,5 @@ const storeAPI: StateCreator<
 });
 
 export const useNewsStore = create<NewsStore>()(
-  immer(devtools(persist(storeAPI, { name: "news-store" })))
+  persist(immer(storeAPI), { name: "news-store",  storage: createJSONStorage(() => AsyncStorage) })
 );
