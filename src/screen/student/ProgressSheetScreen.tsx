@@ -8,6 +8,7 @@ import { LayoutGeneral } from "@/src/components/layout";
 import { ProgressEntry } from "@/src/interfaces/progress-sheet.interface";
 import { useUserStore } from "@/src/store/users/users.store";
 import { GenericTable } from "@/src/components";
+import { StudentCard } from "@/src/components/cards/StudentCard";
 
 export const ProgressSheetScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -69,8 +70,6 @@ export const ProgressSheetScreen = () => {
   }
 
   const progressData = useProgressSheetStore.getState().progressSheets;
-  console.debug('Progress data:', progressData);
-
   const studentProgressSheet = progressData.find(
     (sheet) => sheet.studentId === user.uid
   );
@@ -104,9 +103,17 @@ export const ProgressSheetScreen = () => {
       return new Date(b.date).getTime() - new Date(a.date).getTime();
     }):[];
 
+  console.debug('✅ Progress data:', studentProgressSheet);
+
   return (
     <LayoutGeneral title="Progreso">
       <View style={styles.container}>
+        {
+          //aqui debe ir la tarjeta del estudiante basado en el progress sheet con su studentID
+            studentProgressSheet && (
+              <StudentCard student={studentProgressSheet} />
+            )
+          }
         <GenericTable 
           data={progressEntries} 
           columns={columns }
@@ -115,6 +122,7 @@ export const ProgressSheetScreen = () => {
     </LayoutGeneral>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -126,5 +134,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
+  },
+  card: {
+    marginBottom: 16,
+    backgroundColor: "#f8f9fa",
   },
 });

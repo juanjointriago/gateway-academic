@@ -14,15 +14,10 @@ import { useProgressSheetStore } from "@/src/store/progress-sheet/progress-sheet
 export const HomeScreen = () => {
 
   const user = useAuthStore((state) => state.user);
-
   const level = useLevelStore((state) => state.level);
-
   const events = useEventStore((state) => state.eventsAvailable);
-
   const sublevel = useSubLevelStore((state) => state.subLevel);
-
   const units = useUnitStore((state) => state.unitsAvailable);
-
   const getNews = useNewsStore((state) => state.getAndSetNews);
   const getProgressSheets = useProgressSheetStore((state) => state.getAndSetProgressSheets);
   const news = useNewsStore((state) => state.news);
@@ -30,7 +25,7 @@ export const HomeScreen = () => {
   useEffect(() => {
     getNews();
     getProgressSheets();
-  }, [getNews]);
+  }, [getNews, getProgressSheets]);
 
   const listInfo = useMemo(
     () => [
@@ -57,28 +52,6 @@ export const HomeScreen = () => {
     ],
     [level, events, sublevel, units]
   );
-
-  // useEffect(() => {
-  //   if (!user) return;
-  //   startListeningUser(user.id);
-
-  //   return () => {
-  //     stopListeningUser();
-  //   };
-  // }, []);
-
-  // useEffect(() => {
-  //   if (!user) return;
-  //   startListeningLevel();
-  //   startListeningSubLevel();
-  //   startListeningEvents({ isTeacher: false });
-
-  //   return () => {
-  //     stopListeningEvents();
-  //     stopListeningLevel();
-  //     stopListeningSubLevel();
-  //   };
-  // }, [user]);
 
   return (
     <LayoutGeneral title="Bienvenido" withScrollView>
