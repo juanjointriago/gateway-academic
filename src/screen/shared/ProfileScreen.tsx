@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useRouter } from 'expo-router';
 import { ButtonGeneral, ImageControl, InputControl, LayoutGeneral } from '@/src/components'
 import { useForm } from 'react-hook-form';
@@ -25,19 +25,19 @@ export const ProfileScreen = () => {
         resolver: zodResolver(ProfileSchema),
     });
 
-    const memoizedPhotoUri = useMemo(() => user?.photoUrl, [user?.photoUrl]);
-
+    
     const onSubmit = async (data: ProfileSchemaType) => {
         try {
             const resp = await UserService.updateFile(user?.uid || '', data.photo);
-            if (!resp) return;
+            const memoizedPhotoUri = useMemo(() => resp, [resp]);
+            if (!memoizedPhotoUri) return;
             const dataUser: IUser = {
                 address: data.address,
                 cc: data.cc,
                 email: data.email,
                 name: data.name,
                 phone: data.phone,
-                photoUrl: resp,
+                photoUrl: memoizedPhotoUri,
                 bornDate: user?.bornDate || '',
                 unitsForBooks: user?.unitsForBooks || [],
                 city: user?.city || '',
