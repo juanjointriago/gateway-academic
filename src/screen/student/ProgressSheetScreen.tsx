@@ -90,11 +90,12 @@ export const ProgressSheetScreen = () => {
     ? studentProgressSheet.progressClasses
     .map((record) => {
       const event = getEventById(record.eventInfo?.value || '');
-      const teacher = getUserById(event!.teacher!);
+      // console.debug('Event:', event);
+      const teacher = event && event.teacher && getUserById(event.teacher);
       return {
         ...record,
         name: record.book || 'Sin nombre',
-        teacher: teacher?.name || "Sin docente",
+        teacher: teacher ? teacher?.name : "Sin docente",
         date: new Date(record.createdAt || Date.now()).toLocaleDateString(),
         hour: new Date(record.createdAt || Date.now()).toLocaleTimeString(),
       };
