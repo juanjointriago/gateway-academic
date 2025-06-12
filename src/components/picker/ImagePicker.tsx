@@ -8,7 +8,7 @@ import {
 import { Feather } from "@expo/vector-icons";
 import { PropsFiles } from "@/src/interfaces";
 import { toast } from "@/src/helpers/toast";
-import { useTheme } from "react-native-paper";
+import { ActivityIndicator, useTheme } from "react-native-paper";
 
 export interface IFiles {
   name: string,
@@ -32,8 +32,12 @@ export const ImagePicker = ({ pickImage, uri, styleImg, imageUrl, isValidate }: 
     uri: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
   const selectImage = async () => {
+    setLoading(true);
     let result = await pickImage();
+    setLoading(false);
     if (result.error) return toast({ description: result.error, type: "danger" });
 
     setFile({
@@ -50,7 +54,6 @@ export const ImagePicker = ({ pickImage, uri, styleImg, imageUrl, isValidate }: 
           })
         )
       );
-
   };
 
   return (
@@ -62,7 +65,9 @@ export const ImagePicker = ({ pickImage, uri, styleImg, imageUrl, isValidate }: 
       ]}
       onPress={selectImage}
     >
-      {file.uri === "" && !imageUrl ? (
+      {loading ? (
+        <ActivityIndicator size="large" color={!isValidate ? colors.primary : colors.error} />
+      ) : file.uri === "" && !imageUrl ? (
         <Feather name="camera" size={40} color={!isValidate ? colors.primary : colors.error} />
       ) : (
         <Image

@@ -115,7 +115,7 @@ export const ProgressSheetScreen = () => {
             )
           }
         <GenericTable 
-          data={progressEntries} 
+          data={progressEntries}
           columns={columns }
         />
       </View>

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useRouter } from 'expo-router';
 import { ButtonGeneral, ImageControl, InputControl, LayoutGeneral } from '@/src/components'
 import { useForm } from 'react-hook-form';
@@ -13,8 +13,6 @@ export const ProfileScreen = () => {
     const user = useAuthStore((state) => state.user);
     const updateUser = useAuthStore((state) => state.updateUser);
 
-    const [isLoading, setIsLoading] = useState(false);
-
     const { control, handleSubmit } = useForm<ProfileSchemaType>({
         defaultValues: {
             photo: { name: "", type: "", uri: user?.photoUrl },
@@ -27,8 +25,9 @@ export const ProfileScreen = () => {
         resolver: zodResolver(ProfileSchema),
     });
 
+    const memoizedPhotoUri = useMemo(() => user?.photoUrl, [user?.photoUrl]);
+
     const onSubmit = async (data: ProfileSchemaType) => {
-        setIsLoading(true);
         try {
             const resp = await UserService.updateFile(user?.uid || '', data.photo);
             if (!resp) return;
@@ -57,20 +56,18 @@ export const ProfileScreen = () => {
         } catch (error: any) {
             console.debug('error', error);
             toast({ description: error.message || 'Ha ocurrido un error al actualizar el usuario', type: 'danger' });
-        } finally {
-            setIsLoading(false);
         }
     };
 
     return (
         <LayoutGeneral title='Perfil' onBackAction={() => router.back()}>
-            <ImageControl control={control} name={'photo'} />
+            <ImageControl control={control} name={'photo'}  />
             <InputControl control={control} name={'cc'} label={'Cedula/RUC'} keyboardType='numeric' />
             <InputControl control={control} name={'name'} label={'Nombre'} autoCapitalize='words' />
             <InputControl control={control} name={'email'} label={'Correo'} keyboardType='email-address' />
             <InputControl control={control} name={'address'} label={'Direccion'} />
             <InputControl control={control} name={'phone'} label={'Telefono'} keyboardType='phone-pad' maxLength={10} />
-            <ButtonGeneral text='Actualizar' onPress={handleSubmit(onSubmit)} mode='contained' loading={isLoading} disabled={isLoading} />
+            <ButtonGeneral text='Actualizar' onPress={handleSubmit(onSubmit)} mode='contained' />
         </LayoutGeneral>
     )
 }
