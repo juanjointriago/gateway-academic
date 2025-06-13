@@ -1,3 +1,4 @@
+import { theme } from "@/app/theme/theme";
 import { LOGO_URL } from "@/src/constants/Constants";
 import { IUser } from "@/src/interfaces";
 import { progressSheetInterface } from "@/src/interfaces/progress-sheet.interface";
@@ -6,7 +7,6 @@ import { FC } from "react";
 import {
   StyleSheet,
   View,
-  Text,
   StyleProp,
   ViewStyle,
   SafeAreaView,
@@ -45,7 +45,7 @@ const RegularContent = ({
             source={{ uri: LOGO_URL }}
             style={{
               top: 30,
-              right: 30,
+              right: 10,
               width: 100,
               height: 50,
               objectFit: "cover",
@@ -55,7 +55,7 @@ const RegularContent = ({
           <Card.Cover
             source={{ uri: user?.photoUrl }}
             style={{
-              height: 120,
+              height: 100,
               width: 100,
               borderRadius: 100,
               alignSelf: "flex-end",
@@ -226,10 +226,12 @@ export const StudentCard: FC<Props> = ({ student }) => {
 const regularContentStyles = StyleSheet.create({
   card: {
     flex: 1,
-    backgroundColor: "#b6cff7",
+    // backgroundColor: theme,
     borderRadius: 15,
     justifyContent: "center",
     alignItems: "center",
+    borderColor: theme.colors.lightPrimary,
+    borderWidth: 1,
   },
   text: {
     color: "#001a72",
@@ -239,10 +241,12 @@ const regularContentStyles = StyleSheet.create({
 const flippedContentStyles = StyleSheet.create({
   card: {
     flex: 1,
-    backgroundColor: "#baeee5",
+    // backgroundColor: "#baeee5",
     borderRadius: 16,
     justifyContent: "center",
     alignItems: "center",
+    borderColor: theme.colors.lightPrimary,
+    borderWidth: 1,
   },
   text: {
     color: "#001a72",
@@ -265,6 +269,15 @@ const styles = StyleSheet.create({
     alignItems: "center", // Centra el wrapper de la tarjeta
     justifyContent: "center",
     paddingVertical: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 5,
   },
   cardWrapper: {
     width: "90%", // o usa '90%' para responsivo

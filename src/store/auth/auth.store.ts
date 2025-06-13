@@ -30,6 +30,7 @@ const storeApi: StateCreator<IAuthState & IAuthActions, [["zustand/immer", never
             return resp;
         }
         set({ status: 'authorized', user: resp.data });
+        console.debug('👨🏼‍💻 Login',resp.data);
         return resp;
     },
 

@@ -103,7 +103,6 @@ export const ProgressSheetScreen = () => {
 
   return (
     <LayoutGeneral title="Progreso" withScrollView containerStyle={styles.container}>
-
         {
           //aqui debe ir la tarjeta del estudiante basado en el progress sheet con su studentID
             studentProgressSheet && (

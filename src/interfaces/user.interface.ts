@@ -30,6 +30,12 @@ export interface IUser {
     unitsForBooks: string[];
 }
 
+export interface ImageInfo {
+  name?: string;
+  type?: string;
+  uri?: string;
+}
+
 export interface FirestoreUser extends User {
     id?: string;
     password?:string;
