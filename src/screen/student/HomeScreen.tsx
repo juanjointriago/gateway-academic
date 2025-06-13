@@ -23,12 +23,15 @@ export const HomeScreen = () => {
   const getProgressSheets = useProgressSheetStore((state) => state.getAndSetProgressSheets);
   const news = useNewsStore((state) => state.news);
   const getAllFees = useFeesStore((state) => state.getAndSetFees);
+  const getAllClasses = useEventStore((state) => state.getEventsByUser);
 
   useEffect(() => {
     getNews();
     getProgressSheets();
     getAllFees();
-  }, [getNews, getProgressSheets, getAllFees]);
+    if(user)
+    getAllClasses({isTeacher:false,userId: user.id});
+  }, [getNews, getProgressSheets, getAllFees, getAllClasses]);
 
   const listInfo = useMemo(
     () => [

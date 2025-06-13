@@ -1,5 +1,4 @@
 import { FirestoreUser, ImageInfo, IUser } from '@/src/interfaces';
-import { getFirestore, doc, updateDoc } from '@react-native-firebase/firestore';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import * as FileSystem from 'expo-file-system';
