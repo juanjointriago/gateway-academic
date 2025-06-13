@@ -63,7 +63,9 @@
           }
         }
       ],
-      ["@react-native-google-signin/google-signin"],
+      [
+        "@react-native-google-signin/google-signin"
+      ],
       [
         "expo-image-picker",
         {
@@ -76,6 +78,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "a08e91b9-85af-4226-af65-d341f0a9e695"
+      }
     }
   }
 }
