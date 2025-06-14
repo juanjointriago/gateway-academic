@@ -1,46 +1,45 @@
-import { fileStorage } from "@/src/helpers/fileSystemZustand"
-import { IUnit } from "@/src/interfaces"
+import { fileStorage } from "@/src/helpers/fileSystemZustand";
+import { IUnit } from "@/src/interfaces";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import {  UnitService } from "@/src/services/units/unit.service"
-import { create, StateCreator } from "zustand"
-import { createJSONStorage, persist } from "zustand/middleware"
-import { immer } from "zustand/middleware/immer"
+import { UnitService } from "@/src/services/units/unit.service";
+import { create, StateCreator } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 interface IUnitState {
-    units: IUnit[]
-    unitsAvailable: number
+  units: IUnit[];
+  unitsAvailable: number;
 }
 
 interface IUnitActions {
-    getAllUnits: () => Promise<IUnit[]>
-    setUnits: (units: IUnit[]) => void
-    clearStoreUnits: () => void
+  getAllUnits: () => Promise<IUnit[]>;
+  setUnits: (units: IUnit[]) => void;
+  clearStoreUnits: () => void;
 }
 
-const storeApi: StateCreator<IUnitState & IUnitActions, [["zustand/immer", never]]> = (set, get) => ({
-    units: [],
-    unitsAvailable: 0,
+const storeApi: StateCreator<
+  IUnitState & IUnitActions
+> = (set, get) => ({
+  units: [],
+  unitsAvailable: 0,
 
-    getAllUnits: async () => {
-        const units = await UnitService.getAllUnits();
-        set({ units: units, unitsAvailable: units.length });
-        return units;
-    },
+  getAllUnits: async () => {
+    const units = await UnitService.getAllUnits();
+    set({ units: units, unitsAvailable: units.length });
+    return units;
+  },
 
-    setUnits: (units) => {
-        set({ units: units, unitsAvailable: units.length });
-    },
-    clearStoreUnits: () => {
-        set({ units: [], unitsAvailable: 0 });
-    }
+  setUnits: (units) => {
+    set({ units: units, unitsAvailable: units.length });
+  },
+  clearStoreUnits: () => {
+    set({ units: [], unitsAvailable: 0 });
+  },
 });
 
 export const useUnitStore = create<IUnitState & IUnitActions>()(
-        immer(
-            persist(storeApi, {
-                name: "unit-store",
-                storage: createJSONStorage(() => AsyncStorage),
-            })
-        )
+  persist(storeApi, {
+    name: "unit-store",
+    storage: createJSONStorage(() => AsyncStorage),
+  })
 );

@@ -3,7 +3,6 @@ import { ProgressSheetService } from "@/src/services/progress-sheet/progress-she
 import { create, StateCreator } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { immer } from "zustand/middleware/immer";
 
 interface ProgressSheetStore {
   progressSheets: progressSheetInterface[];
@@ -15,12 +14,7 @@ interface ProgressSheetStore {
   ) => progressSheetInterface | undefined;
 }
 
-const storeAPI: StateCreator<
-  ProgressSheetStore,
-  [["zustand/immer", never]],
-  [],
-  ProgressSheetStore
-> = (set, get) => ({
+const storeAPI: StateCreator<ProgressSheetStore> = (set, get) => ({
   progressSheets: [],
   getAndSetProgressSheets: async () => {
     try {
@@ -42,7 +36,7 @@ const storeAPI: StateCreator<
 });
 
 export const useProgressSheetStore = create<ProgressSheetStore>()(
-  persist(immer(storeAPI), {
+  persist(storeAPI, {
     name: "progresssheet-store",
     storage: createJSONStorage(() => AsyncStorage),
   })

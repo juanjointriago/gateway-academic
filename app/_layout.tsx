@@ -6,13 +6,13 @@ import { useFonts, Montserrat_400Regular, Montserrat_500Medium, Montserrat_700Bo
 import { Slot } from "expo-router";
 import { PaperProvider } from 'react-native-paper';
 import { useEffect, useState } from 'react';
-import { DarkTheme, LightTheme } from "@/theme/Theme";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar, StatusBarStyle, useColorScheme } from "react-native";
 import { AppProvider } from "@/src/context/AppProvider";
 import FlashMessage from "react-native-flash-message";
 import { es, registerTranslation } from 'react-native-paper-dates'
 import { LottiesGeneral } from "@/src/components";
+import { DarkTheme, LightTheme } from "@/theme/theme";
 
 registerTranslation('es', es);
 

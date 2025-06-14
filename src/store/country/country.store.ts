@@ -1,7 +1,6 @@
 import { IResData, IResProvince, IState } from "@/src/interfaces";
 import { create, StateCreator } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
-import { immer } from "zustand/middleware/immer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import API from "@/src/api/api";
 import { COUNTRY } from "@/src/constants/Constants";
@@ -18,7 +17,7 @@ interface ICountryActions {
     clearStoreCountries: () => void
 }
 
-const storeApi: StateCreator<ICountryState & ICountryActions, [["zustand/immer", never]]> = (set, get) => ({
+const storeApi: StateCreator<ICountryState & ICountryActions> = (set, get) => ({
     regions: [],
     cities: [],
     fetchRegions: async () => {
@@ -38,12 +37,8 @@ const storeApi: StateCreator<ICountryState & ICountryActions, [["zustand/immer",
 });
 
 export const useCountryStore = create<ICountryState & ICountryActions>()(
-    devtools(
-        immer(
             persist(storeApi, {
                 name: "country-store",
                 storage: createJSONStorage(() => AsyncStorage),
             })
-        )
-    )
 );

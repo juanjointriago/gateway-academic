@@ -1,6 +1,5 @@
 import { create, StateCreator } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { immer } from "zustand/middleware/immer";
 import { IResLocalFirebase, IUser, LoginSchemaType, RegisterSchemaType } from "@/src/interfaces";
 import { AuthService, UserService } from "@/src/services";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -20,7 +19,7 @@ interface IAuthActions {
     setUser: (user: IUser | null) => void;
 }
 
-const storeApi: StateCreator<IAuthState & IAuthActions, [["zustand/immer", never]]> = (set, get) => ({
+const storeApi: StateCreator<IAuthState & IAuthActions> = (set, get) => ({
     status: 'pending',
     user: null,
     loginUser: async ({ email, password }) => {
@@ -66,10 +65,8 @@ const storeApi: StateCreator<IAuthState & IAuthActions, [["zustand/immer", never
 });
 
 export const useAuthStore = create<IAuthState & IAuthActions>()(
-        immer(
             persist(storeApi, {
                 name: "auth-store",
                 storage: createJSONStorage(() => AsyncStorage),
             })
-        )
 );

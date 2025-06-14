@@ -1,6 +1,5 @@
 import { create, StateCreator } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { immer } from "zustand/middleware/immer";
 import { fee } from "@/src/interfaces/fees.interface";
 import { FeesService } from "@/src/services/fees/fees.service";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -12,7 +11,7 @@ interface FeesStore {
   createFee: (fee: fee) => Promise<void>;
 }
 
-const storeAPI: StateCreator<FeesStore, [["zustand/immer", never]]> = (
+const storeAPI: StateCreator<FeesStore> = (
   set,
   get
 ) => ({
@@ -34,10 +33,8 @@ const storeAPI: StateCreator<FeesStore, [["zustand/immer", never]]> = (
 });
 
 export const useFeesStore = create<FeesStore>()(
-  immer(
     persist(storeAPI, {
       name: "fees-store",
       storage: createJSONStorage(() => AsyncStorage),
     })
-  )
 );
