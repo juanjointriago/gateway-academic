@@ -16,21 +16,28 @@ export const HomeScreen = () => {
 
   const user = useAuthStore((state) => state.user);
   const level = useLevelStore((state) => state.level);
+  const getLevelByDocId = useLevelStore((state) => state.getLevelByDocId);
   const events = useEventStore((state) => state.eventsAvailable);
   const sublevel = useSubLevelStore((state) => state.subLevel);
+  const getSubLevelByDocId = useSubLevelStore((state) => state.getSubLevelByDocId);
   const units = useUnitStore((state) => state.unitsAvailable);
   const getNews = useNewsStore((state) => state.getAndSetNews);
   const getProgressSheets = useProgressSheetStore((state) => state.getAndSetProgressSheets);
   const news = useNewsStore((state) => state.news);
   const getAllFees = useFeesStore((state) => state.getAndSetFees);
   const getAllClasses = useEventStore((state) => state.getEventsByUser);
+  const getUnits =useUnitStore((state) => state.getAllUnits);
 
   useEffect(() => {
     getNews();
     getProgressSheets();
     getAllFees();
-    if(user)
-    getAllClasses({isTeacher:false,userId: user.id});
+    if(user){
+      getAllClasses({isTeacher:false,userId: user.id});
+      getLevelByDocId(user.level);
+      getSubLevelByDocId(user.subLevel);;
+    }
+  getUnits();
   }, [getNews, getProgressSheets, getAllFees, getAllClasses]);
 
   const listInfo = useMemo(
