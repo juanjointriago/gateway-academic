@@ -11,6 +11,7 @@
     "web": "expo start --web",
     "test": "jest --watchAll",
     "lint": "expo lint",
+    "android:internal":"eas build --platform android --profile preview",
     "android:bundle": "eas build --platform android"
   },
   "jest": {

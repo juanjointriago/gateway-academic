@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import { ButtonGeneral, FadeInImage, InputControl, LabelGeneral, LayoutAuth, SocialButton, TitleWithLine } from '@/src/components'
 import { LOGO_URL, LOGO_URL2, USERSTUDENTTEST, USERTEACHERTEST, PASSSTUDENTTEST, PASSTEACHERTEST } from '@/src/constants/Constants'
 import { LoginSchema, LoginSchemaType } from '@/src/interfaces'
-import { Keyboard, useColorScheme } from 'react-native'
+import { Keyboard, useColorScheme, Linking } from 'react-native'
 import { useAuthStore } from '@/src/store/auth/auth.store'
 import { useRouter } from 'expo-router'
 import { toast } from '@/src/helpers/toast'
@@ -14,8 +14,7 @@ export const LoginScreen = () => {
     const colorScheme = useColorScheme();
     const router = useRouter();
     const login = useAuthStore((state) => state.loginUser);
-    // const loginWithGoogle = useAuthStore((state) => state.loginWithGoogle);
-
+    
     const [isLoad, setIsLoad] = useState(false);
 
     const { control, reset, handleSubmit } = useForm<LoginSchemaType>({
@@ -41,17 +40,21 @@ export const LoginScreen = () => {
         if(result.data?.role === 'student') return router.replace('/(tabs)/home');
     };
 
-    // const onLoginWithGoogle = async () => {
-    //     Keyboard.dismiss();
-    //     setIsLoad(true);
-    //     const result = await loginWithGoogle();
-    //     if (!result) return setIsLoad(false);
-    //     reset();xa
-    //     setIsLoad(false);
-    //     router.replace('/home');
-    // }
+    const handleOpenEnglishWebsite = async () => {
+        const url = 'https://gateway-english.com/auth/signup';
+        try {
+            const supported = await Linking.canOpenURL(url);
+            if (supported) {
+                await Linking.openURL(url);
+            } else {
+                toast({ description: 'No se puede abrir el enlace', type: 'danger' });
+            }
+        } catch (error) {
+            console.error('Error opening URL:', error);
+            toast({ description: 'Error al abrir el enlace', type: 'danger' });
+        }
+    };
 
-    // Añadir verificación de URL
     useEffect(() => {
         console.log('URL del logo:', colorScheme === 'dark' ? LOGO_URL : LOGO_URL2);
     }, [colorScheme]);
@@ -69,11 +72,15 @@ export const LoginScreen = () => {
                 }}
             />
             <InputControl control={control} name="email" label="Email" keyboardType='email-address' autoCapitalize='none' />
-            <InputControl control={control} name="password" label="Contraseña" secureTextEntry autoCapitalize='none' />
+            <InputControl control={control} name="password" label="Contraseña" secureTextEntry autoCapitalize='none' />
             <ButtonGeneral text='Iniciar Sesión' mode='contained' onPress={handleSubmit(onSubmit)} loading={isLoad} disabled={isLoad} />
             <TitleWithLine title='👨🏼‍💻' />
-            {/* <SocialButton /> */}
-            <LabelGeneral label='Aprende inglés 😎 desde cualquier lugar 📍' onPressText={() => {}} styleProps={{ textAlign: 'center', fontSize: 12 }} variant='titleSmall' />
+            <LabelGeneral 
+                label='👉🏼 Eres nuevo? Empieza a aprender idiomas 😎 desde cualquier lugar 📍  ' 
+                onPressText={handleOpenEnglishWebsite} 
+                styleProps={{ textAlign: 'center', fontSize: 12 }} 
+                variant='titleSmall' 
+            />
         </LayoutAuth>
     )
 }

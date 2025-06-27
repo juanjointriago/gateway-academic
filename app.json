@@ -69,8 +69,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "The app accesses your photos to let you share them with your friends.",
-          "cameraPermission": "Allow $(PRODUCT_NAME) to open the camera",
+          "photosPermission": "Gateway Academic accede a tu biblioteca de fotos para permitirte seleccionar imágenes de comprobantes de pago previamente capturados y registrarlos en la aplicación como referencia personal de tus pagos académicos y actualizar tu perfil",
+          "cameraPermission": "$(PRODUCT_NAME) necesita acceso a la cámara para escanear documentos académicos, capturar comprobantes de pago y permitirte actualizar tu foto de perfil, mejorando así tu experiencia educativa.",
           "//": "Disables the microphone permission",
           "microphonePermission": false
         }

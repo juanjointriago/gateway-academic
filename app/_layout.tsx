@@ -12,7 +12,7 @@ import { AppProvider } from "@/src/context/AppProvider";
 import FlashMessage from "react-native-flash-message";
 import { es, registerTranslation } from 'react-native-paper-dates'
 import { LottiesGeneral } from "@/src/components";
-import { DarkTheme, LightTheme } from "@/theme/theme";
+import { DarkTheme, LightTheme } from "@/theme/Theme";
 
 registerTranslation('es', es);
 

@@ -72,7 +72,7 @@ export const FeesScreen = () => {
   );
 
   return (
-    <LayoutGeneral title="Mis pagos" withScrollView>
+    <LayoutGeneral title="Mis comprobantes" withScrollView>
       <View style={styles.container}>
         <Portal>
           <Modal

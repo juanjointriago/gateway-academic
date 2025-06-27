@@ -72,7 +72,7 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="fees"
                 options={{
-                    title: 'Mis pagos',
+                    title: 'Mis comprobantes',
                     tabBarIcon: ({ color, size }) => <Icon size={size} source="cash" color={color} />,
                 }}
             />
