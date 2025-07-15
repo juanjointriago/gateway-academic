@@ -1,4 +1,4 @@
-export type paymentMethod = 'cash' | 'transference' | 'tc' | 'deposit';
+export type paymentMethod = 'transference' | 'tc' | 'deposit';
 
 export interface fee{
     id?: string;

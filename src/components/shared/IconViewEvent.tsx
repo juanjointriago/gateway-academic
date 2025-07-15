@@ -25,6 +25,8 @@ export const IconViewEvent: FC<Props> = ({ typeUser = 'teacher', ...rest }) => {
 
     const getEvent = useEventStore((state) => state.getEventsDetailById);
     const eventSelected = useEventStore((state) => state.eventSelected);
+    //TODO Agregar al store, y en el servicio la edicion del evento para que se pueda cancelar la clase
+
 
     const toogleOpenModal = async () => {
         setIsLoading(true);
@@ -48,14 +50,15 @@ export const IconViewEvent: FC<Props> = ({ typeUser = 'teacher', ...rest }) => {
 
     const handleCancelEvent = async () => {
         if (!rest.limitDate) {
-            return toast({ description: '¡Lo sentimos! No se ha asignado una fecha límite de reservación para esta clase', type: 'danger' });
+            return toast({ description: '¡Lo sentimos! No se ha asignado una fecha límite de reservación para esta clase', type: 'info' });
         }
         const today = new Date();
         const limitDate = new Date(rest.limitDate);
         if (limitDate < today) {
-            return toast({ description: '¡Lo sentimos! Esta clase ya se encuentra cerrada', type: 'danger' });
+            return toast({ description: '¡Lo sentimos! Esta clase ya se encuentra cerrada', type: 'info' });
         }
-        toast({ description: 'En desarrollo, pronto estaremos disponibles', type: 'warning' });
+
+        toast({ description: 'En desarrollo, pronto estaremos disponibles', type: 'info' });
     }
 
     const columns = useMemo(() => [

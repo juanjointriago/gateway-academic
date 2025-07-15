@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { StyleSheet, View, Image, ScrollView } from "react-native";
 import { Button, Text, TextInput, HelperText, TouchableRipple, List, Portal, Modal } from "react-native-paper";
 import * as ImagePicker from 'expo-image-picker';
 import { useForm, Controller } from "react-hook-form";
 import { fee, paymentMethod } from "@/src/interfaces/fees.interface";
-import { FirestoreUser, IUser } from "@/src/interfaces";
+import {  IUser } from "@/src/interfaces";
 import { UserService } from "@/src/services";
 import { generateInvoiceNumber } from "@/src/helpers/invoice.helper";
 
@@ -14,10 +14,10 @@ interface PaymentMethod {
   label: string;
 }
 const PAYMENT_METHODS : PaymentMethod[] = [
-  { value: 'cash', label: 'Efectivo' },
+  // { value: 'cash', label: 'Efectivo' },
   { value: 'transference', label: 'Transferencia Bancaria' },
   { value: 'tc', label: 'Tarjeta de Crédito' },
-  { value: 'deposit', label: 'Despósito' },
+  { value: 'deposit', label: 'Depósito' },
 ];
 
 // Opciones de razones de pago
@@ -62,7 +62,7 @@ export const AddFeeForm: React.FC<AddFeeFormProps> = ({ user, onSubmit, onCancel
       isActive: true,
       isSigned: false,
       reason: '',
-      paymentMethod: 'cash',
+      paymentMethod: 'transference',
       customerName: user?.name || '',
       uid: user?.uid || '',
       cc: user?.cc || '',
@@ -111,7 +111,7 @@ export const AddFeeForm: React.FC<AddFeeFormProps> = ({ user, onSubmit, onCancel
       let downloadURL = null;
       
       // Solo subir imagen si no es pago en efectivo
-      if (data.paymentMethod !== 'cash' && image) {
+      if (image) {
         try {
           const imagePath = `fees/${user?.uid}_${Date.now()}`;
           downloadURL = await UserService.uploadFile(
@@ -128,7 +128,7 @@ export const AddFeeForm: React.FC<AddFeeFormProps> = ({ user, onSubmit, onCancel
       await onSubmit({
         ...cleanData,
         imageUrl: downloadURL,
-        docNumber: data.paymentMethod !== 'cash' && !cleanData.docNumber ? '' : (cleanData.docNumber || null)
+        docNumber:  !cleanData.docNumber ? '' : (cleanData.docNumber || null)
       });
       
       // Reiniciar formulario
@@ -287,7 +287,7 @@ export const AddFeeForm: React.FC<AddFeeFormProps> = ({ user, onSubmit, onCancel
       </Portal>
       
       {/* Número de documento (para métodos que no son efectivo) */}
-      {paymentMethod !== 'cash' && (
+      {(
         <Controller
           control={control}
           rules={{
@@ -312,7 +312,7 @@ export const AddFeeForm: React.FC<AddFeeFormProps> = ({ user, onSubmit, onCancel
       )}
       
       {/* Selector de imagen (para métodos que no son efectivo) */}
-      {paymentMethod !== 'cash' && (
+      { (
         <>
           <TouchableRipple onPress={pickImage} style={styles.imagePickerContainer}>
             <View style={styles.imagePickerContent}>
