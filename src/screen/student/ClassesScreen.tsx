@@ -6,10 +6,25 @@ import { format } from 'date-fns';
 import { View } from 'react-native';
 import { IconButton, Tooltip } from 'react-native-paper';
 import { colorForTypeEvent, textStatusEvent, typeStatusEvent } from '@/src/constants/ConstantsErrors';
+import { useAuthStore } from '@/src/store/auth/auth.store';
 
 export const ClassesScreen = () => {
-    const events = useEventStore((state) => state.events);
+    const allEvents = useEventStore((state) => state.events);
+    const user = useAuthStore((state) => state.user);
+    console.log('👨🏼‍💻',user)
+    const events = allEvents
+        .filter(event => {
+            // Validar que existan los datos necesarios
+            if (!user?.id || !user?.subLevel) return false;
+            // Coincidencia por subnivel
+            const matchSubLevel = event.levels?.[0]?.subLevels?.includes(user.subLevel);
+            // Coincidencia por estudiante en el objeto students
+            const matchStudent = !!event.students && Object.keys(event.students).includes(user.id);
+            return matchSubLevel && matchStudent;
+        })
+        // .sort((a, b) => b.date - a.date); // Ordenar por fecha descendente
 
+        
     const [searchQuery, setSearchQuery] = useState('');
 
     const columns = useMemo(() => [
@@ -27,7 +42,7 @@ export const ClassesScreen = () => {
             )
         },
         {
-            title: 'Ver más',
+            title: 'Ver Clase',
             key: 'actions' as keyof IEvent,
             render: (_: any, row: IEvent) => (
                 <IconViewEvent typeUser='student' {...row} />
@@ -38,11 +53,11 @@ export const ClassesScreen = () => {
     const filteredEvents = useMemo(() =>
         events
             .filter(event =>
-                event.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                event.status.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                event.date.toString().includes(searchQuery)
+                event.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                event.status?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                event.date?.toString().includes(searchQuery)
             )
-            .sort((a, b) => a.date - b.date),
+            .sort((a, b) => b.date - a.date), // Más recientes primero
         [searchQuery, events],
     );
 
@@ -61,7 +76,8 @@ export const ClassesScreen = () => {
             <GenericTable
                 columns={columns}
                 data={filteredEvents}
-                pageSize={9}
+                pageSize={8}
+                isRefreshing
             />
         </LayoutGeneral>
     )

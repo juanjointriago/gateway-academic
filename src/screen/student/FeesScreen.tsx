@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
-import { StyleSheet, View, Image } from "react-native";
-import { GenericTable, LayoutGeneral } from "@/src/components";
+import { StyleSheet, View } from "react-native";
+import { GenericTable, LayoutGeneral, ImagePreview } from "@/src/components";
 import { fee } from "@/src/interfaces/fees.interface";
 import { useAuthStore } from "@/src/store/auth/auth.store";
 import { useFeesStore } from "@/src/store/fees/fees.store";
@@ -44,27 +44,56 @@ export const FeesScreen = () => {
       {
         title: "Recibo",
         key: "code" as keyof fee,
+        width: "25%" as const,
         render: (_: any, row: fee) => (
-          <Text style={{ fontWeight: 'bold' }}>{row.code}</Text>
+          <Text style={{ fontWeight: 'bold', fontSize: 12 }} numberOfLines={1}>
+            {row.code}
+          </Text>
         ),
       },
       {
         title: "Fecha",
         key: "date" as keyof fee,
+        width: "20%" as const,
         render: (_: any, row: fee) => (
-          <Text>{format(new Date(row.createdAt), "dd/MM/yyyy")}</Text>
+          <Text style={{ fontSize: 11 }}>
+            {format(new Date(row.createdAt), "dd/MM/yy")}
+          </Text>
         ),
       },
-      { title: "Cantidad", key: "qty" as keyof fee },
+      { 
+        title: "Monto", 
+        key: "qty" as keyof fee, 
+        width: "20%" as const,
+        render: (_: any, row: fee) => (
+          <Text style={{ fontSize: 12, fontWeight: '600' }}>
+            ${row.qty}
+          </Text>
+        ),
+      },
       {
         title: "Comprobante",
         key: "imageUrl" as keyof fee,
+        width: "25%" as const,
         render: (_: any, row: fee) => (
-          row.imageUrl ? (
-            <Image source={{ uri: row.imageUrl }} style={styles.tableImage} />
-          ) : (
-            <Text style={styles.noImage}>No disponible</Text>
-          )
+          <ImagePreview
+            imageUri={row.imageUrl || ''}
+            thumbnailStyle={styles.tableImage}
+            placeholder="No disponible"
+            onError={() => console.log('Error loading image for receipt:', row.code)}
+          />
+        ),
+      },
+      {
+        title: "Método",
+        key: "paymentMethod" as keyof fee,
+        width: "10%" as const,
+        render: (_: any, row: fee) => (
+          <Text style={{ fontSize: 10 }} numberOfLines={1}>
+            {row.paymentMethod === 'transference' ? 'Transf.' : 
+             row.paymentMethod === 'tc' ? 'TC' : 
+             row.paymentMethod === 'deposit' ? 'Dep.' : 'Otro'}
+          </Text>
         ),
       },
     ],
@@ -72,7 +101,7 @@ export const FeesScreen = () => {
   );
 
   return (
-    <LayoutGeneral title="Mis comprobantes" withScrollView>
+    <LayoutGeneral title="Mis comprobantes" withScrollView={false}>
       <View style={styles.container}>
         <Portal>
           <Modal
@@ -93,7 +122,11 @@ export const FeesScreen = () => {
         
         {/* Tabla de pagos */}
         <View style={styles.tableContainer}>
-          <GenericTable data={myFees} columns={columns} />
+          <GenericTable 
+            data={myFees} 
+            columns={columns} 
+            pageSize={8}
+          />
         </View>
         
         {/* Botón flotante */}
@@ -101,6 +134,7 @@ export const FeesScreen = () => {
           style={[styles.fab, { backgroundColor: theme.colors.primary }]}
           icon="plus"
           onPress={() => setModalVisible(true)}
+          label="Nuevo"
         />
       </View>
     </LayoutGeneral>
@@ -112,6 +146,7 @@ const styles = StyleSheet.create({
     flex: 1,
     position: 'relative',
     paddingTop: 70,
+    paddingHorizontal: 16,
   },
   topSpace: {
     height: 20,
@@ -119,28 +154,33 @@ const styles = StyleSheet.create({
   tableContainer: {
     flex: 1,
     paddingTop: 10,
+    paddingBottom: 80, // Espacio para el FAB
   },
   modalContainer: {
     backgroundColor: 'white',
-    margin: 20,
-    borderRadius: 10,
+    margin: 16,
+    borderRadius: 12,
     padding: 20,
-    maxHeight: '80%',
+    maxHeight: '85%',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   fab: {
     position: 'absolute',
     margin: 16,
     right: 0,
     top: 0,
+    elevation: 8,
   },
   tableImage: {
-    width: 50,
-    height: 50,
-    resizeMode: 'cover',
-    borderRadius: 4,
-  },
-  noImage: {
-    color: '#999',
-    fontSize: 12,
+    width: 40,
+    height: 40,
+    borderRadius: 6,
   },
 });

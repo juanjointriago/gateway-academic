@@ -44,14 +44,14 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="home"
                 options={{
-                    title: 'Inicio',
+                    title: 'Home',
                     tabBarIcon: ({ color, size }) => <Icon size={size} source="home" color={color} />,
                 }}
             />
             <Tabs.Screen
                 name="progress_sheet"
                 options={{
-                    title: 'Progress Sheet',
+                    title: 'Progress',
                     tabBarIcon: ({ color, size }) => <Icon size={size} source="book" color={color} />,
                 }}
             />
@@ -65,21 +65,21 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="books"
                 options={{
-                    title: 'Libros',
+                    title: 'Books',
                     tabBarIcon: ({ color, size }) => <Icon size={size} source="book-open" color={color} />,
                 }}
             />
             <Tabs.Screen
                 name="fees"
                 options={{
-                    title: 'Mis comprobantes',
+                    title: 'Fees',
                     tabBarIcon: ({ color, size }) => <Icon size={size} source="cash" color={color} />,
                 }}
             />
             <Tabs.Screen
                 name="settings"
                 options={{
-                    title: 'Ajustes',
+                    title: 'Settings',
                     tabBarIcon: ({ color, size }) => <Icon size={size} source="cog" color={color} />,
                 }}
             />

@@ -1,9 +1,6 @@
-import { useDisclosure } from '@/src/hook'
+
 import { FC } from 'react'
 import { IconButton } from 'react-native-paper'
-import { ModalGeneral } from '../modal'
-import { WebView } from 'react-native-webview'
-import { ButtonGeneral } from '../buttons'
 import { Linking } from 'react-native'
 import { toast } from '@/src/helpers/toast'
 

@@ -1,8 +1,15 @@
+import { updateDocument } from '@/src/helpers/firestoreHelper';
+    // Método para actualizar un evento
+    
 import { EVENT_COLLECTION, LEVEL_COLLECTION, SUB_LEVEL_COLLECTION, USER_COLLECTION } from "@/src/constants/ContantsFirebase";
 import { getAllDocuments, getDocumentById, getQueryDocuments } from "@/src/helpers/firestoreHelper";
 import { IEvent, IEventDetail, ILevel, ISubLevel, IUser } from "@/src/interfaces";
 
 export class EventService {
+    static updateEvent = async (event: IEvent): Promise<void> => {
+        if (!event.id) throw new Error('El evento debe tener un id');
+        await updateDocument(EVENT_COLLECTION, event.id, event);
+    }
     static getAllEvents = async (): Promise<IEvent[]> => {
         const events = await getAllDocuments<IEvent>(EVENT_COLLECTION);
         return events;
@@ -62,4 +69,18 @@ export class EventService {
             return null;
         }
     }
+
+
+    // Método para obtener un evento por id
+    static getEventById = async (id: string): Promise<IEvent | null> => {
+        try {
+            const events = await getAllDocuments<IEvent>(EVENT_COLLECTION);
+            const event = events.find(e => e.id === id) || null;
+            return event;
+        } catch (error) {
+            console.error('Error al buscar el evento por id:', error);
+            return null;
+        }
+    }
+
 }

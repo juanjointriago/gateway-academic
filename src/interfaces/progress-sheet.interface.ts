@@ -18,12 +18,34 @@ export interface progressClassesInterface {
 }
 
 export interface progressSheetInterface {
-    id?: string
+id?: string
+    uid?: string
+    contractNumber?: string
+    headquarters?: string
     inscriptionDate: string
     expirationDate: string
     myPreferredName: string
+    
+    contractDate?: string
+    work: string
+    enterpriseName: string
+    preferredCI?: string
+    conventionalPhone?: string
+    familiarPhone?: string
+    preferredEmail?: string
+
     otherContacts: string
     progressClasses: progressClassesInterface[];
+    totalFee?: number;//total adeudado
+    totalPaid?: number;// total pagado
+    totalDue?: number;// total pendiente
+    totalDiscount?: number;// total descuento
+    observation?: string;// observacion
+    adminObservation?: string; // Observación del administrador
+    quotesQty?: number;// cantidad de cuotas
+    quoteValue?: number;// valor de la cuota
+    dueDate?: string;// fecha de vencimiento
+    program?: string;// programa
     studentId: string;
     createdAt?: number
     updatedAt?: number
