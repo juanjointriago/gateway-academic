@@ -2,7 +2,7 @@ import { useEffect, useMemo } from "react";
 import { LabelWithImg, LayoutGeneral, Section } from "../../components";
 import { useAuthStore } from "../../store/auth/auth.store";
 import { typeUser } from "../../constants/ConstantsErrors";
-import { Divider, Text } from "react-native-paper";
+import { Divider, Text, useTheme } from "react-native-paper";
 import { useLevelStore } from "../../store/level/level.store";
 import { useEventStore } from "../../store/event/event.store";
 import { useSubLevelStore } from "../../store/level/sublevel.store";
@@ -13,6 +13,7 @@ import { useProgressSheetStore } from "@/src/store/progress-sheet/progress-sheet
 import { useFeesStore } from "@/src/store/fees/fees.store";
 
 export const HomeScreen = () => {
+  const theme = useTheme();
 
   const user = useAuthStore((state) => state.user);
   const level = useLevelStore((state) => state.level);
@@ -66,6 +67,15 @@ export const HomeScreen = () => {
     [level, events, sublevel, units]
   );
 
+  // Estilos dependientes de theme
+  const styles = useMemo(() => ({
+    divider: {
+      marginVertical: 10,
+      backgroundColor: theme.colors.outlineVariant || theme.colors.outline,
+      height: 1.5,
+    },
+  }), [theme]);
+
   return (
     <LayoutGeneral title="Bienvenido" withScrollView>
       <LabelWithImg
@@ -75,7 +85,7 @@ export const HomeScreen = () => {
         description={typeUser[user?.role as string]}
         contentStyle={{ marginBottom: 10 }}
       />
-      <Divider style={{ marginVertical: 10 }} />
+      <Divider style={styles.divider} />
       <Carousel data={news} onPress={(item) => console.debug(item)} />
       <Section title="Informacion General" setionsList={listInfo} />
     </LayoutGeneral>

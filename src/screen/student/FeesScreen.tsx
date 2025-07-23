@@ -96,9 +96,66 @@ export const FeesScreen = () => {
           </Text>
         ),
       },
+      {
+        title:'Estado',
+        key: 'status' as keyof fee,
+        width: '10%' as const,
+            render: (_: any, row: fee) => (
+                <Text style={{ fontSize: 10, color: row.isSigned === true ? theme.colors.tertiary : theme.colors.error }}>
+                    {row.isSigned === true ? 'Success' : 'Pend/Rej'}
+                </Text>
+            ),
+      }
     ],
-    []
+    [theme]
   );
+
+  // Estilos dependientes de theme
+  const styles = useMemo(() => StyleSheet.create({
+    container: {
+      flex: 1,
+      position: 'relative',
+      paddingTop: 70,
+      paddingHorizontal: 16,
+    },
+    topSpace: {
+      height: 20,
+    },
+    tableContainer: {
+      flex: 1,
+      paddingTop: 10,
+      paddingBottom: 80, // Espacio para el FAB
+      backgroundColor: theme.colors.background,
+    },
+    modalContainer: {
+      backgroundColor: theme.colors.background,
+      margin: 16,
+      borderRadius: 12,
+      padding: 20,
+      maxHeight: '85%',
+      elevation: 5,
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+    },
+    fab: {
+      position: 'absolute',
+      margin: 16,
+      right: 0,
+      top: 0,
+      elevation: 8,
+      backgroundColor: theme.colors.primary,
+    },
+    tableImage: {
+      width: 40,
+      height: 40,
+      borderRadius: 6,
+    },
+  }), [theme]);
 
   return (
     <LayoutGeneral title="Mis comprobantes" withScrollView={false}>
@@ -116,10 +173,8 @@ export const FeesScreen = () => {
             />
           </Modal>
         </Portal>
-        
         {/* Espacio superior para el FAB */}
         <View style={styles.topSpace} />
-        
         {/* Tabla de pagos */}
         <View style={styles.tableContainer}>
           <GenericTable 
@@ -128,10 +183,9 @@ export const FeesScreen = () => {
             pageSize={8}
           />
         </View>
-        
         {/* Botón flotante */}
         <FAB
-          style={[styles.fab, { backgroundColor: theme.colors.primary }]}
+          style={styles.fab}
           icon="plus"
           onPress={() => setModalVisible(true)}
           label="Nuevo"
@@ -141,46 +195,4 @@ export const FeesScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    position: 'relative',
-    paddingTop: 70,
-    paddingHorizontal: 16,
-  },
-  topSpace: {
-    height: 20,
-  },
-  tableContainer: {
-    flex: 1,
-    paddingTop: 10,
-    paddingBottom: 80, // Espacio para el FAB
-  },
-  modalContainer: {
-    backgroundColor: 'white',
-    margin: 16,
-    borderRadius: 12,
-    padding: 20,
-    maxHeight: '85%',
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  fab: {
-    position: 'absolute',
-    margin: 16,
-    right: 0,
-    top: 0,
-    elevation: 8,
-  },
-  tableImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 6,
-  },
-});
+

@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { StyleSheet, View, Image, ScrollView } from "react-native";
-import { Button, Text, TextInput, HelperText, TouchableRipple, List, Portal, Modal } from "react-native-paper";
+import { Button, Text, TextInput, HelperText, TouchableRipple, List, Portal, Modal, useTheme } from "react-native-paper";
 import * as ImagePicker from 'expo-image-picker';
 import { useForm, Controller } from "react-hook-form";
 import { fee, paymentMethod } from "@/src/interfaces/fees.interface";
@@ -35,6 +35,7 @@ interface AddFeeFormProps {
 }
 
 export const AddFeeForm: React.FC<AddFeeFormProps> = ({ user, onSubmit, onCancel }) => {
+  const theme = useTheme();
   // Estados para UI
   const [paymentMethodMenuVisible, setPaymentMethodMenuVisible] = useState(false);
   const [reasonMenuVisible, setReasonMenuVisible] = useState(false);
@@ -154,16 +155,117 @@ export const AddFeeForm: React.FC<AddFeeFormProps> = ({ user, onSubmit, onCancel
     onCancel();
   };
 
+  // Estilos dependientes de theme
+  const styles = useMemo(() => StyleSheet.create({
+    modalTitle: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      marginBottom: 10,
+      color: theme.colors.primary,
+    },
+    receiptContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 15,
+      padding: 10,
+      backgroundColor: theme.colors.surfaceVariant || theme.colors.surface,
+      borderRadius: 5,
+    },
+    receiptLabel: {
+      fontWeight: 'bold',
+      marginRight: 10,
+      color: theme.colors.onSurface,
+    },
+    receiptValue: {
+      fontSize: 16,
+      color: theme.colors.primary,
+    },
+    input: {
+      marginVertical: 10,
+      backgroundColor: theme.colors.background,
+      color: theme.colors.onSurface,
+    },
+    dropdownButton: {
+      borderWidth: 1,
+      borderColor: theme.colors.outlineVariant || theme.colors.outline,
+      borderRadius: 4,
+      padding: 15,
+      marginVertical: 10,
+      backgroundColor: theme.colors.surface,
+    },
+    dropdownContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    selectedValue: {
+      fontWeight: 'bold',
+      marginLeft: 5,
+      color: theme.colors.primary,
+    },
+    menuModal: {
+      backgroundColor: theme.colors.surface,
+      margin: 20,
+      borderRadius: 10,
+      padding: 10,
+    },
+    imagePickerContainer: {
+      borderWidth: 1,
+      borderStyle: 'dashed',
+      borderColor: theme.colors.outlineVariant || theme.colors.outline,
+      borderRadius: 8,
+      marginVertical: 15,
+      overflow: 'hidden',
+      backgroundColor: theme.colors.background,
+    },
+    imagePickerContent: {
+      minHeight: 150,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    previewImage: {
+      width: '100%',
+      height: 200,
+      resizeMode: 'contain',
+    },
+    noImageContainer: {
+      padding: 20,
+      alignItems: 'center',
+    },
+    noImageText: {
+      fontSize: 16,
+      marginBottom: 5,
+      color: theme.colors.onSurface,
+    },
+    helperText: {
+      color: theme.colors.secondary,
+      fontSize: 12,
+    },
+    buttonContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginTop: 20,
+    },
+    cancelButton: {
+      flex: 1,
+      marginRight: 10,
+      backgroundColor: theme.colors.surface,
+      borderColor: theme.colors.outline,
+    },
+    submitButton: {
+      flex: 1,
+      marginLeft: 10,
+      backgroundColor: theme.colors.primary,
+    },
+  }), [theme]);
+
   return (
     <ScrollView>
       <Text style={styles.modalTitle}>Registrar nuevo pago</Text>
-      
       {/* Número de recibo (no editable) */}
       <View style={styles.receiptContainer}>
         <Text style={styles.receiptLabel}>Número de recibo:</Text>
         <Text style={styles.receiptValue}>{receiptCode}</Text>
       </View>
-      
       {/* Razón del pago - Dropdown */}
       <TouchableRipple
         onPress={() => setReasonMenuVisible(true)}
@@ -186,7 +288,6 @@ export const AddFeeForm: React.FC<AddFeeFormProps> = ({ user, onSubmit, onCancel
       {errors.reason && (
         <HelperText type="error">{errors.reason.message}</HelperText>
       )}
-      
       <Portal>
         <Modal
           visible={reasonMenuVisible}
@@ -212,7 +313,6 @@ export const AddFeeForm: React.FC<AddFeeFormProps> = ({ user, onSubmit, onCancel
           </List.Section>
         </Modal>
       </Portal>
-      
       {/* Cantidad */}
       <Controller
         control={control}
@@ -240,7 +340,6 @@ export const AddFeeForm: React.FC<AddFeeFormProps> = ({ user, onSubmit, onCancel
       {errors.qty && (
         <HelperText type="error">{errors.qty.message}</HelperText>
       )}
-      
       {/* Método de pago - Dropdown */}
       <TouchableRipple
         onPress={() => setPaymentMethodMenuVisible(true)}
@@ -259,7 +358,6 @@ export const AddFeeForm: React.FC<AddFeeFormProps> = ({ user, onSubmit, onCancel
           />
         </View>
       </TouchableRipple>
-      
       <Portal>
         <Modal
           visible={paymentMethodMenuVisible}
@@ -285,7 +383,6 @@ export const AddFeeForm: React.FC<AddFeeFormProps> = ({ user, onSubmit, onCancel
           </List.Section>
         </Modal>
       </Portal>
-      
       {/* Número de documento (para métodos que no son efectivo) */}
       {(
         <Controller
@@ -310,7 +407,6 @@ export const AddFeeForm: React.FC<AddFeeFormProps> = ({ user, onSubmit, onCancel
       {errors.docNumber && (
         <HelperText type="error">{errors.docNumber.message}</HelperText>
       )}
-      
       {/* Selector de imagen (para métodos que no son efectivo) */}
       { (
         <>
@@ -331,7 +427,6 @@ export const AddFeeForm: React.FC<AddFeeFormProps> = ({ user, onSubmit, onCancel
           )}
         </>
       )}
-      
       {/* Botones */}
       <View style={styles.buttonContainer}>
         <Button
@@ -356,93 +451,3 @@ export const AddFeeForm: React.FC<AddFeeFormProps> = ({ user, onSubmit, onCancel
   );
 };
 
-const styles = StyleSheet.create({
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  receiptContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 15,
-    padding: 10,
-    backgroundColor: '#f5f5f5',
-    borderRadius: 5,
-  },
-  receiptLabel: {
-    fontWeight: 'bold',
-    marginRight: 10,
-  },
-  receiptValue: {
-    fontSize: 16,
-    color: '#4338ca',
-  },
-  input: {
-    marginVertical: 10,
-  },
-  dropdownButton: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 4,
-    padding: 15,
-    marginVertical: 10,
-  },
-  dropdownContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  selectedValue: {
-    fontWeight: 'bold',
-    marginLeft: 5,
-  },
-  menuModal: {
-    backgroundColor: 'white',
-    margin: 20,
-    borderRadius: 10,
-    padding: 10,
-  },
-  imagePickerContainer: {
-    borderWidth: 1,
-    borderStyle: 'dashed',
-    borderColor: '#ccc',
-    borderRadius: 8,
-    marginVertical: 15,
-    overflow: 'hidden',
-  },
-  imagePickerContent: {
-    minHeight: 150,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  previewImage: {
-    width: '100%',
-    height: 200,
-    resizeMode: 'contain',
-  },
-  noImageContainer: {
-    padding: 20,
-    alignItems: 'center',
-  },
-  noImageText: {
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  helperText: {
-    color: '#666',
-    fontSize: 12,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 20,
-  },
-  cancelButton: {
-    flex: 1,
-    marginRight: 10,
-  },
-  submitButton: {
-    flex: 1,
-    marginLeft: 10,
-  },
-});

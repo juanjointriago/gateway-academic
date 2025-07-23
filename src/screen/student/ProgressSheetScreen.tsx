@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, StyleSheet, View, ScrollView } from "react-native";
-import { Text } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 import { useAuthStore } from "@/src/store/auth/auth.store";
 import { useEventStore } from "@/src/store/event/event.store";
 import { useProgressSheetStore } from "@/src/store/progress-sheet/progress-sheet.store";
@@ -9,6 +9,7 @@ import { ProgressEntry } from "@/src/interfaces/progress-sheet.interface";
 import { useUserStore } from "@/src/store/users/users.store";
 
 export const ProgressSheetScreen = () => {
+  const theme = useTheme();
   const [isLoading, setIsLoading] = useState(true);
   const user = useAuthStore((state) => state.user);
   const getEventById = useEventStore((state) => state.getEventById);
@@ -45,10 +46,121 @@ export const ProgressSheetScreen = () => {
     loadData();
   }, []);
 
+  // Estilos dependientes de theme
+  const styles = useMemo(() => StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 16,
+    },
+    centerContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      padding: 20,
+    },
+    cardContainer: {
+      backgroundColor: theme.colors.surface,
+      borderRadius: 12,
+      padding: 16,
+      marginBottom: 20,
+      shadowColor: theme.colors.shadow,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.08,
+      shadowRadius: 4,
+      elevation: 2,
+    },
+    cardTitle: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: theme.colors.primary,
+      marginBottom: 10,
+      textAlign: 'center',
+    },
+    infoGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'space-between',
+    },
+    infoItem: {
+      width: '48%',
+      marginBottom: 8,
+    },
+    infoLabel: {
+      fontWeight: '600',
+      color: theme.colors.onSurface,
+      fontSize: 14,
+    },
+    infoValue: {
+      color: theme.colors.onSurface,
+      fontSize: 15,
+    },
+    sectionTitle: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: theme.colors.primary,
+      marginBottom: 8,
+      marginTop: 8,
+      textAlign: 'center',
+    },
+    tableScroll: {
+      marginBottom: 24,
+      borderRadius: 10,
+      backgroundColor: theme.colors.background,
+      borderWidth: 1,
+      borderColor: theme.colors.outlineVariant || theme.colors.outline,
+    },
+    tableContainer: {
+      minWidth: 900,
+      borderRadius: 10,
+      backgroundColor: theme.colors.surface,
+      padding: 8,
+    },
+    tableHeader: {
+      flexDirection: 'row',
+      backgroundColor: theme.colors.secondaryContainer,
+      borderTopLeftRadius: 8,
+      borderTopRightRadius: 8,
+      paddingVertical: 6,
+    },
+    th: {
+      fontWeight: 'bold',
+      color: theme.colors.primary,
+      fontSize: 13,
+      textAlign: 'center',
+      paddingHorizontal: 8,
+      paddingVertical: 2,
+    },
+    thFixed: {
+      minWidth: 70,
+      maxWidth: 90,
+    },
+    thWide: {
+      minWidth: 120,
+      maxWidth: 180,
+    },
+    thWider: {
+      minWidth: 180,
+      maxWidth: 300,
+    },
+    tableRow: {
+      flexDirection: 'row',
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.outlineVariant || theme.colors.outline,
+      paddingVertical: 4,
+    },
+    td: {
+      fontSize: 12,
+      color: theme.colors.onSurface,
+      textAlign: 'center',
+      paddingHorizontal: 8,
+      paddingVertical: 2,
+    },
+  }), [theme]);
+
   if (isLoading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#4338ca" />
+        <ActivityIndicator size="large" color={theme.colors.primary} />
         <Text>Cargando información...</Text>
       </View>
     );
@@ -161,113 +273,3 @@ export const ProgressSheetScreen = () => {
   );
 };
 
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-  },
-  centerContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-  },
-  cardContainer: {
-    backgroundColor: '#f8f9fa',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  cardTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#4338ca',
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  infoGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  infoItem: {
-    width: '48%',
-    marginBottom: 8,
-  },
-  infoLabel: {
-    fontWeight: '600',
-    color: '#374151',
-    fontSize: 14,
-  },
-  infoValue: {
-    color: '#1e293b',
-    fontSize: 15,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#4338ca',
-    marginBottom: 8,
-    marginTop: 8,
-    textAlign: 'center',
-  },
-  tableScroll: {
-    marginBottom: 24,
-    borderRadius: 10,
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#e5e7eb',
-  },
-  tableContainer: {
-    minWidth: 900,
-    borderRadius: 10,
-    backgroundColor: '#fff',
-    padding: 8,
-  },
-  tableHeader: {
-    flexDirection: 'row',
-    backgroundColor: '#e0e7ff',
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-    paddingVertical: 6,
-  },
-  th: {
-    fontWeight: 'bold',
-    color: '#3730a3',
-    fontSize: 13,
-    textAlign: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-  },
-  thFixed: {
-    minWidth: 70,
-    maxWidth: 90,
-  },
-  thWide: {
-    minWidth: 120,
-    maxWidth: 180,
-  },
-  thWider: {
-    minWidth: 180,
-    maxWidth: 300,
-  },
-  tableRow: {
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: '#f3f4f6',
-    paddingVertical: 4,
-  },
-  td: {
-    fontSize: 12,
-    color: '#374151',
-    textAlign: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-  },
-});

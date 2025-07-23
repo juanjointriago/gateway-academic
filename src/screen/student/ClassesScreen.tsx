@@ -4,11 +4,12 @@ import { useEventStore } from '@/src/store/event/event.store';
 import { IEvent } from '@/src/interfaces';
 import { format } from 'date-fns';
 import { View } from 'react-native';
-import { IconButton, Tooltip } from 'react-native-paper';
+import { IconButton, Tooltip, useTheme } from 'react-native-paper';
 import { colorForTypeEvent, textStatusEvent, typeStatusEvent } from '@/src/constants/ConstantsErrors';
 import { useAuthStore } from '@/src/store/auth/auth.store';
 
 export const ClassesScreen = () => {
+    const theme = useTheme();
     const allEvents = useEventStore((state) => state.events);
     const user = useAuthStore((state) => state.user);
     console.log('👨🏼‍💻',user)
@@ -28,7 +29,7 @@ export const ClassesScreen = () => {
     const [searchQuery, setSearchQuery] = useState('');
 
     const columns = useMemo(() => [
-        { title: 'Fecha', key: 'date' as keyof IEvent, render: (_: any, row: IEvent) => <LabelGeneral label={format(new Date(row.date), 'dd/MM/yyyy HH:mm')} variant='bodySmall' styleProps={{ fontSize: 12, padding: 5 }} /> },
+        { title: 'Fecha', key: 'date' as keyof IEvent, render: (_: any, row: IEvent) => <LabelGeneral label={format(new Date(row.date), 'dd/MM/yyyy HH:mm')} variant='bodySmall' styleProps={{ fontSize: 12, padding: 5, color: theme.colors.onSurface }} /> },
         { title: 'Clase', key: 'name' as keyof IEvent },
         {
             title: 'Estado',
@@ -36,7 +37,7 @@ export const ClassesScreen = () => {
             render: (_: any, row: IEvent) => (
                 <View style={{ marginLeft: 2 }}>
                     <Tooltip title={textStatusEvent[row.status]}>
-                        <IconButton icon={typeStatusEvent[row.status]} selected size={24} iconColor={colorForTypeEvent[row.status]} />
+                        <IconButton icon={typeStatusEvent[row.status]} selected size={24} iconColor={colorForTypeEvent[row.status] || theme.colors.primary} />
                     </Tooltip>
                 </View>
             )

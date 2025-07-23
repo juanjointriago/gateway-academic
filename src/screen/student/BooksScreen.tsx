@@ -35,11 +35,19 @@ export const BooksScreen = () => {
             render: (_: any, row: IUnit) => <LabelGeneral label={getSubLevelById(row.sublevel)?.name || ''} styleProps={{ marginLeft: 10 }} />
         },
         {
-            title: 'Acciones',
+            title: 'Book',
             key: 'actions' as keyof IUnit,
             render: (_: any, row: IUnit) => (
                 <View style={{ flexDirection: 'row', gap: 10 }}>
                     <IconRenderPDF url={row.supportMaterial || ''} titleModal={'Supp. Material ' + row.name} />
+                </View>
+            ),
+        },
+        {
+            title: 'WorkSheet',
+            key: 'actions' as keyof IUnit,
+            render: (_: any, row: IUnit) => (
+                <View style={{ flexDirection: 'row', gap: 10 }}>
                     <IconRenderWeb url={row.workSheetUrl || ''} />
                 </View>
             ),
@@ -71,7 +79,7 @@ export const BooksScreen = () => {
             <GenericTable
                 columns={columns}
                 data={filteredUnits}
-                pageSize={9}
+                pageSize={8}
             />
         </LayoutGeneral>
     )
