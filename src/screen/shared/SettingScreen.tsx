@@ -48,6 +48,9 @@ export const SettingScreen = () => {
     const handleProfile = () => {
         router.push('/profile');
     }
+        const handleVCard = () => {
+        router.push('/vcard');
+    }
 
 
     return (
@@ -58,6 +61,13 @@ export const SettingScreen = () => {
                 onPress={handleProfile}
                 size={35}
                 color='#3e6eb7'
+            />
+            <ButtonSelectable
+                avatarIcon='account'
+                title='Mi Credencial'
+                onPress={handleVCard}
+                size={35}
+                color='#3eb7'
             />
 
             <ButtonSelectable
