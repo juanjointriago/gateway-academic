@@ -11,7 +11,15 @@ import { useAuthStore } from '@/src/store/auth/auth.store';
 export const ClassesScreen = () => {
     const theme = useTheme();
     const allEvents = useEventStore((state) => state.events);
+    const getAllEvents = useEventStore((state) => state.getAllEvents);
     const user = useAuthStore((state) => state.user);
+
+    const loadData = () =>{
+        if(user){
+            getAllEvents();
+        }
+        
+    }
     console.log('👨🏼‍💻',user)
     const events = allEvents
         .filter(event => {
@@ -67,7 +75,7 @@ export const ClassesScreen = () => {
     }, []);
 
     return (
-        <LayoutGeneral title='Clases'>
+        <LayoutGeneral title='Clases' withScrollView onRefresh={loadData}>
             <SearchBarGeneral
                 onChange={handleSearch}
                 value={searchQuery}

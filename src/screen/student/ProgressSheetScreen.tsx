@@ -182,7 +182,7 @@ export const ProgressSheetScreen = () => {
 
   if (!studentProgressSheet?.progressClasses?.length) {
     return (
-      <LayoutGeneral title="Progreso">
+      <LayoutGeneral title="Progreso" withScrollView onRefresh={loadData}>
         <View style={styles.centerContainer}>
           <Text>No hay registros de progreso disponibles</Text>
         </View>
@@ -199,8 +199,8 @@ export const ProgressSheetScreen = () => {
     { label: 'Expiración', value: studentProgressSheet.expirationDate ? new Date(studentProgressSheet.expirationDate).toLocaleDateString() : 'N/D' },
     { label: 'Teléfono', value: user.phone || 'N/D' },
     { label: 'Email', value: user.email || 'N/D' },
-    { label: 'Total Pagado', value: `$${studentProgressSheet.totalPaid ?? 0}` },
-    { label: 'Total Adeudado', value: `$${studentProgressSheet.totalDue ?? 0}` },
+    // { label: 'Total Pagado', value: `$${studentProgressSheet.totalPaid ?? 0}` },
+    // { label: 'Total Adeudado', value: `$${studentProgressSheet.totalDue ?? 0}` },
   ];
 
   const progressEntries: ProgressEntry[] = studentProgressSheet.studentId === user.uid
@@ -223,7 +223,7 @@ export const ProgressSheetScreen = () => {
     : [];
 
   return (
-    <LayoutGeneral title="Progreso" withScrollView containerStyle={styles.container}>
+    <LayoutGeneral title="Progreso" withScrollView onRefresh={loadData}>
       {/* Tarjeta de información de contrato */}
       <View style={styles.cardContainer}>
         <Text style={styles.cardTitle}>Información de Contrato</Text>

@@ -11,6 +11,7 @@ import { useNewsStore } from "@/src/store/news/news.store";
 import { Carousel } from "@/src/components/image/Carousel";
 import { useProgressSheetStore } from "@/src/store/progress-sheet/progress-sheet.store";
 import { useFeesStore } from "@/src/store/fees/fees.store";
+import { useAppInfoStore } from "@/src/store/appinfo/appinfo.store";
 
 export const HomeScreen = () => {
   const theme = useTheme();
@@ -28,8 +29,9 @@ export const HomeScreen = () => {
   const getAllFees = useFeesStore((state) => state.getAndSetFees);
   const getAllEvents = useEventStore((state) => state.getAllEvents);
   const getUnits =useUnitStore((state) => state.getAllUnits);
+  const setAppInfo = useAppInfoStore((state) => state.setAppInfo);
 
-  useEffect(() => {
+  const loadinfo = async () => {
     getNews();
     getProgressSheets();
     getAllFees();
@@ -37,9 +39,13 @@ export const HomeScreen = () => {
       getAllEvents();
       getLevelByDocId(user.level);
       getSubLevelByDocId(user.subLevel);
+      setAppInfo();
     }
   getUnits();
-  }, [getNews, getProgressSheets, getAllFees, getAllEvents]);
+  }
+  useEffect(() => {
+    loadinfo();
+  }, [getNews, getProgressSheets, getAllFees, getAllEvents, setAppInfo]);
 
   const listInfo = useMemo(
     () => [
@@ -77,7 +83,7 @@ export const HomeScreen = () => {
   }), [theme]);
 
   return (
-    <LayoutGeneral title="Bienvenido" withScrollView>
+    <LayoutGeneral title="Bienvenido" withScrollView onRefresh={loadinfo}>
       <LabelWithImg
         title={user?.name}
         url={user?.photoUrl}

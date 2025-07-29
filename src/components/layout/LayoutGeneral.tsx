@@ -1,5 +1,5 @@
-import { FC, ReactNode } from 'react';
-import { ScrollView, TextStyle, View, ViewStyle } from 'react-native';
+import { FC, ReactNode, useState } from 'react';
+import { ScrollView, TextStyle, View, ViewStyle, RefreshControl } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Appbar, Menu, useTheme } from 'react-native-paper';
 import { useDisclosure } from '@/src/hook';
@@ -12,7 +12,7 @@ export interface OpcionsHeader {
     onPress: () => void;
 }
 
-interface Props {
+export interface Props {
     children?: ReactNode;
     title?: string;
     onBackAction?: () => void;
@@ -22,9 +22,11 @@ interface Props {
     hasDrawer?: boolean;
     onPressDrawer?: () => void;
     withScrollView?: boolean;
+    onRefresh?: () => void;
 }
 
-export const LayoutGeneral: FC<Props> = ({ children, containerStyle, hasDrawer, onBackAction, onPressDrawer, optionsHeader = [], title, titleStyle, withScrollView }) => {
+export const LayoutGeneral: FC<Props> = ({ children, containerStyle, hasDrawer, onBackAction, onPressDrawer, optionsHeader = [], title, titleStyle, withScrollView, onRefresh }) => {
+    const [refreshing, setRefreshing] = useState(false);
     const { colors } = useTheme();
     const { isOpen, onOpen, onClose } = useDisclosure();
     return (
@@ -64,6 +66,18 @@ export const LayoutGeneral: FC<Props> = ({ children, containerStyle, hasDrawer, 
                     alwaysBounceVertical={false}
                     showsVerticalScrollIndicator={false}
                     style={[containerStyle, { ...stylesGlobal.container, backgroundColor: colors.background }]}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={async () => {
+                                setRefreshing(true);
+                                if (onRefresh) await onRefresh();
+                                setRefreshing(false);
+                            }}
+                            colors={[colors.primary]}
+                            tintColor={colors.primary}
+                        />
+                    }
                 >
                     {children}
                 </ScrollView>

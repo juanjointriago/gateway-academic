@@ -7,21 +7,31 @@ import { useFeesStore } from "@/src/store/fees/fees.store";
 import { format } from "date-fns";
 import { FAB, Modal, Portal, Text, useTheme } from "react-native-paper";
 import { AddFeeForm } from "@/src/components/forms/AddFeeForm";
+import { useAppInfoStore } from "@/src/store/appinfo/appinfo.store";
 
 export const FeesScreen = () => {
   const theme = useTheme();
   const user = useAuthStore((state) => state.user);
+  const getAndSetFees = useFeesStore((state) => state.getAndSetFees);
   const fees = useFeesStore((state) => state.fees);
   const createFee = useFeesStore((state) => state.createFee);
-  
+  const appinfo = useAppInfoStore((state) => state.appInfo);
+
   // Estados para UI
   const [modalVisible, setModalVisible] = useState(false);
-  
+
   // Filtrar pagos del usuario actual
   const myFees = useMemo(
     () => fees.filter((fee) => fee.studentUid === user?.uid),
     [fees, user]
   );
+
+
+  const loadData = () => {
+    if (user) {
+      getAndSetFees();
+    }
+  }
 
   // Función para crear un nuevo pago
   const handleCreateFee = async (feeData: fee) => {
@@ -33,7 +43,7 @@ export const FeesScreen = () => {
       });
       setModalVisible(false);
     } catch (error) {
-      console.error('Error al registrar pago:', error);
+      console.error("Error al registrar pago:", error);
       throw error;
     }
   };
@@ -46,7 +56,7 @@ export const FeesScreen = () => {
         key: "code" as keyof fee,
         width: "25%" as const,
         render: (_: any, row: fee) => (
-          <Text style={{ fontWeight: 'bold', fontSize: 12 }} numberOfLines={1}>
+          <Text style={{ fontWeight: "bold", fontSize: 12 }} numberOfLines={1}>
             {row.code}
           </Text>
         ),
@@ -61,14 +71,12 @@ export const FeesScreen = () => {
           </Text>
         ),
       },
-      { 
-        title: "Monto", 
-        key: "qty" as keyof fee, 
+      {
+        title: "Monto",
+        key: "qty" as keyof fee,
         width: "20%" as const,
         render: (_: any, row: fee) => (
-          <Text style={{ fontSize: 12, fontWeight: '600' }}>
-            ${row.qty}
-          </Text>
+          <Text style={{ fontSize: 12, fontWeight: "600" }}>${row.qty}</Text>
         ),
       },
       {
@@ -77,10 +85,12 @@ export const FeesScreen = () => {
         width: "25%" as const,
         render: (_: any, row: fee) => (
           <ImagePreview
-            imageUri={row.imageUrl || ''}
+            imageUri={row.imageUrl || ""}
             thumbnailStyle={styles.tableImage}
             placeholder="No disponible"
-            onError={() => console.log('Error loading image for receipt:', row.code)}
+            onError={() =>
+              console.log("Error loading image for receipt:", row.code)
+            }
           />
         ),
       },
@@ -90,75 +100,91 @@ export const FeesScreen = () => {
         width: "10%" as const,
         render: (_: any, row: fee) => (
           <Text style={{ fontSize: 10 }} numberOfLines={1}>
-            {row.paymentMethod === 'transference' ? 'Transf.' : 
-             row.paymentMethod === 'tc' ? 'TC' : 
-             row.paymentMethod === 'deposit' ? 'Dep.' : 'Otro'}
+            {row.paymentMethod === "transference"
+              ? "Transf."
+              : row.paymentMethod === "tc"
+              ? "TC"
+              : row.paymentMethod === "deposit"
+              ? "Dep."
+              : "Otro"}
           </Text>
         ),
       },
       {
-        title:'Estado',
-        key: 'status' as keyof fee,
-        width: '10%' as const,
-            render: (_: any, row: fee) => (
-                <Text style={{ fontSize: 10, color: row.isSigned === true ? theme.colors.tertiary : theme.colors.error }}>
-                    {row.isSigned === true ? 'Success' : 'Pend/Rej'}
-                </Text>
-            ),
-      }
+        title: "Estado",
+        key: "status" as keyof fee,
+        width: "10%" as const,
+        render: (_: any, row: fee) => (
+          <Text
+            style={{
+              fontSize: 10,
+              color:
+                row.isSigned === true
+                  ? theme.colors.tertiary
+                  : theme.colors.error,
+            }}
+          >
+            {row.isSigned === true ? "Success" : "Pend/Rej"}
+          </Text>
+        ),
+      },
     ],
     [theme]
   );
 
   // Estilos dependientes de theme
-  const styles = useMemo(() => StyleSheet.create({
-    container: {
-      flex: 1,
-      position: 'relative',
-      paddingTop: 70,
-      paddingHorizontal: 16,
-    },
-    topSpace: {
-      height: 20,
-    },
-    tableContainer: {
-      flex: 1,
-      paddingTop: 10,
-      paddingBottom: 80, // Espacio para el FAB
-      backgroundColor: theme.colors.background,
-    },
-    modalContainer: {
-      backgroundColor: theme.colors.background,
-      margin: 16,
-      borderRadius: 12,
-      padding: 20,
-      maxHeight: '85%',
-      elevation: 5,
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-    },
-    fab: {
-      position: 'absolute',
-      margin: 16,
-      right: 0,
-      top: 0,
-      elevation: 8,
-      backgroundColor: theme.colors.primary,
-    },
-    tableImage: {
-      width: 40,
-      height: 40,
-      borderRadius: 6,
-    },
-  }), [theme]);
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        container: {
+          flex: 1,
+          position: "relative",
+          paddingTop: 10,
+          paddingHorizontal: 16,
+        },
+        topSpace: {
+          height: 20,
+        },
+        tableContainer: {
+          flex: 1,
+          paddingTop: 10,
+          paddingBottom: 80, // Espacio para el FAB
+          backgroundColor: theme.colors.background,
+        },
+        modalContainer: {
+          backgroundColor: theme.colors.background,
+          margin: 16,
+          borderRadius: 12,
+          padding: 20,
+          maxHeight: "85%",
+          elevation: 5,
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+        },
+        fab: {
+          position: "absolute",
+          margin: 16,
+          right: 0,
+          top: 0,
+          elevation: 8,
+          backgroundColor: theme.colors.primary,
+        },
+        tableImage: {
+          width: 40,
+          height: 40,
+          borderRadius: 6,
+        },
+      }),
+    [theme]
+  );
 
   return (
-    <LayoutGeneral title="Mis comprobantes" withScrollView={false}>
+    <LayoutGeneral title="Mis comprobantes" withScrollView={true} onRefresh={loadData}>
       <View style={styles.container}>
         <Portal>
           <Modal
@@ -166,7 +192,7 @@ export const FeesScreen = () => {
             onDismiss={() => setModalVisible(false)}
             contentContainerStyle={styles.modalContainer}
           >
-            <AddFeeForm 
+            <AddFeeForm
               user={user}
               onSubmit={handleCreateFee}
               onCancel={() => setModalVisible(false)}
@@ -177,22 +203,18 @@ export const FeesScreen = () => {
         <View style={styles.topSpace} />
         {/* Tabla de pagos */}
         <View style={styles.tableContainer}>
-          <GenericTable 
-            data={myFees} 
-            columns={columns} 
-            pageSize={8}
-          />
+          <GenericTable data={myFees} columns={columns} pageSize={8} />
         </View>
         {/* Botón flotante */}
-        <FAB
-          style={styles.fab}
-          icon="plus"
-          onPress={() => setModalVisible(true)}
-          label="Nuevo"
-        />
+        {appinfo.disableFeesButton === false && (
+          <FAB
+            style={styles.fab}
+            icon="plus"
+            onPress={() => setModalVisible(true)}
+            label="Nuevo"
+          />
+        )}
       </View>
     </LayoutGeneral>
   );
 };
-
-

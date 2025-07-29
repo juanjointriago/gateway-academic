@@ -17,11 +17,14 @@ export const BooksScreen = () => {
     const getAllSublevels = useSubLevelStore((state) => state.getAllSubLevels);
     // console.debug('user.unitsForBooks', userUnits);
     // console.debug('user.unitsForBooks', user?.unitsForBooks);
-    useEffect(() => {
+    const loadData = ()=>{
         getAllSublevels();
         if(userUnits ) {
             getAllUnits();
         }
+    }
+    useEffect(() => {
+        loadData();
     }, [getAllUnits])
     
 
@@ -69,7 +72,7 @@ export const BooksScreen = () => {
     }, []);
 
     return (
-        <LayoutGeneral title='Libros'>
+        <LayoutGeneral title='Libros'  withScrollView onRefresh={loadData}>
             <SearchBarGeneral
                 onChange={handleSearch}
                 value={searchQuery}
