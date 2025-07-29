@@ -7,6 +7,7 @@ import { useEventStore } from '@/src/store/event/event.store';
 import { useLevelStore } from '@/src/store/level/level.store';
 import { useSubLevelStore } from '@/src/store/level/sublevel.store';
 import { useUnitStore } from '@/src/store/unit/unit.store';
+import { useAppInfoStore } from '@/src/store/appinfo/appinfo.store';
 
 
 export const SettingScreen = () => {
@@ -19,8 +20,14 @@ export const SettingScreen = () => {
     const clearStoreLevels = useLevelStore((state) => state.clearStoreLevels);
     const clearStoreSubLevels = useSubLevelStore((state) => state.clearStoreSubLevels);
     const clearStoreUnits = useUnitStore((state) => state.clearStoreUnits);
+    const appinfo = useAppInfoStore((state) => state.appInfo);
+    const setAppInfo = useAppInfoStore((state) => state.setAppInfo);
 
-    const appVersion = Constants.expoConfig?.version || '1.0.3';
+    const appVersion = appinfo.version || '1.0.4';
+
+    const loadData = () => {
+        setAppInfo();
+    }
 
     const handleLogout = () => {
         customAlert({
@@ -54,7 +61,7 @@ export const SettingScreen = () => {
 
 
     return (
-        <LayoutGeneral title='Ajustes'>
+        <LayoutGeneral title='Ajustes' withScrollView onRefresh={loadData}>
             <ButtonSelectable
                 avatarIcon='account'
                 title='Mi perfil'
