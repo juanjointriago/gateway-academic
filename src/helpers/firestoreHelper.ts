@@ -58,7 +58,7 @@ export const getAllDocuments = async <T>(collectionName: string): Promise<T[]> =
     const q = query(collection(db, collectionName));
     const querySnapshot = await getDocs(q);
     const documents: T[] = [];
-    querySnapshot.forEach((doc) => {
+    querySnapshot.forEach((doc:any) => {
       documents.push(doc.data() as T);
     });
     return documents;

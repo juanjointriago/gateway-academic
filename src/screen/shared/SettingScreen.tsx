@@ -23,7 +23,7 @@ export const SettingScreen = () => {
     const appinfo = useAppInfoStore((state) => state.appInfo);
     const setAppInfo = useAppInfoStore((state) => state.setAppInfo);
 
-    const appVersion = appinfo.version || '1.0.4';
+    const appVersion = appinfo.version || '1.0.0';
 
     const loadData = () => {
         setAppInfo();

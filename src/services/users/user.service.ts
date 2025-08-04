@@ -94,24 +94,10 @@ export class UserService {
       
       console.log('Tamaño del archivo:', fileInfo.size);
       
-      // Leer el archivo como base64
-      const base64Data = await FileSystem.readAsStringAsync(fileUri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-      
-      // Convertir base64 a blob - CORREGIDO: usando fileType
-      const blob = await new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.onload = function() {
-          resolve(xhr.response);
-        };
-        xhr.onerror = function() {
-          reject(new Error('Error al convertir a blob'));
-        };
-        xhr.responseType = 'blob';
-        xhr.open('GET', `data:${fileType};base64,${base64Data}`, true);
-        xhr.send(null);
-      });
+
+      // Usar fetch para obtener el blob directamente
+      const response = await fetch(fileUri);
+      const blob = await response.blob();
       
       // Usar API modular de Firebase Storage
       const storage = getStorage();
