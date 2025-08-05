@@ -65,7 +65,3 @@ yarn-error.*
 
 expo-env.d.ts
 # @end expo-cli
-
-# Firebase y Google config
-**/google-services.json
-**/GoogleService-Info.plist
