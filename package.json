@@ -12,7 +12,9 @@
     "test": "jest --watchAll",
     "lint": "expo lint",
     "android:internal": "eas build --platform android --profile preview",
-    "android:bundle": "eas build --platform android"
+    "android:bundle": "eas build --platform android",
+    "setup-env-files": "node ./scripts/setup-env-files.js",
+    "prebuild": "npm run setup-env-files"
   },
   "jest": {
     "preset": "jest-expo"
