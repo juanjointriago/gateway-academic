@@ -7,9 +7,12 @@ export interface IAppInfo {
   supportEmail: string;
   supportPhone?: string;
   termsUrl?: string;
+  address?: string;
   privacyPolicyUrl?: string;
   disableCurrencyResume: boolean;
   disableFeesButton: boolean;
+  generalDirectorName: string
+  webSyte?:string;
   createdAt: number;
   updatedAt: number;
 }

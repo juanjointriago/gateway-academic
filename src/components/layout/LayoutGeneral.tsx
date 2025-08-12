@@ -3,6 +3,7 @@ import { ScrollView, TextStyle, View, ViewStyle, RefreshControl } from 'react-na
 import { MaterialIcons } from '@expo/vector-icons';
 import { Appbar, Menu, useTheme } from 'react-native-paper';
 import { useDisclosure } from '@/src/hook';
+import { useResponsiveScreen } from '@/src/hook/useResponsiveScreen';
 import { MORE_ICON } from '@/src/constants/Constants';
 import { stylesGlobal } from '@/theme/Styles';
 
@@ -29,12 +30,29 @@ export const LayoutGeneral: FC<Props> = ({ children, containerStyle, hasDrawer, 
     const [refreshing, setRefreshing] = useState(false);
     const { colors } = useTheme();
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const { isTablet, isLargeScreen, isLandscape } = useResponsiveScreen();
+
+    // Estilos responsivos
+    const responsiveContainerStyle: ViewStyle = {
+        ...stylesGlobal.container,
+        backgroundColor: colors.background,
+        paddingHorizontal: isTablet ? (isLargeScreen ? 32 : 24) : 16,
+        maxWidth: isTablet ? (isLandscape ? '100%' : 800) : '100%',
+        alignSelf: 'center',
+        width: '100%',
+    };
+
+    const responsiveHeaderStyle = {
+        backgroundColor: colors.background,
+        elevation: isTablet ? 2 : 4,
+    };
+
     return (
         <>
-            <Appbar.Header style={{ backgroundColor: colors.background }}>
+            <Appbar.Header style={responsiveHeaderStyle}>
                 {onBackAction && <Appbar.BackAction onPress={onBackAction} animated={false} />}
-                {title && (<Appbar.Content title={title} titleStyle={{ ...titleStyle, fontSize: 18 }} />)}
-                {hasDrawer && <Appbar.Action icon={() => <MaterialIcons name="menu" size={24} color={colors.primary} />} onPress={onPressDrawer} animated={false} />}
+                {title && (<Appbar.Content title={title} titleStyle={{ ...titleStyle, fontSize: isTablet ? 20 : 18 }} />)}
+                {hasDrawer && <Appbar.Action icon={() => <MaterialIcons name="menu" size={isTablet ? 28 : 24} color={colors.primary} />} onPress={onPressDrawer} animated={false} />}
                 {optionsHeader.length > 0 && (
                     <Menu
                         visible={isOpen}
@@ -61,11 +79,11 @@ export const LayoutGeneral: FC<Props> = ({ children, containerStyle, hasDrawer, 
             </Appbar.Header>
             {withScrollView ? (
                 <ScrollView
-                    contentContainerStyle={containerStyle}
+                    contentContainerStyle={[containerStyle, { flexGrow: 1 }]}
                     keyboardShouldPersistTaps="always"
                     alwaysBounceVertical={false}
                     showsVerticalScrollIndicator={false}
-                    style={[containerStyle, { ...stylesGlobal.container, backgroundColor: colors.background }]}
+                    style={[responsiveContainerStyle, containerStyle]}
                     refreshControl={
                         <RefreshControl
                             refreshing={refreshing}
@@ -82,7 +100,7 @@ export const LayoutGeneral: FC<Props> = ({ children, containerStyle, hasDrawer, 
                     {children}
                 </ScrollView>
             ) : (
-                <View style={[containerStyle, { ...stylesGlobal.container, backgroundColor: colors.background }]}>{children}</View>
+                <View style={[responsiveContainerStyle, containerStyle]}>{children}</View>
             )}
         </>
     )

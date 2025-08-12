@@ -2,18 +2,30 @@
   "expo": {
     "name": "Gateway Academic",
     "slug": "Gateway_Academic",
-    "version": "1.0.5",
-    "orientation": "portrait",
+    "version": "1.0.6",
+    "orientation": "default",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": false,
+      "supportsTablet": true,
+      "requireFullScreen": false,
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "This app needs to access your gallery so you can select photos from the app. Please grant permission to use the camera and enjoy all the features of the app",
         "NSCameraUsageDescription": "This app needs to access your camera so that you can take photos from the app. Please grant permission to use the camera and enjoy all the features of the app",
-        "NSMicrophoneUsageDescription": "This app needs to access your microphone so that you can record audio from the app. Please grant permission to use the microphone and enjoy all the features of the app"
+        "NSMicrophoneUsageDescription": "This app needs to access your microphone so that you can record audio from the app. Please grant permission to use the microphone and enjoy all the features of the app",
+        "UISupportedInterfaceOrientations": [
+          "UIInterfaceOrientationPortrait",
+          "UIInterfaceOrientationLandscapeLeft",
+          "UIInterfaceOrientationLandscapeRight"
+        ],
+        "UISupportedInterfaceOrientations~ipad": [
+          "UIInterfaceOrientationPortrait",
+          "UIInterfaceOrientationPortraitUpsideDown", 
+          "UIInterfaceOrientationLandscapeLeft",
+          "UIInterfaceOrientationLandscapeRight"
+        ]
       },
       "googleServicesFile": "./GoogleService-Info.plist",
       "bundleIdentifier": "com.purplewidget.gatewayacademic"
@@ -60,7 +72,12 @@
         {
           "android": {
             "compileSdkVersion": 35,
-            "targetSdkVersion": 35
+            "targetSdkVersion": 35,
+            "enableEdgeToEdge": true,
+            "enableProguardInReleaseBuilds": true,
+            "usesCleartextTraffic": false,
+            "screenOrientation": "unspecified",
+            "resizeableActivity": true
           },
           "ios": {
             "useFrameworks": "static"

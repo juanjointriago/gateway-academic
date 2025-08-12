@@ -9,6 +9,8 @@ export * from './list';
 export * from './shared';
 export * from './modal';
 export * from './common/ImagePreview';
+export * from './svg';
+export * from './qr';
 
 export * from './searchbar/SearchBarGeneral'
 export * from './table/TableGeneric'

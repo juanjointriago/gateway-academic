@@ -1,0 +1,1 @@
+export { QRWrapper, isQRAvailable } from './QRWrapper';

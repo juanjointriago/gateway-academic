@@ -1,10 +1,13 @@
 import { LayoutGeneral } from "@/src/components";
 import { useAuthStore } from "@/src/store/auth/auth.store";
 import { useProgressSheetStore } from "@/src/store/progress-sheet/progress-sheet.store";
-import { Text, Avatar, useTheme, Button, IconButton } from "react-native-paper";
+import { Text, Avatar, useTheme } from "react-native-paper";
 import { View, StyleSheet, Animated, TouchableWithoutFeedback, Platform } from "react-native";
 import { useRouter } from 'expo-router';
 import { useRef, useState } from "react";
+import { CurvedBackground } from "@/src/components/svg";
+import { QRWrapper } from "@/src/components/qr";
+import { useAppInfoStore } from "@/src/store/appinfo/appinfo.store";
 
 export const VCardScreen = () => {
     const router = useRouter();
@@ -13,6 +16,7 @@ export const VCardScreen = () => {
     const theme = useTheme();
     const [flipped, setFlipped] = useState(false);
     const flipAnim = useRef(new Animated.Value(0)).current;
+    const appInfo = useAppInfoStore (state=>state.appInfo)
 
     if (!user) {
         return <Text>No user data available</Text>;
@@ -59,11 +63,11 @@ export const VCardScreen = () => {
     const id = user.cc || '';
 
     // Datos del progressSheet (ajustar a tus propiedades reales)
-    const contract = progressSheet.contractNumber || '';
-    const startDate = progressSheet.createdAt || '';
-    const endDate = progressSheet.updatedAt || '';
+    // const contract = progressSheet.contractNumber || '';
+    // const startDate = progressSheet.createdAt || '';
+    // const endDate = progressSheet.updatedAt || '';
     // Si tienes un estado, usa la propiedad real:
-    const work = progressSheet.work || '';
+    // const work = progressSheet.work || '';
 
     const isDark = theme.dark;
     // Tonos celestes/lilas
@@ -115,6 +119,36 @@ export const VCardScreen = () => {
             alignItems: 'center',
             justifyContent: 'center',
             padding: 20,
+            overflow: 'hidden', // Para mantener las esquinas redondeadas
+        },
+        cardBack: {
+            width: 260,
+            height: 400,
+            borderRadius: 18,
+            backgroundColor: '#F5F5F5',
+            // Sombra y brillo igual que el frente
+            shadowColor: shadowColor,
+            shadowOffset: { width: 0, height: 0 },
+            shadowOpacity: 0.7,
+            shadowRadius: 18,
+            elevation: 16,
+            borderWidth: 2,
+            borderColor: glowColor,
+            // Efecto de brillo
+            ...Platform.select({
+                ios: {
+                    shadowColor: shadowColor,
+                },
+                android: {
+                    // El borderColor y elevation ya dan buen efecto en Android
+                },
+            }),
+            position: 'absolute',
+            backfaceVisibility: 'hidden',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 20,
+            overflow: 'hidden', // Para mantener las esquinas redondeadas
         },
         avatar: {
             marginBottom: 18,
@@ -154,6 +188,94 @@ export const VCardScreen = () => {
             marginTop: 18,
             alignSelf: 'center',
         },
+        // Back card styles
+        signatureContainer: {
+            position: 'absolute',
+            top: 300,
+            left: 0,
+            right: 0,
+            alignItems: 'center',
+            zIndex: 2,
+        },
+        signatureBox: {
+            backgroundColor: '#1B365D',
+            borderRadius: 25,
+            paddingHorizontal: 30,
+            paddingVertical: 12,
+            marginBottom: 20,
+        },
+        signatureText: {
+            color: 'white',
+            fontSize: 20,
+            fontStyle: 'italic',
+            fontWeight: '300',
+            textAlign: 'center',
+            letterSpacing: 1,
+            ...Platform.select({
+                ios: {
+                    fontFamily: 'Snell Roundhand', // iOS cursive font
+                },
+                android: {
+                    fontFamily: 'cursive', // Android cursive font
+                },
+                web: {
+                    fontFamily: 'cursive', // Web cursive font
+                },
+            }),
+        },
+        directorInfo: {
+            position: 'absolute',
+            bottom: 40,
+            left: 0,
+            right: 0,
+            alignItems: 'center',
+            zIndex: 2,
+            paddingHorizontal: 20,
+        },
+        directorName: {
+            fontSize: 18,
+            fontWeight: 'bold',
+            color: '#1B365D',
+            textAlign: 'center',
+            marginBottom: 4,
+        },
+        directorTitle: {
+            fontSize: 14,
+            color: '#1B365D',
+            textAlign: 'center',
+            marginBottom: 10,
+        },
+        contactInfo: {
+            fontSize: 12,
+            color: '#1B365D',
+            textAlign: 'center',
+            marginBottom: 2,
+        },
+        addressInfo: {
+            fontSize: 11,
+            color: '#666666',
+            textAlign: 'center',
+            marginBottom: 1,
+        },
+        websiteContainer: {
+            backgroundColor: '#1B365D',
+            borderRadius: 15,
+            paddingHorizontal: 20,
+            paddingVertical: 6,
+            marginTop: 3,
+        },
+        websiteText: {
+            color: 'white',
+            fontSize: 12,
+            textAlign: 'center',
+        },
+        qrContainer: {
+            alignItems: 'center',
+            marginTop: 1,
+            backgroundColor: 'white',
+            padding: 6,
+            borderRadius: 8,
+        },
     });
 
     return (
@@ -167,6 +289,7 @@ export const VCardScreen = () => {
                                 { rotateY: frontInterpolate }
                             ]
                         }]}> 
+                            <CurvedBackground variant="front" width={260} height={400} />
                             <Avatar.Image
                                 size={90}
                                 source={avatarUri ? { uri: avatarUri } : require('@/assets/images/icon.png')}
@@ -175,23 +298,48 @@ export const VCardScreen = () => {
                             <Text style={styles.name}>{fullName}</Text>
                             <Text style={styles.email}>{email}</Text>
                             <Text style={styles.id}>ID: {id}</Text>
-                            <Text style={styles.label}>Toca para ver detalles del contrato</Text>
+                            <Text style={styles.label}>Toca para ver mas detalles...</Text>
                         </Animated.View>
-                        <Animated.View style={[styles.card, { 
+                        <Animated.View style={[styles.cardBack, { 
                             transform: [
                                 { perspective: 1000 },
                                 { rotateY: backInterpolate }
-                            ],
-                            backgroundColor: theme.colors.secondaryContainer, 
-                            position: 'absolute', 
-                            top: 0 
+                            ]
+ 
                         }]}> 
-                            <Text style={[styles.label, { color: theme.colors.primary }]}>Contrato</Text>
-                            <Text style={styles.value}>N°: {contract}</Text>
-                            <Text style={styles.value}>Inicio: {startDate}</Text>
-                            <Text style={styles.value}>Fin: {endDate}</Text>
-                            <Text style={styles.value}>Trabajo: {work}</Text>
-                            <Text style={[styles.label, { marginTop: 24 }]}>Toca para volver</Text>
+                            <CurvedBackground variant="back" width={260} height={400} />
+                            
+                            {/* Signature section */}
+                            <View style={styles.signatureContainer}>
+                                <View style={styles.signatureBox}>
+                                    <Text style={styles.signatureText}>{fullName}</Text>
+                                </View>
+                            </View>
+                            
+                            {/* Director information */}
+                            <View style={styles.directorInfo}></View>
+                                <Text style={styles.directorName}>{appInfo.generalDirectorName}</Text>
+                                <Text style={styles.directorTitle}>Director General</Text>
+                                
+                                <Text style={styles.contactInfo}>{appInfo.supportPhone}</Text>
+                                <Text style={styles.contactInfo}>{appInfo.supportEmail}</Text>
+                                <Text style={styles.addressInfo}>{appInfo.address}</Text>
+                                
+                                <View style={styles.websiteContainer}>
+                                    <Text style={styles.websiteText}>{appInfo.webSyte}</Text>
+                                </View>
+                                
+                                {/* QR Code */}
+                                {appInfo.webSyte && (
+                                    <View style={styles.qrContainer}>
+                                        <QRWrapper
+                                            value={appInfo.webSyte.startsWith('http') ? appInfo.webSyte : `https://${appInfo.webSyte}`}
+                                            size={40}
+                                            color="#1B365D"
+                                            backgroundColor="white"
+                                        />
+                                    </View>
+                                )}                   
                         </Animated.View>
                     </View>
                 </TouchableWithoutFeedback>

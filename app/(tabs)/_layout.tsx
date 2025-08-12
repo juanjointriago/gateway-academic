@@ -1,16 +1,26 @@
 import { useAuthStore } from "@/src/store/auth/auth.store";
+import { useResponsiveScreen } from "@/src/hook/useResponsiveScreen";
 import { Tabs } from "expo-router";
 import { Platform } from "react-native";
 import { BottomNavigation, Icon } from "react-native-paper";
 
 export default function TabLayout() {
     const user = useAuthStore((state) => state.user);
+    const { isTablet, isLandscape } = useResponsiveScreen();
     
     return (
         <Tabs
             screenOptions={{
                 headerShown: false,
-                tabBarStyle: Platform.select({ ios: { position: 'absolute' } })
+                tabBarStyle: Platform.select({ 
+                    ios: { 
+                        position: 'absolute',
+                        height: isTablet ? 80 : 60
+                    },
+                    android: {
+                        height: isTablet ? 80 : 60
+                    }
+                })
             }}
             tabBar={({ navigation, state, descriptors, insets }) => (
                 <BottomNavigation.Bar
@@ -22,7 +32,11 @@ export default function TabLayout() {
                     renderIcon={({ route, focused, color }) => {
                         const { options } = descriptors[route.key];
                         if (options.tabBarIcon) {
-                            return options.tabBarIcon({ focused, color, size: 24 });
+                            return options.tabBarIcon({ 
+                                focused, 
+                                color, 
+                                size: isTablet ? 28 : 24 
+                            });
                         }
 
                         return null;
