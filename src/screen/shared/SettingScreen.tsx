@@ -2,7 +2,6 @@ import { ButtonSelectable, LayoutGeneral } from '@/src/components'
 import { useAlert } from '@/src/context/AlertContext';
 import { useRouter } from 'expo-router';
 import { useAuthStore } from '@/src/store/auth/auth.store';
-import Constants from 'expo-constants';
 import { useEventStore } from '@/src/store/event/event.store';
 import { useLevelStore } from '@/src/store/level/level.store';
 import { useSubLevelStore } from '@/src/store/level/sublevel.store';
