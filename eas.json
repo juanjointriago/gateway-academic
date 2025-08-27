@@ -34,9 +34,25 @@
         "GOOGLE_SERVICES_JSON": "$(GOOGLE_SERVICES_JSON)",
         "GOOGLE_SERVICE_INFO_PLIST": "$(GOOGLE_SERVICE_INFO_PLIST)"
       }
+    },
+    "production-apk": {
+      "extends": "production",
+      "android": {
+        "buildType": "apk"
+      }
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "android": {
+        "serviceAccountKeyPath": "./google-play-service-account.json",
+        "track": "internal"
+      },
+      "ios": {
+        "appleId": "your-apple-id@email.com",
+        "ascAppId": "your-asc-app-id",
+        "appleTeamId": "your-team-id"
+      }
+    }
   }
 }

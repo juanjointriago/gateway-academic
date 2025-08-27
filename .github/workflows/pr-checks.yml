@@ -1,0 +1,45 @@
+name: PR Checks
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  quick-checks:
+    name: 🚀 Quick Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🏗 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+          cache: npm
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🔍 Run linter
+        run: npm run lint:check
+
+      - name: 🧪 Run tests
+        run: npm run test:ci
+
+      - name: 🩺 Check Expo configuration
+        run: npm run doctor
+
+      - name: 📋 Check package.json changes
+        run: |
+          if git diff --name-only origin/main...HEAD | grep -q package.json; then
+            echo "📦 package.json has changes - reviewing dependencies..."
+            npm audit --audit-level high
+          else
+            echo "✅ No package.json changes detected"
+          fi
+
+      - name: 📊 Bundle size check
+        run: |
+          echo "📊 Checking bundle size..."
+          # Aquí puedes agregar herramientas como bundle-analyzer si las necesitas

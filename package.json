@@ -10,11 +10,24 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
+    "test:ci": "jest --ci --coverage --silent",
     "lint": "expo lint",
+    "lint:check": "expo lint --max-warnings 0",
     "android:internal": "eas build --platform android --profile preview",
     "android:bundle": "eas build --platform android",
+    "build:android:preview": "eas build --platform android --profile preview --non-interactive",
+    "build:android:production": "eas build --platform android --profile production --non-interactive",
+    "build:ios:preview": "eas build --platform ios --profile preview --non-interactive",
+    "build:ios:production": "eas build --platform ios --profile production --non-interactive",
+    "submit:android": "eas submit --platform android --latest",
+    "submit:ios": "eas submit --platform ios --latest",
     "setup-env-files": "node ./scripts/setup-env-files.js",
-    "prebuild": "npm run setup-env-files"
+    "prebuild": "npm run setup-env-files",
+    "doctor": "npx expo-doctor",
+    "changelog": "node ./scripts/generate-changelog.js",
+    "release:patch": "npm version patch && git push origin main --tags",
+    "release:minor": "npm version minor && git push origin main --tags",
+    "release:major": "npm version major && git push origin main --tags"
   },
   "jest": {
     "preset": "jest-expo"

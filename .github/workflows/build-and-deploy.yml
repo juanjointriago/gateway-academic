@@ -1,0 +1,176 @@
+name: EAS Build and Deploy
+
+on:
+  push:
+    branches: [main]
+    tags:
+      - 'v*.*.*'
+  pull_request:
+    branches: [main]
+
+jobs:
+  # Job para validaciones (siempre se ejecuta)
+  validate:
+    name: 🔍 Validate Code
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🏗 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+          cache: npm
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🔍 Run linter
+        run: npm run lint:check
+
+      - name: 🧪 Run tests
+        run: npm run test:ci
+
+      - name: 🩺 Check Expo configuration
+        run: npm run doctor
+
+  # Job para build de Android (solo en push a main o tags)
+  build-android:
+    name: 🤖 Build Android
+    runs-on: ubuntu-latest
+    needs: validate
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🏗 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+          cache: npm
+
+      - name: 🏗 Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          expo-version: latest
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🏗 Setup environment files
+        run: npm run setup-env-files
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+          GOOGLE_SERVICE_INFO_PLIST: ${{ secrets.GOOGLE_SERVICE_INFO_PLIST }}
+
+      - name: 🤖 Build Android APK (Preview for PR)
+        if: github.event_name == 'pull_request'
+        run: npm run build:android:preview
+
+      - name: 🤖 Build Android AAB (Production)
+        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+        run: npm run build:android:production
+
+      - name: 📁 Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-build-${{ github.sha }}
+          path: |
+            build-*.apk
+            build-*.aab
+
+  # Job para distribución automática (solo en tags de release)
+  distribute:
+    name: 🚀 Distribute to Stores
+    runs-on: ubuntu-latest
+    needs: [validate, build-android]
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🏗 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+          cache: npm
+
+      - name: 🏗 Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          expo-version: latest
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🏗 Setup Google Play Service Account
+        run: echo '${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}' > google-play-service-account.json
+
+      - name: 🤖 Submit to Google Play Store
+        run: npm run submit:android
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+
+      - name: 🍎 Submit to Apple App Store (if iOS build exists)
+        if: false # Cambiar a true cuando tengas configurado iOS
+        run: npm run submit:ios
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+
+      - name: 📝 Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            🚀 **Nuevo Release Automático**
+            
+            ### 📱 Android
+            - ✅ Build completado exitosamente
+            - ✅ Subido a Google Play Store (Internal Track)
+            
+            ### 🔗 Enlaces
+            - [Ver en EAS](https://expo.dev/@${{ github.repository_owner }}/${{ github.event.repository.name }}/builds)
+            - [Google Play Console](https://play.google.com/console)
+            
+            ### 📋 Cambios
+            Revisa el changelog para detalles específicos de esta versión.
+          draft: false
+          prerelease: false
+
+  # Job para comentarios en PR con enlaces de build
+  comment-pr:
+    name: 💬 Comment on PR
+    runs-on: ubuntu-latest
+    needs: build-android
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: 📝 Comment PR with build link
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `🤖 **Build automático completado**
+              
+              ### 📱 Android Preview Build
+              ✅ Build completado exitosamente
+              
+              🔗 [Ver build en EAS](https://expo.dev/@${context.repo.owner}/${context.repo.repo}/builds)
+              
+              📦 Los artefactos están disponibles en la pestaña "Actions" de este PR.
+              
+              ---
+              *Build ID: \`${context.sha.substring(0, 7)}\`*`
+            })
