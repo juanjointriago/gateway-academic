@@ -1,4 +1,4 @@
-import { LayoutGeneral } from "@/src/components";
+import { LayoutGeneral, NoDataPlaceholder } from "@/src/components";
 import { useAuthStore } from "@/src/store/auth/auth.store";
 import { useProgressSheetStore } from "@/src/store/progress-sheet/progress-sheet.store";
 import { Text, Avatar, useTheme } from "react-native-paper";
@@ -19,11 +19,25 @@ export const VCardScreen = () => {
     const appInfo = useAppInfoStore (state=>state.appInfo)
 
     if (!user) {
-        return <Text>No user data available</Text>;
+        return (
+            <LayoutGeneral title="Credencial" onBackAction={() => router.back()}>
+                <NoDataPlaceholder 
+                    title="Usuario no encontrado"
+                    subtitle="No se pudieron cargar los datos del usuario. Por favor, inicia sesión nuevamente."
+                />
+            </LayoutGeneral>
+        );
     }
     const progressSheet = getProgressSheetByStudentId(user.id);
     if (!progressSheet) {
-        return <Text>No progress sheet found for this user</Text>;
+        return (
+            <LayoutGeneral title="Credencial" onBackAction={() => router.back()}>
+                <NoDataPlaceholder 
+                    title="Información no disponible"
+                    subtitle="El estudiante aun no tiene un contrato asignado"
+                />
+            </LayoutGeneral>
+        );
     }
 
     // Animación flip

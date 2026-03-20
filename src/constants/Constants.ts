@@ -12,12 +12,13 @@ export const URL_PROFILE_DEFAULT = 'https://firebasestorage.googleapis.com/v0/b/
 
 export const MORE_ICON = Platform.OS === "ios" ? "dots-horizontal" : "dots-vertical";
 
-export const USERTEACHERTEST = 'docenteprueba@yopmail.com';
-export const PASSTEACHERTEST = '123456789';
-
-// export const USERSTUDENTTEST = 'estudianteprueba@yopmail.com';
-export const USERSTUDENTTEST = 'juanintriagovillarrealdev@gmail.com';
-export const PASSSTUDENTTEST = '123456789';
+// Credenciales de prueba: se inyectan vía EXPO_PUBLIC_ en .env.local (local)
+// o en las secciones env de eas.json (builds development/preview).
+// En producción no están definidas → el formulario aparece vacío.
+export const USERTEACHERTEST = process.env.EXPO_PUBLIC_TEST_EMAIL_TEACHER ?? '';
+export const PASSTEACHERTEST = process.env.EXPO_PUBLIC_TEST_PASS_TEACHER ?? '';
+export const USERSTUDENTTEST = process.env.EXPO_PUBLIC_TEST_EMAIL_STUDENT ?? '';
+export const PASSSTUDENTTEST = process.env.EXPO_PUBLIC_TEST_PASS_STUDENT ?? '';
 
 export const URL_API = 'https://countriesnow.space/api/v0.1/';
 export const COUNTRY = 'Ecuador';

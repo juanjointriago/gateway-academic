@@ -20,7 +20,6 @@ export const ClassesScreen = () => {
         }
         
     }
-    console.log('👨🏼‍💻',user)
     const events = allEvents
         .filter(event => {
             // Validar que existan los datos necesarios

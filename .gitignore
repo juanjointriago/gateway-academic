@@ -17,7 +17,7 @@ environment.ts
 *.env
 # macOS
 .DS_Store
-
+docs/
 
 #for build
 credentials.json

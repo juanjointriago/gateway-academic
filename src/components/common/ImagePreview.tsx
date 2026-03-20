@@ -52,20 +52,16 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({
   };
 
   const openModal = () => {
-    console.log('OpenModal called:', { imageError, imageUri: !!imageUri });
     if (!imageError && imageUri) {
-      console.log('Opening modal...');
       setModalVisible(true);
     }
   };
 
   const closeModal = () => {
-    console.log('Closing modal...');
     setModalVisible(false);
   };
 
   if (imageError || !imageUri) {
-    console.log('Showing placeholder:', { imageError, imageUri });
     return (
       <View style={[styles.placeholder, thumbnailStyle]}>
         <Text style={[styles.placeholderText, { color: theme.colors.onSurfaceVariant }]}>
@@ -74,8 +70,6 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({
       </View>
     );
   }
-
-  console.log('Rendering ImagePreview with image:', { imageUri: !!imageUri, modalVisible });
 
   return (
     <>

@@ -28,7 +28,7 @@ export const createDocument = async (collection: string, data: any) => {
 
 export const createDocumentId = async (collectionName: string, data: FirebaseFirestoreTypes.DocumentData) => {
     try {
-        const docRef = await addDoc(collection(db, collectionName), { data })
+        const docRef = await addDoc(collection(db, collectionName), data)
         console.debug('Document written with ID: ', docRef.id);
     } catch (error) {
         console.warn("Error adding document: ", error)

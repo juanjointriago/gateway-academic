@@ -29,7 +29,6 @@ const storeApi: StateCreator<IAuthState & IAuthActions> = (set, get) => ({
             return resp;
         }
         set({ status: 'authorized', user: resp.data });
-        console.debug('👨🏼‍💻 Login',resp.data);
         return resp;
     },
 

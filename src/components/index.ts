@@ -11,6 +11,7 @@ export * from './modal';
 export * from './common/ImagePreview';
 export * from './svg';
 export * from './qr';
+export * from './NoDataPlaceholder';
 
 export * from './searchbar/SearchBarGeneral'
 export * from './table/TableGeneric'

@@ -12,7 +12,11 @@
       },
       "env": {
         "GOOGLE_SERVICES_JSON": "$(GOOGLE_SERVICES_JSON)",
-        "GOOGLE_SERVICE_INFO_PLIST": "$(GOOGLE_SERVICE_INFO_PLIST)"
+        "GOOGLE_SERVICE_INFO_PLIST": "$(GOOGLE_SERVICE_INFO_PLIST)",
+        "EXPO_PUBLIC_TEST_EMAIL_TEACHER": "docenteprueba@yopmail.com",
+        "EXPO_PUBLIC_TEST_PASS_TEACHER": "123456789",
+        "EXPO_PUBLIC_TEST_EMAIL_STUDENT": "estudianteprueba@yopmail.com",
+        "EXPO_PUBLIC_TEST_PASS_STUDENT": "123456789"
       }
     },
     "preview": {
@@ -22,7 +26,11 @@
       },
       "env": {
         "GOOGLE_SERVICES_JSON": "$(GOOGLE_SERVICES_JSON)",
-        "GOOGLE_SERVICE_INFO_PLIST": "$(GOOGLE_SERVICE_INFO_PLIST)"
+        "GOOGLE_SERVICE_INFO_PLIST": "$(GOOGLE_SERVICE_INFO_PLIST)",
+        "EXPO_PUBLIC_TEST_EMAIL_TEACHER": "docenteprueba@yopmail.com",
+        "EXPO_PUBLIC_TEST_PASS_TEACHER": "123456789",
+        "EXPO_PUBLIC_TEST_EMAIL_STUDENT": "estudianteprueba@yopmail.com",
+        "EXPO_PUBLIC_TEST_PASS_STUDENT": "123456789"
       }
     },
     "production": {

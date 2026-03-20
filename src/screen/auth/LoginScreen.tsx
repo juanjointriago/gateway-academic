@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { ButtonGeneral, FadeInImage, InputControl, LabelGeneral, LayoutAuth, SocialButton, TitleWithLine } from '@/src/components'
@@ -54,10 +54,6 @@ export const LoginScreen = () => {
             toast({ description: 'Error al abrir el enlace', type: 'danger' });
         }
     };
-
-    useEffect(() => {
-        console.log('URL del logo:', colorScheme === 'dark' ? LOGO_URL : LOGO_URL2);
-    }, [colorScheme]);
 
     return (
         <LayoutAuth hasAppBar={false} containerStyle={{ justifyContent: 'center' }} >
