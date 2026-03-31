@@ -1,4 +1,4 @@
-import { theme } from '@/app/theme/theme';
+import { theme } from '@/src/theme/theme';
 import { FC } from 'react';
 import { StyleSheet, View } from 'react-native'
 import { Button as PaperButton } from 'react-native-paper'

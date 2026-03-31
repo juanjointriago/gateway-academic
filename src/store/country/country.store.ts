@@ -1,7 +1,7 @@
 import { IResData, IResProvince, IState } from "@/src/interfaces";
 import { create, StateCreator } from "zustand";
-import { createJSONStorage, devtools, persist } from "zustand/middleware";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { devtools, persist } from "zustand/middleware";
+import { zustandStorage } from "@/src/store/storage";
 import API from "@/src/api/api";
 import { COUNTRY } from "@/src/constants/Constants";
 
@@ -39,6 +39,6 @@ const storeApi: StateCreator<ICountryState & ICountryActions> = (set, get) => ({
 export const useCountryStore = create<ICountryState & ICountryActions>()(
             persist(storeApi, {
                 name: "country-store",
-                storage: createJSONStorage(() => AsyncStorage),
+                storage: zustandStorage(),
             })
 );

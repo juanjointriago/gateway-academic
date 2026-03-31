@@ -1,8 +1,8 @@
 import { ILevel } from "@/src/interfaces"
 import { LevelService } from "@/src/services"
-import AsyncStorage from "@react-native-async-storage/async-storage"
 import { create, StateCreator } from "zustand"
-import { createJSONStorage, devtools, persist } from "zustand/middleware"
+import { devtools, persist } from "zustand/middleware"
+import { zustandStorage } from "@/src/store/storage"
 
 interface ILevelState {
     level: ILevel | null
@@ -31,6 +31,6 @@ const storeApi: StateCreator<ILevelState & ILevelActions> = (set, get) => ({
 export const useLevelStore = create<ILevelState & ILevelActions>()(
             persist(storeApi, {
                 name: "level-store",
-                storage: createJSONStorage(() => AsyncStorage),
+                storage: zustandStorage(),
             })
 );

@@ -1,4 +1,20 @@
-import firestore, { addDoc, collection, getDocs, getFirestore, query } from "@react-native-firebase/firestore";
+import {
+    addDoc,
+    collection as col,
+    deleteDoc,
+    doc,
+    getDoc,
+    getDocs,
+    getFirestore,
+    limit as firestoreLimit,
+    orderBy as firestoreOrderBy,
+    query,
+    QueryConstraint,
+    setDoc,
+    startAfter as firestoreStartAfter,
+    updateDoc,
+    where,
+} from "@react-native-firebase/firestore";
 import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
 
 
@@ -10,59 +26,33 @@ interface ICollectionQuery {
     limit?: number;
     startAfterDoc?: FirebaseFirestoreTypes.DocumentData | null;
 }
+
 const db = getFirestore();
+
 // Crear un nuevo documento
-export const createDocument = async (collection: string, data: any) => {
-    return await firestore().collection(collection).add(data);
+export const createDocument = async (collectionName: string, data: any) => {
+    return await addDoc(col(db, collectionName), data);
 };
-
-// Crear un nuevo documento con id presonalizada
-// export const createDocumentId = async (
-//     collection: string,
-//     id: string,
-//     data: any
-// ) => {
-//     return await firestore().collection(collection).doc(id).set(data);
-// };
-
 
 export const createDocumentId = async (collectionName: string, data: FirebaseFirestoreTypes.DocumentData) => {
     try {
-        const docRef = await addDoc(collection(db, collectionName), data)
+        const docRef = await addDoc(col(db, collectionName), data)
         console.debug('Document written with ID: ', docRef.id);
     } catch (error) {
         console.warn("Error adding document: ", error)
-
     }
 }
 
 // Obtener todos los documentos de una colección
-// export const getAllDocuments = async <T>(collection: string): Promise<T[]> => {
-//     console.debug( '--------------',{collection});
-//     return await firestore()
-//         .collection(collection)
-//         .get()
-//         .then((querySnapshot) => {
-//             const documents: T[] = [];
-//             querySnapshot.forEach((documentSnapshot) => {
-//                 documents.push({
-//                     id: documentSnapshot.id,
-//                     ...documentSnapshot.data(),
-//                 } as T);
-//             });
-//             return documents;
-//         });
-// };
 export const getAllDocuments = async <T>(collectionName: string): Promise<T[]> => {
   try {
-    const q = query(collection(db, collectionName));
+    const q = query(col(db, collectionName));
     const querySnapshot = await getDocs(q);
     const documents: T[] = [];
-    querySnapshot.forEach((doc:any) => {
-      documents.push(doc.data() as T);
+    querySnapshot.forEach((document: any) => {
+      documents.push(document.data() as T);
     });
     return documents;
-
   } catch (error) {
     console.error('Error getting documents:', error);
     throw error;
@@ -80,25 +70,32 @@ interface QueryOptions {
     condition?: QueryCondition[];
 }
 
-export const getQueryDocuments = async <T>({ collection, condition = [], orderByField, orderByDirection = "asc", limit, startAfterDoc }: ICollectionQuery): Promise<T[]> => {
-    let query: FirebaseFirestoreTypes.Query<FirebaseFirestoreTypes.DocumentData> = firestore().collection(collection);
+export const getQueryDocuments = async <T>({
+    collection: collectionName,
+    condition = [],
+    orderByField,
+    orderByDirection = "asc",
+    limit: limitCount,
+    startAfterDoc,
+}: ICollectionQuery): Promise<T[]> => {
+    const constraints: QueryConstraint[] = [];
+
     condition.forEach(({ field, operator, value }) => {
-        query = query.where(field, operator, value);
+        constraints.push(where(field, operator, value));
     });
     if (orderByField) {
-        query = query.orderBy(orderByField, orderByDirection);
+        constraints.push(firestoreOrderBy(orderByField, orderByDirection));
     }
-    if (limit) {
-        query = query.limit(limit);
+    if (limitCount) {
+        constraints.push(firestoreLimit(limitCount));
     }
-
     if (startAfterDoc) {
-        query = query.startAfter(
-            ...(Array.isArray(startAfterDoc) ? startAfterDoc : [startAfterDoc])
-        );
+        const args = Array.isArray(startAfterDoc) ? startAfterDoc : [startAfterDoc];
+        constraints.push(firestoreStartAfter(...args));
     }
 
-    return await query.get().then((querySnapshot) => {
+    const q = query(col(db, collectionName), ...constraints);
+    return await getDocs(q).then((querySnapshot) => {
         const documents: T[] = [];
         querySnapshot.forEach((documentSnapshot) => {
             documents.push({
@@ -113,20 +110,18 @@ export const getQueryDocuments = async <T>({ collection, condition = [], orderBy
     });
 };
 
-
-
 // Obtener un documento por su ID
 export const getDocumentById = async <T>(
-    collection: string,
+    collectionName: string,
     id: string
 ): Promise<T | null> => {
     try {
-        const db = firestore();
-        const doc = await db.collection(collection).doc(id).get();
-        
-        if (!doc.exists) return null;
-        
-        return { id: doc.id, ...doc.data() } as T;
+        const docRef = doc(db, collectionName, id);
+        const docSnap = await getDoc(docRef);
+
+        if (!docSnap.exists()) return null;
+
+        return { id: docSnap.id, ...docSnap.data() } as T;
     } catch (error) {
         console.error('Error in getDocumentById:', error);
         throw error;
@@ -135,44 +130,32 @@ export const getDocumentById = async <T>(
 
 // Actualizar un documento existente
 export const updateDocument = async (
-    collection: string,
+    collectionName: string,
     id: string,
     data: any
 ) => {
-    return await firestore().collection(collection).doc(id).update(data);
+    return await updateDoc(doc(db, collectionName, id), data);
 };
 
 // Eliminar un documento
-export const deleteDocument = async (collection: string, id: string) => {
-    return await firestore().collection(collection).doc(id).delete();
+export const deleteDocument = async (collectionName: string, id: string) => {
+    return await deleteDoc(doc(db, collectionName, id));
 };
 
-/**
- * Obtiene documentos de una colección con restricciones opcionales
- * @param collection Nombre de la colección
- * @param constraints Restricciones de consulta (where)
- * @returns Array de documentos tipados
- */
 export const getCollection = async <T>(
-    collection: string,
-    constraints: { field: string; operator: FirebaseFirestoreTypes.WhereFilterOp; value: any }[] = []
+    collectionName: string,
+    whereConstraints: { field: string; operator: FirebaseFirestoreTypes.WhereFilterOp; value: any }[] = []
 ): Promise<T[]> => {
     try {
-        const query = firestore().collection(collection);
-        
-        // Si hay restricciones, las aplicamos
-        let constrainedQuery: FirebaseFirestoreTypes.Query = query;
-        if (constraints.length > 0) {
-            constraints.forEach(({ field, operator, value }) => {
-                constrainedQuery = constrainedQuery.where(field, operator, value);
-            });
-        }
+        const constraints: QueryConstraint[] = whereConstraints.map(
+            ({ field, operator, value }) => where(field, operator, value)
+        );
+        const q = query(col(db, collectionName), ...constraints);
+        const querySnapshot = await getDocs(q);
 
-        const querySnapshot = await constrainedQuery.get();
-        
-        return querySnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
+        return querySnapshot.docs.map(document => ({
+            id: document.id,
+            ...document.data()
         })) as T[];
     } catch (error) {
         console.error('Error en getCollection:', error);
@@ -180,29 +163,20 @@ export const getCollection = async <T>(
     }
 };
 
-/**
- * Crea un documento en una colección con un ID generado localmente
- * @param collection Nombre de la colección
- * @param data Datos a guardar
- * @returns Promise con la referencia del documento creado
- */
 export const createDocumentWithLocalId = async <T extends { id?: string }>(
-    collection: string,
+    collectionName: string,
     data: Omit<T, 'id'>
 ): Promise<T> => {
     try {
-        // Genera un ID único usando Firestore
-        const newDocRef = firestore().collection(collection).doc();
+        const newDocRef = doc(col(db, collectionName));
         const newId = newDocRef.id;
 
-        // Crea el objeto con el ID generado
         const dataWithId = {
             id: newId,
             ...data,
         } as T;
 
-        // Guarda el documento con el ID generado
-        await newDocRef.set(dataWithId);
+        await setDoc(newDocRef, dataWithId);
 
         return dataWithId;
     } catch (error) {

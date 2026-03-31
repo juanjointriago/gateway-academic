@@ -1,9 +1,9 @@
 // import { fileStorage } from "@/src/helpers/fileSystemZustand";
 import { ISubLevel } from "@/src/interfaces"
 import { SubLevelService } from "@/src/services";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create, StateCreator } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
+import { persist } from "zustand/middleware";
+import { zustandStorage } from "@/src/store/storage";
 
 interface ISubLevelState {
     subLevel: ISubLevel | null
@@ -59,6 +59,6 @@ const storeApi: StateCreator<ISubLevelState & ISubLevelActions> = (set, get) => 
 export const useSubLevelStore = create<ISubLevelState & ISubLevelActions>()(
             persist(storeApi, {
                 name: "sublevel-store",
-                storage: createJSONStorage(() => AsyncStorage),
+                storage: zustandStorage(),
             })
 );

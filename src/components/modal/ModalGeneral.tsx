@@ -25,12 +25,14 @@ export const ModalGeneral: FC<Props> = ({ children, onDismiss, visible, snapPoin
             transparent
         >
             <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.1)' }}>
-                <View style={{ height: modalHeight, backgroundColor: colors.background, overflow: 'hidden', borderTopLeftRadius: 20, borderTopRightRadius: 20, elevation: 10 }}>
+                <View style={{ height: modalHeight, borderTopLeftRadius: 20, borderTopRightRadius: 20, elevation: 10 }}>
+            <View style={{ flex: 1, backgroundColor: colors.background, overflow: 'hidden', borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
                     <Appbar.Header style={{ backgroundColor: colors.background }}>
                         <Appbar.Action icon="close" onPress={onDismiss} />
                         {title && (<Appbar.Content title={title} titleStyle={{ fontSize: 16 }} />)}
                     </Appbar.Header>
                     {children}
+                </View>
                 </View>
             </View>
         </Modal>

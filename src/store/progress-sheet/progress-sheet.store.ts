@@ -1,8 +1,8 @@
 import { progressSheetInterface } from "@/src/interfaces/progress-sheet.interface";
 import { ProgressSheetService } from "@/src/services/progress-sheet/progress-sheet.service";
 import { create, StateCreator } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { persist } from "zustand/middleware";
+import { zustandStorage } from "@/src/store/storage";
 
 interface ProgressSheetStore {
   progressSheets: progressSheetInterface[];
@@ -38,6 +38,6 @@ const storeAPI: StateCreator<ProgressSheetStore> = (set, get) => ({
 export const useProgressSheetStore = create<ProgressSheetStore>()(
   persist(storeAPI, {
     name: "progresssheet-store",
-    storage: createJSONStorage(() => AsyncStorage),
+    storage: zustandStorage(),
   })
 );

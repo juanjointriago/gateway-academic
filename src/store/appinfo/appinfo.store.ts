@@ -1,8 +1,8 @@
 import { IAppInfo } from "@/src/interfaces/appinfo.interface";
 import { AppInfoService } from "@/src/services/appinfo/appinfo.service";
 import { create, StateCreator } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { persist } from "zustand/middleware";
+import { zustandStorage } from "@/src/store/storage";
 
 
 interface AppInfoStore {
@@ -28,6 +28,6 @@ const storeAPI: StateCreator<AppInfoStore> = (set) => ({
 export const useAppInfoStore = create<AppInfoStore>()(
   persist(storeAPI, {
     name: "appinfo-store",
-    storage: createJSONStorage(() => AsyncStorage),
+    storage: zustandStorage(),
   })
 );

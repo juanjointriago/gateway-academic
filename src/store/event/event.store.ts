@@ -1,8 +1,8 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { IEvent, IEventDetail } from "@/src/interfaces";
 import { EventService } from "@/src/services";
 import { create, StateCreator } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
+import { persist } from "zustand/middleware";
+import { zustandStorage } from "@/src/store/storage";
 
 interface IEventState {
   events: IEvent[];
@@ -96,6 +96,6 @@ const storeApi: StateCreator<IEventState & IEventActions> = (set, get) => ({
 export const useEventStore = create<IEventState & IEventActions>()(
   persist(storeApi, {
     name: "event-store",
-    storage: createJSONStorage(() => AsyncStorage),
+    storage: zustandStorage(),
   })
 );

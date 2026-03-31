@@ -1,4 +1,4 @@
-import { theme } from "@/app/theme/theme";
+import { theme } from "@/src/theme/theme";
 import { LOGO_URL } from "@/src/constants/Constants";
 import { IUser } from "@/src/interfaces";
 import { progressSheetInterface } from "@/src/interfaces/progress-sheet.interface";

@@ -1,4 +1,4 @@
-import auth, { FirebaseAuthTypes, updateProfile } from '@react-native-firebase/auth';
+import { getAuth, FirebaseAuthTypes, updateProfile, GoogleAuthProvider } from '@react-native-firebase/auth';
 import { IResLocalFirebase, IUser, LoginSchemaType, RegisterSchemaType } from "@/src/interfaces";
 import { firebaseErrorMessages } from '@/src/constants/ConstantsErrors';
 import { GoogleSignin, isSuccessResponse } from '@react-native-google-signin/google-signin';
@@ -9,10 +9,10 @@ import { USER_COLLECTION } from '@/src/constants/ContantsFirebase';
 export class AuthService {
     static login = async ({ email, password }: LoginSchemaType): Promise<IResLocalFirebase<IUser>> => {
         try {
-            const user = await auth().signInWithEmailAndPassword(email, password);
+            const user = await getAuth().signInWithEmailAndPassword(email, password);
             const userFind = await getDocumentById<IUser>(USER_COLLECTION, user.user.uid);
             if (!userFind) {
-                await auth().signOut();
+                await getAuth().signOut();
                 throw new Error('El usuario no existe en la base de datos.');
             }
             return { data: userFind, error: null };
@@ -27,8 +27,8 @@ export class AuthService {
             await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
             const response = await GoogleSignin.signIn();
             if (!isSuccessResponse(response)) throw new Error('Ha ocurrido un error inesperado.');
-            const googleCredential = auth.GoogleAuthProvider.credential(response.data.idToken);
-            const userCredential = await auth().signInWithCredential(googleCredential);
+            const googleCredential = GoogleAuthProvider.credential(response.data.idToken);
+            const userCredential = await getAuth().signInWithCredential(googleCredential);
             const userFind = await getDocumentById<IUser>('users', userCredential.user.uid);
             if (!userFind) {
                 const newUser = {
@@ -48,7 +48,6 @@ export class AuthService {
                     createdAt: Date.now(),
                     updatedAt: Date.now(),
                 }
-                // await createDocumentId(USER_COLLECTION, userCredential.user.uid, newUser);
                 await createDocumentId(USER_COLLECTION, newUser);
                 return {
                     ...newUser,
@@ -67,7 +66,7 @@ export class AuthService {
 
     static registerWithEmail = async (user: RegisterSchemaType): Promise<IResLocalFirebase<FirebaseAuthTypes.User>> => {
         try {
-            const userCredential = await auth().createUserWithEmailAndPassword(user.email, user.password!);
+            const userCredential = await getAuth().createUserWithEmailAndPassword(user.email, user.password!);
             if (!userCredential.user) {
                 throw new Error('No se pudo crear el usuario.');
             }
@@ -91,9 +90,8 @@ export class AuthService {
             await updateProfile(userCredential.user, {
                 displayName: user.name
             });
-            // await createDocumentId(USER_COLLECTION, userCredential.user.uid, dataUser);
             await createDocumentId(USER_COLLECTION, dataUser);
-            await auth().signOut();
+            await getAuth().signOut();
             return { data: userCredential.user, error: null };
         } catch (error: any) {
             console.debug('Registration error ===>:', error);
@@ -102,6 +100,6 @@ export class AuthService {
     }
 
     static logout = async (): Promise<void> => {
-        await auth().signOut();
+        await getAuth().signOut();
     }
 }

@@ -1,4 +1,4 @@
-import { theme } from '@/app/theme/theme'
+import { theme } from '@/src/theme/theme'
 import { FC } from 'react';
 import { ImageBackground, KeyboardAvoidingView, StyleSheet } from 'react-native'
 

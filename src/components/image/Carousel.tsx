@@ -45,10 +45,12 @@ export const Carousel: FC<Props> = ({ data, onPress }) => {
             style={[styles.card, { width: screenWidth - 32 }]}
             onPress={() => handleNewsPress(item)}
           >
+            <View style={styles.imageWrapper}>
             <MemoImage
               imageUrl={item.imageUrl}
               style={styles.image}
             />
+            </View>
             <Card.Content style={styles.content}>
               <Text variant="titleMedium" style={styles.title}>
                 {item.title}
@@ -88,6 +90,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     elevation: 4,
     borderRadius: 12,
+  },
+  imageWrapper: {
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
     overflow: 'hidden',
   },
   image: {

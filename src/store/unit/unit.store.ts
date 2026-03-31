@@ -1,10 +1,8 @@
-import { fileStorage } from "@/src/helpers/fileSystemZustand";
 import { IUnit } from "@/src/interfaces";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
 import { UnitService } from "@/src/services/units/unit.service";
 import { create, StateCreator } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
+import { persist } from "zustand/middleware";
+import { zustandStorage } from "@/src/store/storage";
 
 interface IUnitState {
   units: IUnit[];
@@ -40,6 +38,6 @@ const storeApi: StateCreator<
 export const useUnitStore = create<IUnitState & IUnitActions>()(
   persist(storeApi, {
     name: "unit-store",
-    storage: createJSONStorage(() => AsyncStorage),
+    storage: zustandStorage(),
   })
 );

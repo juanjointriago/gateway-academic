@@ -1,8 +1,8 @@
 import { create, StateCreator } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
+import { persist } from "zustand/middleware";
 import { IResLocalFirebase, IUser, LoginSchemaType, RegisterSchemaType } from "@/src/interfaces";
 import { AuthService, UserService } from "@/src/services";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { zustandStorage } from "@/src/store/storage";
 import { FirebaseAuthTypes } from "@react-native-firebase/auth";
 
 interface IAuthState {
@@ -66,6 +66,6 @@ const storeApi: StateCreator<IAuthState & IAuthActions> = (set, get) => ({
 export const useAuthStore = create<IAuthState & IAuthActions>()(
             persist(storeApi, {
                 name: "auth-store",
-                storage: createJSONStorage(() => AsyncStorage),
+                storage: zustandStorage(),
             })
 );

@@ -1,10 +1,10 @@
 import { FC, useState } from 'react'
-import * as FileSystem from 'expo-file-system'
+import { Platform, StyleSheet, View } from 'react-native'
+import WebView from 'react-native-webview'
 import { useDisclosure } from '@/src/hook'
-import { IconButton } from 'react-native-paper'
+import { ActivityIndicator, IconButton } from 'react-native-paper'
 import { ModalGeneral } from '../modal'
 import { LottiesGeneral } from '../lotties'
-import Pdf from 'react-native-pdf'
 
 interface Props {
     iconName?: string
@@ -13,60 +13,68 @@ interface Props {
     url: string
     titleModal?: string
 }
+
+const getPdfUrl = (url: string) => {
+    if (Platform.OS === 'ios') {
+        return url
+    }
+    return `https://docs.google.com/gviewer?url=${encodeURIComponent(url)}&embedded=true`
+}
+
 export const IconRenderPDF: FC<Props> = ({ color = '#3eb798', iconName = 'folder-open', size = 24, url, titleModal = 'PDF' }) => {
-    const { isOpen, onOpen, onClose } = useDisclosure();
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const [isLoading, setIsLoading] = useState(true)
+    const [hasError, setHasError] = useState(false)
 
-    const [isLoading, setIsLoading] = useState(false);
-    const [fileUri, setFileUri] = useState<string | null>(null);
-
-    const toogleOpenModal = async () => {
-        setIsLoading(true);
-        try {
-            const response = await fetch(url, { method: 'HEAD' });
-            if (!response.ok) {
-                throw new Error('Invalid URL');
-            }
-            const fileUri = FileSystem.documentDirectory + 'pdfFile.pdf';
-            const { uri } = await FileSystem.downloadAsync(url, fileUri);
-            setFileUri(uri);
-        } catch (error) {
-            console.debug("Error downloading the PDF: ", error);
-            setFileUri(null);
-        } finally {
-            setIsLoading(false);
-            onOpen();
-        }
+    const handleOpen = () => {
+        setIsLoading(true)
+        setHasError(false)
+        onOpen()
     }
-
-    const toogleCloseModal = async () => {
-        onClose();
-        setFileUri(null);
-        if(fileUri) await FileSystem.deleteAsync(fileUri).then(() => console.debug('PDF deleted')).catch((error) => console.error("Error deleting the PDF: ", error));
-    }
-
 
     return (
         <>
-            <IconButton icon={iconName} size={size} onPress={toogleOpenModal} iconColor={color} loading={isLoading} disabled={isLoading} />
-            <ModalGeneral onDismiss={toogleCloseModal} visible={isOpen} title={titleModal} snapPoint={0.8}>
-                {!fileUri ?
-                    <LottiesGeneral animation='empty' description='No se ha podido cargar el PDF' /> :
-                    (
-                        <Pdf
-                            source={{ uri: fileUri, cache: true }}
-                            onLoadComplete={(numberOfPages, filePath) => {
-                                console.debug(`number of pages: ${numberOfPages}`);
+            <IconButton icon={iconName} size={size} onPress={handleOpen} iconColor={color} />
+            <ModalGeneral onDismiss={onClose} visible={isOpen} title={titleModal} snapPoint={0.8}>
+                {hasError ? (
+                    <LottiesGeneral animation='empty' description='No se ha podido cargar el PDF' />
+                ) : (
+                    <View style={styles.container}>
+                        <WebView
+                            source={{ uri: getPdfUrl(url) }}
+                            style={styles.webview}
+                            onLoadStart={() => setIsLoading(true)}
+                            onLoadEnd={() => setIsLoading(false)}
+                            onError={() => {
+                                setIsLoading(false)
+                                setHasError(true)
                             }}
-                            onPageChanged={(page, numberOfPages) => {
-                                console.debug(`current page: ${page}`);
-                            }}
-                            onError={(error) => {
-                                console.debug(error);
-                            }}
-                            style={{ flex: 1 }}
+                            originWhitelist={['*']}
+                            javaScriptEnabled
+                            scalesPageToFit
                         />
-                    )}
+                        {isLoading && (
+                            <View style={styles.loader}>
+                                <ActivityIndicator size='large' />
+                            </View>
+                        )}
+                    </View>
+                )}
             </ModalGeneral>
         </>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+    webview: {
+        flex: 1,
+    },
+    loader: {
+        ...StyleSheet.absoluteFillObject,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+})

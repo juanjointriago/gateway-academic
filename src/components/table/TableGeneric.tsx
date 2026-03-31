@@ -2,7 +2,7 @@ import { ScrollView, StyleSheet, View, DimensionValue } from "react-native";
 import { DataTable, useTheme } from "react-native-paper";
 import { LabelGeneral } from "../labels";
 import { useState, useMemo } from "react";
-import { theme } from "@/app/theme/theme";
+import { theme } from "@/src/theme/theme";
 
 type Column<T> = {
     title: string;
@@ -42,11 +42,14 @@ export const GenericTable = <T,>({
             minWidth: '100%',
             paddingHorizontal: 8,
         },
+        dataTableWrapper: {
+            borderRadius: 8,
+            elevation: 2,
+            overflow: 'hidden',
+        },
         dataTable: {
             backgroundColor: 'transparent',
-            elevation: 2,
             borderRadius: 8,
-            overflow: 'hidden',
         },
         header: {
             backgroundColor: colors.secondaryContainer,
@@ -89,6 +92,7 @@ export const GenericTable = <T,>({
             style={styles.scrollContainer}
         >
             <View style={styles.tableContainer}>
+                <View style={styles.dataTableWrapper}>
                 <DataTable style={styles.dataTable}>
                     <DataTable.Header style={styles.header}>
                         {columns.map((column, index) => (
@@ -157,6 +161,7 @@ export const GenericTable = <T,>({
                         />
                     )}
                 </DataTable>
+                </View>
             </View>
         </ScrollView>
     );

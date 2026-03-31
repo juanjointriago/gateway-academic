@@ -1,6 +1,6 @@
 import { FirestoreUser, ImageInfo, IUser } from '@/src/interfaces';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from '@react-native-firebase/storage';
-import firestore from '@react-native-firebase/firestore';
+import { getFirestore, collection, query, where, getDocs } from '@react-native-firebase/firestore';
 import * as FileSystem from 'expo-file-system';
 import { USER_COLLECTION } from "@/src/constants/ContantsFirebase";
 import { getAllDocuments } from "@/src/helpers/firestoreHelper";
@@ -11,15 +11,12 @@ export class UserService {
     await getAllDocuments<FirestoreUser>(USER_COLLECTION);
   static getUserByDocId = async (docId: string): Promise<IUser | null> => {
     try {
-      const userDoc = await firestore()
-        .collection(USER_COLLECTION)
-        .where("uid", "==", docId)
-        .get()
-        .then((snapshot) => {
-          if (snapshot.empty) return null;
-          return snapshot.docs[0];
-        });
-      return userDoc ? (userDoc.data() as IUser) : null;
+      const db = getFirestore();
+      const snapshot = await getDocs(
+        query(collection(db, USER_COLLECTION), where("uid", "==", docId))
+      );
+      if (snapshot.empty) return null;
+      return snapshot.docs[0].data() as IUser;
     } catch (error) {
       console.error("Error getting user:", error);
       return null;

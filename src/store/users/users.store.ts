@@ -1,8 +1,8 @@
 import { create, StateCreator } from "zustand";
 import { UserService } from "../../services";
-import { createJSONStorage, persist } from "zustand/middleware";
+import { persist } from "zustand/middleware";
 import { FirestoreUser, role } from "@/src/interfaces";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { zustandStorage } from "@/src/store/storage";
 
 interface UsersStore {
   users: FirestoreUser[];
@@ -33,6 +33,6 @@ const storeAPI: StateCreator<UsersStore> = (
 export const useUserStore = create<UsersStore>()(
   persist(storeAPI, {
     name: "user-store",
-    storage: createJSONStorage(() => AsyncStorage),
+    storage: zustandStorage(),
   })
 );

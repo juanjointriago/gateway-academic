@@ -1,4 +1,13 @@
-import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+import {
+    collection,
+    doc,
+    getFirestore,
+    onSnapshot,
+    query,
+    FirebaseFirestoreTypes,
+} from '@react-native-firebase/firestore';
+
+const db = getFirestore();
 
 /**
  * Suscribe a cambios en una colección de Firestore y ejecuta un callback cuando hay cambios.
@@ -12,18 +21,13 @@ export const subscribeToCollection = <T>(
     queryFn?: (ref: FirebaseFirestoreTypes.CollectionReference<FirebaseFirestoreTypes.DocumentData>) => FirebaseFirestoreTypes.Query<FirebaseFirestoreTypes.DocumentData>,
     callback?: (data: T[]) => void
 ) => {
-    let ref: FirebaseFirestoreTypes.Query<FirebaseFirestoreTypes.DocumentData> = firestore().collection(collectionName);
+    const colRef = collection(db, collectionName) as FirebaseFirestoreTypes.CollectionReference<FirebaseFirestoreTypes.DocumentData>;
+    const ref: FirebaseFirestoreTypes.Query<FirebaseFirestoreTypes.DocumentData> = queryFn ? queryFn(colRef) : query(colRef);
 
-    if (queryFn) {
-        ref = queryFn(ref as FirebaseFirestoreTypes.CollectionReference<FirebaseFirestoreTypes.DocumentData>);
-    }
-
-    const unsubscribe = ref.onSnapshot((snapshot) => {
-        const data: T[] = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as T));
+    return onSnapshot(ref, (snapshot) => {
+        const data: T[] = snapshot.docs.map((document) => ({ id: document.id, ...document.data() } as T));
         if (callback) callback(data);
     });
-
-    return unsubscribe;
 };
 
 /**
@@ -38,20 +42,15 @@ export const subscribeToDocument = <T>(
     documentId: string,
     callback: (data: T | null) => void
 ) => {
-    return firestore()
-        .collection(collectionName)
-        .doc(documentId)
-        .onSnapshot((snapshot) => {
-            if (!snapshot.exists) {
-                callback(null);
-                return;
-            }
-            
-            const data = {
-                id: snapshot.id,
-                ...snapshot.data()
-            } as T;
-            
-            callback(data);
-        });
+    return onSnapshot(doc(db, collectionName, documentId), (snapshot) => {
+        if (!snapshot.exists()) {
+            callback(null);
+            return;
+        }
+
+        callback({
+            id: snapshot.id,
+            ...snapshot.data()
+        } as T);
+    });
 };

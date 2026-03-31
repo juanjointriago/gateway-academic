@@ -1,4 +1,4 @@
-import { theme } from '@/app/theme/theme';
+import { theme } from '@/src/theme/theme';
 import { FC } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { TextInput as Input, Text } from 'react-native-paper'
