@@ -54,7 +54,7 @@ export const FeesScreen = () => {
       {
         title: "Recibo",
         key: "code" as keyof fee,
-        width: "25%" as const,
+        flex: 2,
         render: (_: any, row: fee) => (
           <Text style={{ fontWeight: "bold", fontSize: 12 }} numberOfLines={1}>
             {row.code}
@@ -64,7 +64,7 @@ export const FeesScreen = () => {
       {
         title: "Fecha",
         key: "date" as keyof fee,
-        width: "20%" as const,
+        flex: 2,
         render: (_: any, row: fee) => (
           <Text style={{ fontSize: 11 }}>
             {format(new Date(row.createdAt), "dd/MM/yy")}
@@ -74,7 +74,7 @@ export const FeesScreen = () => {
       {
         title: "Monto",
         key: "qty" as keyof fee,
-        width: "20%" as const,
+        flex: 2,
         render: (_: any, row: fee) => (
           <Text style={{ fontSize: 12, fontWeight: "600" }}>${row.qty}</Text>
         ),
@@ -82,7 +82,7 @@ export const FeesScreen = () => {
       {
         title: "Comprobante",
         key: "imageUrl" as keyof fee,
-        width: "25%" as const,
+        flex: 2,
         render: (_: any, row: fee) => (
           <ImagePreview
             imageUri={row.imageUrl || ""}
@@ -97,7 +97,7 @@ export const FeesScreen = () => {
       {
         title: "Método",
         key: "paymentMethod" as keyof fee,
-        width: "10%" as const,
+        flex: 1,
         render: (_: any, row: fee) => (
           <Text style={{ fontSize: 10 }} numberOfLines={1}>
             {row.paymentMethod === "transference"
@@ -113,7 +113,7 @@ export const FeesScreen = () => {
       {
         title: "Estado",
         key: "status" as keyof fee,
-        width: "10%" as const,
+        flex: 1,
         render: (_: any, row: fee) => (
           <Text
             style={{
@@ -124,7 +124,7 @@ export const FeesScreen = () => {
                   : theme.colors.error,
             }}
           >
-            {row.isSigned === true ? "Success" : "Pend/Rej"}
+            {row.isSigned === true ? "✓" : "Pend"}
           </Text>
         ),
       },

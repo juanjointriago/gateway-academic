@@ -31,15 +31,17 @@ export const BooksScreen = () => {
     const [searchQuery, setSearchQuery] = useState('');
 
     const columns = useMemo(() => [
-        { title: 'Nombre', key: 'name' as keyof IUnit },
+        { title: 'Nombre', key: 'name' as keyof IUnit, flex: 3 },
         {
             title: 'Unidad',
             key: 'sublevelInfo' as keyof IUnit,
+            flex: 2,
             render: (_: any, row: IUnit) => <LabelGeneral label={getSubLevelById(row.sublevel)?.name || ''} styleProps={{ marginLeft: 10 }} />
         },
         {
             title: 'Book',
             key: 'actions' as keyof IUnit,
+            flex: 1,
             render: (_: any, row: IUnit) => (
                 <View style={{ flexDirection: 'row', gap: 10 }}>
                     <IconRenderPDF url={row.supportMaterial || ''} titleModal={'Supp. Material ' + row.name} />
@@ -49,6 +51,7 @@ export const BooksScreen = () => {
         {
             title: 'WorkSheet',
             key: 'actions' as keyof IUnit,
+            flex: 1,
             render: (_: any, row: IUnit) => (
                 <View style={{ flexDirection: 'row', gap: 10 }}>
                     <IconRenderWeb url={row.workSheetUrl || ''} />

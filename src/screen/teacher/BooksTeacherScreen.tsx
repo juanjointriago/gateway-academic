@@ -12,15 +12,17 @@ export const BooksTeacherScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const columns = useMemo(() => [
-    { title: 'Nombre', key: 'name' as keyof IUnit },
+    { title: 'Nombre', key: 'name' as keyof IUnit, flex: 3 },
     {
       title: 'Unidad',
       key: 'sublevelInfo' as keyof IUnitMutation,
+      flex: 2,
       render: (_: any, row: IUnitMutation) => <LabelGeneral label={row.sublevelInfo?.name || ''} styleProps={{ marginLeft: 10 }} />
     },
     {
       title: 'Acciones',
       key: 'actions' as keyof IUnit,
+      flex: 2,
       render: (_: any, row: IUnit) => (
         <View style={{ flexDirection: 'row', gap: 10 }}>
           <IconRenderPDF url={row.supportMaterial || ''} titleModal={'Supp. Material ' + row.name} />

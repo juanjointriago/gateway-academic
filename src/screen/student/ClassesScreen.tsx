@@ -36,11 +36,12 @@ export const ClassesScreen = () => {
     const [searchQuery, setSearchQuery] = useState('');
 
     const columns = useMemo(() => [
-        { title: 'Fecha', key: 'date' as keyof IEvent, render: (_: any, row: IEvent) => <LabelGeneral label={format(new Date(row.date), 'dd/MM/yyyy HH:mm')} variant='bodySmall' styleProps={{ fontSize: 12, padding: 5, color: theme.colors.onSurface }} /> },
-        { title: 'Clase', key: 'name' as keyof IEvent },
+        { title: 'Fecha', key: 'date' as keyof IEvent, flex: 2, render: (_: any, row: IEvent) => <LabelGeneral label={format(new Date(row.date), 'dd/MM/yyyy HH:mm')} variant='bodySmall' styleProps={{ fontSize: 12, padding: 5, color: theme.colors.onSurface }} /> },
+        { title: 'Clase', key: 'name' as keyof IEvent, flex: 3 },
         {
             title: 'Estado',
             key: 'status' as keyof IEvent,
+            flex: 1,
             render: (_: any, row: IEvent) => (
                 <View style={{ marginLeft: 2 }}>
                     <Tooltip title={textStatusEvent[row.status]}>
@@ -50,8 +51,9 @@ export const ClassesScreen = () => {
             )
         },
         {
-            title: 'Ver Clase',
+            title: 'Ver',
             key: 'actions' as keyof IEvent,
+            flex: 1,
             render: (_: any, row: IEvent) => (
                 <IconViewEvent typeUser='student' {...row} />
             )

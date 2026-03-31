@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, StyleSheet, Platform } from 'react-native';
-import { SvgWrapper, Path, isSvgAvailable } from './SvgWrapper';
+import { View, StyleSheet } from 'react-native';
+import { SvgWrapper, Path, Circle, isSvgAvailable } from './SvgWrapper';
 
 interface CurvedBackgroundProps {
   variant: 'front' | 'back';
@@ -8,115 +8,97 @@ interface CurvedBackgroundProps {
   height?: number;
 }
 
-export const CurvedBackground: React.FC<CurvedBackgroundProps> = ({ 
-  variant, 
-  width = 260, 
-  height = 400 
-}) => {
-  // Colors based on design requirements
-  const colors = {
-    blue: '#1B365D',
-    orange: '#FF7F3F', 
-    gray: '#A8A8A8'
-  };
+const NAVY = '#1C2E82';
+const NAVY_MID = '#2438A0';
 
-  // If SVG is not available (web), render fallback decorative elements
+export const CurvedBackground: React.FC<CurvedBackgroundProps> = ({
+  variant,
+  width = 260,
+  height = 400,
+}) => {
+  const W = width;
+  const H = height;
+
   if (!isSvgAvailable()) {
     return (
-      <View style={[styles.fallbackContainer, { width, height }]}>
-        <View style={[styles.fallbackCurve, styles.topCurve, { backgroundColor: colors.blue }]} />
-        <View style={[styles.fallbackCurve, styles.bottomCurve, { backgroundColor: colors.orange }]} />
+      <View style={[styles.container, { width: W, height: H }]}>
+        {variant === 'front' ? (
+          <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '60%', backgroundColor: '#fff', borderTopLeftRadius: 40, borderTopRightRadius: 40 }} />
+        ) : (
+          <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '32%', backgroundColor: NAVY, borderBottomLeftRadius: 40, borderBottomRightRadius: 40 }} />
+        )}
       </View>
     );
   }
 
-  if (variant === 'back') {
+  if (variant === 'front') {
+    // White curved bottom section painted over navy card background
+    const curveCenter = H * 0.37;  // white starts here at x-center
+    const curveEdge   = H * 0.44;  // white starts here at x-edges
+
     return (
-      <View style={[styles.container, { width, height }]}>
-        {/* Top curved elements for back */}
-        <SvgWrapper
-          width={width}
-          height={80}
-          viewBox={`0 0 ${width} 80`}
-          style={styles.topSvg}
-        >
-          <Path
-            d={`M0,0 L${width},0 L${width},40 Q${width/2},70 0,40 Z`}
-            fill={colors.blue}
-          />
-          <Path
-            d={`M0,20 Q${width/2},50 ${width},20 L${width},60 Q${width/2},80 0,60 Z`}
-            fill={colors.orange}
-            opacity={0.8}
-          />
-          <Path
-            d={`M20,10 Q${width/2},40 ${width-20},10 L${width-20},50 Q${width/2},70 20,50 Z`}
-            fill={colors.gray}
-            opacity={0.4}
-          />
-        </SvgWrapper>
+      <View style={[styles.container, { width: W, height: H }]}>
+        <SvgWrapper width={W} height={H} viewBox={`0 0 ${W} ${H}`}>
+          {/* Watermark concentric circles — top-right corner */}
+          <Circle cx={W * 0.85} cy={H * 0.13} r={W * 0.32}
+            fill="none" stroke="#fff" strokeWidth={1.2} opacity={0.06} />
+          <Circle cx={W * 0.85} cy={H * 0.13} r={W * 0.20}
+            fill="none" stroke="#fff" strokeWidth={1.2} opacity={0.07} />
+          <Circle cx={W * 0.85} cy={H * 0.13} r={W * 0.09}
+            fill="#fff" opacity={0.05} />
 
-        {/* Bottom curved elements for back */}
-        <SvgWrapper
-          width={width}
-          height={80}
-          viewBox={`0 0 ${width} 80`}
-          style={styles.bottomSvg}
-        >
+          {/* Small accent dot — bottom-left navy zone */}
+          <Circle cx={W * 0.11} cy={H * 0.28} r={W * 0.055}
+            fill="#fff" opacity={0.04} />
+
+          {/* White curved bottom section (convex top edge) */}
           <Path
-            d={`M0,40 Q${width/2},10 ${width},40 L${width},80 L0,80 Z`}
-            fill={colors.orange}
+            d={`M 0,${curveEdge} Q ${W / 2},${curveCenter} ${W},${curveEdge} L ${W},${H} L 0,${H} Z`}
+            fill="#fff"
           />
+
+          {/* Very thin navy accent strip at bottom */}
           <Path
-            d={`M0,20 Q${width/2},0 ${width},20 Q${width/2},50 0,50 Z`}
-            fill={colors.blue}
-            opacity={0.6}
-          />
-          <Path
-            d={`M20,30 Q${width/2},5 ${width-20},30 Q${width/2},60 20,60 Z`}
-            fill={colors.gray}
-            opacity={0.4}
+            d={`M 0,${H - 7} L ${W},${H - 7} L ${W},${H} L 0,${H} Z`}
+            fill={NAVY_MID}
+            opacity={0.35}
           />
         </SvgWrapper>
       </View>
     );
   }
+
+  // Back variant: navy curved header on light card background
+  const headerEdge   = H * 0.20;  // navy ends at edges  (matches BACK_HEADER_H)
+  const headerCenter = H * 0.26;  // navy dips further at center (concave bottom)
 
   return (
-    <View style={[styles.container, { width, height }]}>
-      {/* Top curved elements for front */}
-      <SvgWrapper
-        width={width}
-        height={80}
-        viewBox={`0 0 ${width} 80`}
-        style={styles.topSvg}
-      >
+    <View style={[styles.container, { width: W, height: H }]}>
+      <SvgWrapper width={W} height={H} viewBox={`0 0 ${W} ${H}`}>
+        {/* Navy curved header (concave bottom edge) */}
         <Path
-          d={`M0,0 L${width},0 L${width},40 Q${width/2},70 0,40 Z`}
-          fill={colors.blue}
+          d={`M 0,0 L ${W},0 L ${W},${headerEdge} Q ${W / 2},${headerCenter} 0,${headerEdge} Z`}
+          fill={NAVY}
         />
-        <Path
-          d={`M0,20 Q${width/2},50 ${width},20 L${width},60 Q${width/2},80 0,60 Z`}
-          fill={colors.orange}
-          opacity={0.8}
-        />
-      </SvgWrapper>
 
-      {/* Bottom curved elements for front */}
-      <SvgWrapper
-        width={width}
-        height={80}
-        viewBox={`0 0 ${width} 80`}
-        style={styles.bottomSvg}
-      >
+        {/* Subtle lighter stripe in header for depth */}
         <Path
-          d={`M0,40 Q${width/2},10 ${width},40 L${width},80 L0,80 Z`}
-          fill={colors.gray}
+          d={`M 0,0 L ${W * 0.38},0 Q ${W * 0.46},${H * 0.10} ${W * 0.14},${H * 0.22} L 0,${H * 0.18} Z`}
+          fill="#fff"
+          opacity={0.05}
         />
+
+        {/* Watermark circles — top-right of header */}
+        <Circle cx={W * 0.82} cy={H * 0.08} r={W * 0.22}
+          fill="none" stroke="#fff" strokeWidth={1.2} opacity={0.08} />
+        <Circle cx={W * 0.82} cy={H * 0.08} r={W * 0.13}
+          fill="none" stroke="#fff" strokeWidth={1.2} opacity={0.08} />
+
+        {/* Very thin navy accent at bottom */}
         <Path
-          d={`M0,20 Q${width/2},0 ${width},20 Q${width/2},50 0,50 Z`}
-          fill={colors.blue}
-          opacity={0.6}
+          d={`M 0,${H - 7} L ${W},${H - 7} L ${W},${H} L 0,${H} Z`}
+          fill={NAVY}
+          opacity={0.10}
         />
       </SvgWrapper>
     </View>
@@ -129,40 +111,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     zIndex: 1,
-    borderRadius: 18,
+    borderRadius: 20,
     overflow: 'hidden',
-  },
-  topSvg: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-  },
-  bottomSvg: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-  },
-  // Fallback styles for web
-  fallbackContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    zIndex: 1,
-    borderRadius: 18,
-    overflow: 'hidden',
-  },
-  fallbackCurve: {
-    position: 'absolute',
-    width: '100%',
-    height: 60,
-    borderRadius: 30,
-  },
-  topCurve: {
-    top: -30,
-    transform: [{ scaleY: 0.5 }],
-  },
-  bottomCurve: {
-    bottom: -30,
-    transform: [{ scaleY: 0.5 }],
   },
 });

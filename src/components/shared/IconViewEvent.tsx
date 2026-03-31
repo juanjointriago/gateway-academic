@@ -108,9 +108,9 @@ export const IconViewEvent: FC<Props> = ({ typeUser = 'teacher', ...rest }) => {
     };
 
     const columns = useMemo(() => [
-        { title: 'Perfil', key: 'photoUrl' as keyof IUserData, render: (_: any, row: IUserData) => <Avatar.Image size={40} source={{ uri: !row.photoUrl ? URL_PROFILE_DEFAULT : row.photoUrl }} /> },
-        { title: 'Nombre', key: 'name' as keyof IUserData },
-        { title: 'Estado', key: 'status' as keyof IUserData, render: (_: any, row: IUserData) => <LabelGeneral label={textStatusEvent[row.status as string]} variant='bodySmall' styleProps={{ fontSize: 12 }} /> },
+        { title: 'Perfil', key: 'photoUrl' as keyof IUserData, flex: 1, render: (_: any, row: IUserData) => <Avatar.Image size={40} source={{ uri: !row.photoUrl ? URL_PROFILE_DEFAULT : row.photoUrl }} /> },
+        { title: 'Nombre', key: 'name' as keyof IUserData, flex: 3 },
+        { title: 'Estado', key: 'status' as keyof IUserData, flex: 2, render: (_: any, row: IUserData) => <LabelGeneral label={textStatusEvent[row.status as string]} variant='bodySmall' styleProps={{ fontSize: 12 }} /> },
     ], []);
 
     return (
