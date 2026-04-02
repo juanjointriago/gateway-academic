@@ -9,7 +9,7 @@ import {
   Platform,
   Animated
 } from 'react-native';
-import { Text, IconButton, useTheme, Portal } from 'react-native-paper';
+import { Text, IconButton, useTheme } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
 
 interface ImagePreviewProps {
@@ -103,8 +103,7 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({
         </Animated.View>
       </TouchableOpacity>
 
-      <Portal>
-        <Modal
+      <Modal
           visible={modalVisible}
           transparent={true}
           animationType="fade"
@@ -118,10 +117,9 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({
             onPress={closeModal}
             activeOpacity={1}
           >
-            <TouchableOpacity 
+            <View
               style={styles.modalContent}
-              activeOpacity={1}
-              onPress={() => {}} // Prevenir que se cierre cuando toques el contenido
+              onStartShouldSetResponder={() => true}
             >
               <View style={[styles.modalHeader, { backgroundColor: theme.colors.surface }]}>
                 <Text style={[styles.modalTitle, { color: theme.colors.onSurface }]}>
@@ -150,10 +148,9 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({
                   Toca fuera de la imagen para cerrar
                 </Text>
               </View>
-            </TouchableOpacity>
+            </View>
           </TouchableOpacity>
-        </Modal>
-      </Portal>
+      </Modal>
     </>
   );
 };
