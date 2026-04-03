@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
     Alert,
     Image,
+    RefreshControl,
     ScrollView,
     StyleSheet,
     TextInput,
@@ -19,6 +20,7 @@ import {
     RadioButton,
     Surface,
     Text,
+    TouchableRipple,
     useTheme,
 } from 'react-native-paper';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -114,6 +116,14 @@ const CompleteWordInput: React.FC<CompleteWordProps> = ({
 }) => {
     const theme = useTheme();
 
+    // Fallback para documentos guardados antes de que scrambledLetters existiera
+    const letters: string[] =
+        field.scrambledLetters && field.scrambledLetters.length > 0
+            ? field.scrambledLetters
+            : field.correctAnswer
+                ? field.correctAnswer.toUpperCase().split('').sort(() => Math.random() - 0.5)
+                : [];
+
     const [placed, setPlaced] = useState<string[]>(() => {
         if (answer) return answer.split('');
         return [];
@@ -121,14 +131,14 @@ const CompleteWordInput: React.FC<CompleteWordProps> = ({
     const [available, setAvailable] = useState<string[]>(() => {
         if (answer) {
             const answerLetters = answer.split('');
-            const remaining = [...field.scrambledLetters];
+            const remaining = [...letters];
             for (const l of answerLetters) {
                 const idx = remaining.indexOf(l);
                 if (idx !== -1) remaining.splice(idx, 1);
             }
             return remaining;
         }
-        return [...field.scrambledLetters];
+        return [...letters];
     });
 
     const moveToplaced = (index: number) => {
@@ -268,6 +278,7 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({
 
         case 'image': {
             const f = field as ImageBlock;
+            if (!f.imageUrl) return null;
             return (
                 <View style={styles.imageBlock}>
                     <Image
@@ -387,28 +398,57 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({
                         value={userAnswer}
                     >
                         {f.options.map((opt) => {
-                            let optColor = theme.colors.onSurface;
-                            if (showResults && showCorrectAnswers) {
-                                if (opt.id === f.correctOptionId) optColor = '#4caf50';
-                                else if (opt.id === userAnswer) optColor = '#f44336';
+                            const isSelected = userAnswer === opt.id;
+                            const isCorrectOpt = opt.id === f.correctOptionId;
+                            const isWrongSelected = showResults && isSelected && !isCorrectOpt;
+
+                            let borderColor = theme.colors.outline;
+                            let bgColor = theme.colors.surface;
+                            let textColor = theme.colors.onSurface;
+
+                            if (!showResults && isSelected) {
+                                borderColor = theme.colors.primary;
+                                bgColor = theme.colors.primaryContainer;
+                                textColor = theme.colors.onPrimaryContainer;
+                            } else if (showResults && showCorrectAnswers) {
+                                if (isCorrectOpt) {
+                                    borderColor = '#4caf50';
+                                    bgColor = '#e8f5e9';
+                                    textColor = '#2e7d32';
+                                } else if (isWrongSelected) {
+                                    borderColor = '#f44336';
+                                    bgColor = '#ffebee';
+                                    textColor = '#c62828';
+                                }
                             }
+
                             return (
-                                <View key={opt.id} style={styles.mcOption}>
-                                    <RadioButton value={opt.id} disabled={showResults} />
-                                    {opt.imageUrl ? (
-                                        <Image
-                                            source={{ uri: opt.imageUrl }}
-                                            style={styles.mcOptionImage}
-                                            resizeMode="contain"
-                                        />
-                                    ) : null}
-                                    <Text style={{ color: optColor, flex: 1 }}>{opt.text}</Text>
-                                </View>
+                                <TouchableRipple
+                                    key={opt.id}
+                                    onPress={() => { if (!showResults) onAnswer(f.id, opt.id); }}
+                                    borderless={false}
+                                    style={[
+                                        styles.mcOption,
+                                        { borderColor, backgroundColor: bgColor },
+                                    ]}
+                                >
+                                    <View style={styles.mcOptionInner}>
+                                        <RadioButton value={opt.id} disabled={showResults} />
+                                        {opt.imageUrl ? (
+                                            <Image
+                                                source={{ uri: opt.imageUrl }}
+                                                style={styles.mcOptionImage}
+                                                resizeMode="contain"
+                                            />
+                                        ) : null}
+                                        <Text style={{ color: textColor, flex: 1 }}>{opt.text}</Text>
+                                    </View>
+                                </TouchableRipple>
                             );
                         })}
                     </RadioButton.Group>
                     {showResults ? (
-                        <Text style={{ color: isCorrect ? '#4caf50' : '#f44336', marginTop: 4, fontSize: 13 }}>
+                        <Text style={{ color: isCorrect ? '#4caf50' : '#f44336', marginTop: 6, fontSize: 13 }}>
                             {isCorrect ? '✓ Correcto' : '✗ Incorrecto'}
                         </Text>
                     ) : null}
@@ -483,6 +523,7 @@ export const WorksheetScreen: React.FC = () => {
     const [worksheet, setWorksheet] = useState<IWorksheet | null>(null);
     const [submissions, setSubmissions] = useState<IWorksheetSubmission[]>([]);
     const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
     const [answers, setAnswers] = useState<Record<string, string>>({});
     const [submitting, setSubmitting] = useState(false);
     const [showResults, setShowResults] = useState(false);
@@ -497,19 +538,25 @@ export const WorksheetScreen: React.FC = () => {
         };
     }, []);
 
-    useEffect(() => {
+    const fetchData = useCallback(async (isRefresh = false) => {
         if (!worksheetId || !user?.uid) return;
-        (async () => {
-            setLoading(true);
-            const [ws, subs] = await Promise.all([
-                WorksheetService.getWorksheetById(worksheetId),
-                WorksheetService.getSubmissionsByStudentAndWorksheet(user.uid, worksheetId),
-            ]);
-            setWorksheet(ws);
-            setSubmissions(subs);
-            setLoading(false);
-        })();
+        if (isRefresh) setRefreshing(true);
+        else setLoading(true);
+
+        const [ws, subs] = await Promise.all([
+            WorksheetService.getWorksheetById(worksheetId),
+            WorksheetService.getSubmissionsByStudentAndWorksheet(user.uid, worksheetId),
+        ]);
+        setWorksheet(ws);
+        setSubmissions(subs);
+
+        if (isRefresh) setRefreshing(false);
+        else setLoading(false);
     }, [worksheetId, user?.uid]);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
 
     const handleAnswer = useCallback((fieldId: string, value: string) => {
         setAnswers((prev) => ({ ...prev, [fieldId]: value }));
@@ -594,7 +641,7 @@ export const WorksheetScreen: React.FC = () => {
         <GestureHandlerRootView style={{ flex: 1, backgroundColor: theme.colors.background }}>
             {/* Header */}
             <View style={[styles.header, { backgroundColor: theme.colors.surface }]}>
-                <IconButton icon="arrow-left" onPress={() => router.back()} />
+                <IconButton icon="arrow-left" onPress={() => router.navigate('/(tabs)/books' as any)} />
                 <Text style={[styles.headerTitle, { color: theme.colors.onSurface }]} numberOfLines={1}>
                     {worksheet.title}
                 </Text>
@@ -617,7 +664,16 @@ export const WorksheetScreen: React.FC = () => {
                     </Button>
                 </View>
             ) : (
-                <ScrollView contentContainerStyle={styles.scrollContent}>
+                <ScrollView
+                    contentContainerStyle={styles.scrollContent}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={() => fetchData(true)}
+                            tintColor={theme.colors.primary}
+                        />
+                    }
+                >
                     {/* Description */}
                     {worksheet.description ? (
                         <Text style={[styles.description, { color: theme.colors.onSurfaceVariant }]}>
@@ -647,18 +703,24 @@ export const WorksheetScreen: React.FC = () => {
                     )}
 
                     {/* Fields */}
-                    {worksheet.fields.map((field, index) => (
-                        <View key={field.id}>
-                            {index > 0 && <Divider style={{ marginVertical: 12 }} />}
-                            <FieldRenderer
-                                field={field}
-                                answers={answers}
-                                onAnswer={handleAnswer}
-                                showResults={showResults}
-                                showCorrectAnswers={worksheet.settings.showCorrectAnswers}
-                            />
-                        </View>
-                    ))}
+                    {worksheet.fields
+                        .filter((field) => {
+                            // Omitir ImageBlocks sin URL para evitar espacios en blanco
+                            if (field.type === 'image') return !!(field as ImageBlock).imageUrl;
+                            return true;
+                        })
+                        .map((field, index) => (
+                            <View key={field.id}>
+                                {index > 0 && <Divider style={{ marginVertical: 12 }} />}
+                                <FieldRenderer
+                                    field={field}
+                                    answers={answers}
+                                    onAnswer={handleAnswer}
+                                    showResults={showResults}
+                                    showCorrectAnswers={worksheet.settings.showCorrectAnswers}
+                                />
+                            </View>
+                        ))}
 
                     {/* Submit button */}
                     {!showResults && (
@@ -856,9 +918,15 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     mcOption: {
+        borderWidth: 1.5,
+        borderRadius: 10,
+        marginBottom: 8,
+        overflow: 'hidden',
+    },
+    mcOptionInner: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 4,
+        paddingRight: 12,
     },
     mcOptionImage: {
         width: 40,
