@@ -3,10 +3,11 @@ import { GenericTable, IconRenderPDF, IconRenderWeb, LabelGeneral, LayoutGeneral
 import { useUnitStore } from '@/src/store/unit/unit.store';
 import { IUnit, IUnitMutation } from '@/src/interfaces';
 import { View } from 'react-native';
-import { Searchbar } from 'react-native-paper';
+import { IconButton } from 'react-native-paper';
+import { useRouter } from 'expo-router';
 
 export const BooksTeacherScreen = () => {
-
+  const router = useRouter();
   const units = useUnitStore((state) => state.units);
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -24,9 +25,22 @@ export const BooksTeacherScreen = () => {
       key: 'actions' as keyof IUnit,
       flex: 2,
       render: (_: any, row: IUnit) => (
-        <View style={{ flexDirection: 'row', gap: 10 }}>
+        <View style={{ flexDirection: 'row', gap: 4 }}>
           <IconRenderPDF url={row.supportMaterial || ''} titleModal={'Supp. Material ' + row.name} />
-          <IconRenderWeb url={row.workSheetUrl || ''} />
+          {row.worksheetType === 'worksheet' && row.worksheetId ? (
+            <IconButton
+              icon="chart-bar"
+              size={20}
+              onPress={() =>
+                router.push({
+                  pathname: '/(tabsT)/worksheetSubmissions/[worksheetId]',
+                  params: { worksheetId: row.worksheetId, worksheetTitle: row.name },
+                })
+              }
+            />
+          ) : (
+            <IconRenderWeb url={row.workSheetUrl || ''} />
+          )}
         </View>
       ),
     },
@@ -36,7 +50,7 @@ export const BooksTeacherScreen = () => {
     units
       .filter(unit =>
         unit.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        unit.sublevelInfo?.name?.toLowerCase().includes(searchQuery.toLowerCase())
+        (unit as IUnitMutation).sublevelInfo?.name?.toLowerCase().includes(searchQuery.toLowerCase())
       )
       .sort((a, b) => a.orderNumber - b.orderNumber),
     [searchQuery, units]
@@ -60,5 +74,5 @@ export const BooksTeacherScreen = () => {
         pageSize={9}
       />
     </LayoutGeneral>
-  )
-}
+  );
+};

@@ -5,28 +5,29 @@ import { View } from 'react-native';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuthStore } from '@/src/store/auth/auth.store';
 import { useSubLevelStore } from '@/src/store/level/sublevel.store';
+import { IconButton } from 'react-native-paper';
+import { useRouter } from 'expo-router';
 
 export const BooksScreen = () => {
-
+    const router = useRouter();
     const units = useUnitStore((state) => state.units);
     const user = useAuthStore((state) => state.user);
-    const userUnits = user && user.unitsForBooks && user.unitsForBooks
+    const userUnits = user && user.unitsForBooks && user.unitsForBooks;
     const myUnits = units.filter((unit) => user!.unitsForBooks.includes(unit.sublevel));
     const getAllUnits = useUnitStore((state) => state.getAllUnits);
     const getSubLevelById = useSubLevelStore((state) => state.getSubLevelById);
     const getAllSublevels = useSubLevelStore((state) => state.getAllSubLevels);
-    // console.debug('user.unitsForBooks', userUnits);
-    // console.debug('user.unitsForBooks', user?.unitsForBooks);
-    const loadData = ()=>{
+
+    const loadData = () => {
         getAllSublevels();
-        if(userUnits ) {
+        if (userUnits) {
             getAllUnits();
         }
-    }
+    };
+
     useEffect(() => {
         loadData();
-    }, [getAllUnits])
-    
+    }, [getAllUnits]);
 
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -36,7 +37,9 @@ export const BooksScreen = () => {
             title: 'Unidad',
             key: 'sublevelInfo' as keyof IUnit,
             flex: 2,
-            render: (_: any, row: IUnit) => <LabelGeneral label={getSubLevelById(row.sublevel)?.name || ''} styleProps={{ marginLeft: 10 }} />
+            render: (_: any, row: IUnit) => (
+                <LabelGeneral label={getSubLevelById(row.sublevel)?.name || ''} styleProps={{ marginLeft: 10 }} />
+            ),
         },
         {
             title: 'Book',
@@ -52,11 +55,29 @@ export const BooksScreen = () => {
             title: 'WorkSheet',
             key: 'actions' as keyof IUnit,
             flex: 1,
-            render: (_: any, row: IUnit) => (
-                <View style={{ flexDirection: 'row', gap: 10 }}>
-                    <IconRenderWeb url={row.workSheetUrl || ''} />
-                </View>
-            ),
+            render: (_: any, row: IUnit) => {
+                if (row.worksheetType === 'worksheet' && row.worksheetId) {
+                    return (
+                        <View style={{ flexDirection: 'row', gap: 10 }}>
+                            <IconButton
+                                icon="pencil-box-outline"
+                                size={22}
+                                onPress={() =>
+                                    router.push({
+                                        pathname: '/(tabs)/worksheet/[worksheetId]',
+                                        params: { worksheetId: row.worksheetId, unitId: row.id },
+                                    })
+                                }
+                            />
+                        </View>
+                    );
+                }
+                return (
+                    <View style={{ flexDirection: 'row', gap: 10 }}>
+                        <IconRenderWeb url={row.workSheetUrl || ''} />
+                    </View>
+                );
+            },
         },
     ], []);
 
@@ -75,7 +96,7 @@ export const BooksScreen = () => {
     }, []);
 
     return (
-        <LayoutGeneral title='Libros'  withScrollView onRefresh={loadData}>
+        <LayoutGeneral title='Libros' withScrollView onRefresh={loadData}>
             <SearchBarGeneral
                 onChange={handleSearch}
                 value={searchQuery}
@@ -88,5 +109,5 @@ export const BooksScreen = () => {
                 pageSize={8}
             />
         </LayoutGeneral>
-    )
-}
+    );
+};

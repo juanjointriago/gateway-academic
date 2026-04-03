@@ -8,6 +8,8 @@ export interface IUnit {
     photoUrl: string;
     supportMaterial?: string;
     workSheetUrl: string;
+    worksheetType?: 'link' | 'worksheet';
+    worksheetId?: string;
     isActive: boolean;
     orderNumber: number;
     createdAt?: number;

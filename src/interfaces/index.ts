@@ -5,3 +5,4 @@ export * from './ui.interface';
 export * from './levels.interface';
 export * from './event.interface';
 export * from './unit.interface';
+export * from './worksheet.interface';

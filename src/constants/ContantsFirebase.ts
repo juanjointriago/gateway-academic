@@ -7,3 +7,5 @@ export const PROGRESS_SHEET_COLLECTION = 'progress_sheet';
 export const FEES_COLLECTION = 'fees';
 export const NEWS_COLLECTION = 'news';
 export const APPINFO_COLLECTION = 'appinfo';
+export const WORKSHEETS_COLLECTION = 'worksheets';
+export const WORKSHEET_SUBMISSIONS_COLLECTION = 'worksheet_submissions';

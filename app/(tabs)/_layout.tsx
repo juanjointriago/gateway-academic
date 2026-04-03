@@ -97,6 +97,11 @@ export default function TabLayout() {
                     tabBarIcon: ({ color, size }) => <Icon size={size} source="cog" color={color} />,
                 }}
             />
+            {/* Pantalla de worksheet — oculta de la barra de tabs */}
+            <Tabs.Screen
+                name="worksheet/[worksheetId]"
+                options={{ href: null, title: 'Worksheet' }}
+            />
         </Tabs>
     );
 }
