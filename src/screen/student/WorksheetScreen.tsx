@@ -491,9 +491,9 @@ export const WorksheetScreen: React.FC = () => {
     const startedAt = useRef(Date.now());
 
     useEffect(() => {
-        ScreenCapture.preventScreenCaptureAsync();
+        ScreenCapture.preventScreenCaptureAsync().catch(() => null);
         return () => {
-            ScreenCapture.allowScreenCaptureAsync();
+            ScreenCapture.allowScreenCaptureAsync().catch(() => null);
         };
     }, []);
 
@@ -562,8 +562,9 @@ export const WorksheetScreen: React.FC = () => {
             if (worksheet.settings.showResultsToStudent) {
                 setShowModal(true);
             } else if (!worksheet.settings.showCorrectAnswers) {
-                Alert.alert('Entregado', 'Tu trabajo fue entregado correctamente.');
-                router.back();
+                Alert.alert('Entregado', 'Tu trabajo fue entregado correctamente.', [
+                    { text: 'OK', onPress: () => router.navigate('/(tabs)/books' as any) },
+                ]);
             }
         } catch {
             Alert.alert('Error', 'No se pudo guardar la entrega. Inténtalo de nuevo.');
@@ -611,7 +612,7 @@ export const WorksheetScreen: React.FC = () => {
                     <Text variant="titleLarge" style={{ textAlign: 'center', marginBottom: 20 }}>
                         Mejor puntaje: {bestScore} / {worksheet.settings.totalScore}
                     </Text>
-                    <Button mode="contained" onPress={() => router.back()}>
+                    <Button mode="contained" onPress={() => router.navigate('/(tabs)/books' as any)}>
                         Volver
                     </Button>
                 </View>
@@ -676,7 +677,7 @@ export const WorksheetScreen: React.FC = () => {
                     {showResults && (
                         <Button
                             mode="outlined"
-                            onPress={() => router.back()}
+                            onPress={() => router.navigate('/(tabs)/books' as any)}
                             style={styles.submitButton}
                         >
                             Volver
@@ -691,7 +692,7 @@ export const WorksheetScreen: React.FC = () => {
                     visible={showModal}
                     onDismiss={() => {
                         setShowModal(false);
-                        if (!worksheet.settings.showCorrectAnswers) router.back();
+                        if (!worksheet.settings.showCorrectAnswers) router.navigate('/(tabs)/books' as any);
                     }}
                     contentContainerStyle={[
                         styles.modal,
@@ -714,7 +715,7 @@ export const WorksheetScreen: React.FC = () => {
                         mode="contained"
                         onPress={() => {
                             setShowModal(false);
-                            if (!worksheet.settings.showCorrectAnswers) router.back();
+                            if (!worksheet.settings.showCorrectAnswers) router.navigate('/(tabs)/books' as any);
                         }}
                     >
                         {worksheet.settings.showCorrectAnswers ? 'Ver respuestas' : 'Cerrar'}

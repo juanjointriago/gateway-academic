@@ -19,15 +19,15 @@ export class WorksheetService {
         studentId: string,
         worksheetId: string
     ): Promise<IWorksheetSubmission[]> {
-        return await getQueryDocuments<IWorksheetSubmission>({
+        const results = await getQueryDocuments<IWorksheetSubmission>({
             collection: WORKSHEET_SUBMISSIONS_COLLECTION,
             condition: [
                 { field: 'studentId', operator: '==', value: studentId },
                 { field: 'worksheetId', operator: '==', value: worksheetId },
             ],
-            orderByField: 'completedAt',
-            orderByDirection: 'asc',
         });
+        // Ordenar client-side para evitar índice compuesto con completedAt
+        return results.sort((a, b) => a.completedAt - b.completedAt);
     }
 
     static async createSubmission(
@@ -43,14 +43,14 @@ export class WorksheetService {
     static async getSubmissionsByWorksheetId(
         worksheetId: string
     ): Promise<IWorksheetSubmission[]> {
-        return await getQueryDocuments<IWorksheetSubmission>({
+        const results = await getQueryDocuments<IWorksheetSubmission>({
             collection: WORKSHEET_SUBMISSIONS_COLLECTION,
             condition: [
                 { field: 'worksheetId', operator: '==', value: worksheetId },
             ],
-            orderByField: 'completedAt',
-            orderByDirection: 'desc',
         });
+        // Ordenar client-side: más recientes primero
+        return results.sort((a, b) => b.completedAt - a.completedAt);
     }
 
     static async updateSubmission(

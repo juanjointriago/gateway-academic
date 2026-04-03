@@ -22,9 +22,20 @@ export default function TabLayout() {
                     }
                 })
             }}
-            tabBar={({ navigation, state, descriptors, insets }) => (
+            tabBar={({ navigation, state, descriptors, insets }) => {
+                // Filtrar rutas ocultas (worksheet no debe aparecer en el tab bar)
+                const HIDDEN = ['worksheet'];
+                const visibleRoutes = state.routes.filter(r => !HIDDEN.includes(r.name));
+                const activeKey = state.routes[state.index]?.key;
+                const activeVisibleIndex = visibleRoutes.findIndex(r => r.key === activeKey);
+                const filteredState = {
+                    ...state,
+                    routes: visibleRoutes,
+                    index: activeVisibleIndex >= 0 ? activeVisibleIndex : 0,
+                };
+                return (
                 <BottomNavigation.Bar
-                    navigationState={state}
+                    navigationState={filteredState}
                     safeAreaInsets={insets}
                     onTabPress={({ route }) => {
                         navigation.navigate(route.name);
@@ -53,7 +64,8 @@ export default function TabLayout() {
                         return label as string;
                     }}
                 />
-            )}
+                );
+            }}
         >
             <Tabs.Screen
                 name="home"
@@ -97,9 +109,9 @@ export default function TabLayout() {
                     tabBarIcon: ({ color, size }) => <Icon size={size} source="cog" color={color} />,
                 }}
             />
-            {/* Pantalla de worksheet — oculta de la barra de tabs */}
+            {/* Grupo worksheet — oculto de la barra de tabs */}
             <Tabs.Screen
-                name="worksheet/[worksheetId]"
+                name="worksheet"
                 options={{ href: null, title: 'Worksheet' }}
             />
         </Tabs>

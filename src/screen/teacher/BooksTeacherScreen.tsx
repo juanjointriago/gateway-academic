@@ -33,9 +33,9 @@ export const BooksTeacherScreen = () => {
               size={20}
               onPress={() =>
                 router.push({
-                  pathname: '/(tabsT)/worksheetSubmissions/[worksheetId]',
+                  pathname: '/worksheetSubmissions/[worksheetId]',
                   params: { worksheetId: row.worksheetId, worksheetTitle: row.name },
-                })
+                } as any)
               }
             />
           ) : (

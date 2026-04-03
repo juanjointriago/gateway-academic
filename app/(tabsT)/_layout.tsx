@@ -83,9 +83,9 @@ export default function TabTLayout() {
                     tabBarIcon: ({ color, size }) => <Icon size={size} source="cog" color={color} />,
                 }}
             />
-            {/* Pantalla de entregas — oculta de la barra de tabs */}
+            {/* Grupo entregas — oculto de la barra de tabs */}
             <Tabs.Screen
-                name="worksheetSubmissions/[worksheetId]"
+                name="worksheetSubmissions"
                 options={{ href: null, title: 'Entregas' }}
             />
         </Tabs>

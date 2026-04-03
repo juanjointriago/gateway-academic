@@ -64,9 +64,9 @@ export const BooksScreen = () => {
                                 size={22}
                                 onPress={() =>
                                     router.push({
-                                        pathname: '/(tabs)/worksheet/[worksheetId]',
+                                        pathname: '/worksheet/[worksheetId]',
                                         params: { worksheetId: row.worksheetId, unitId: row.id },
-                                    })
+                                    } as any)
                                 }
                             />
                         </View>
